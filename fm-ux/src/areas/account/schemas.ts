@@ -1,17 +1,6 @@
-/**
- * Zod validation schemas for Account.
- *
- * Note: Due to Zod 4 compatibility issues with @hookform/resolvers,
- * we use simpler schemas and validate required fields at submit time.
- */
-
 import { z } from "zod";
 import type { Enumerated } from "../../common/types";
 
-/**
- * Schema for Enumerated type (code table reference).
- * Nullable for form state (before selection).
- */
 const enumeratedSchema = z
 	.object({
 		id: z.string(),
@@ -19,9 +8,6 @@ const enumeratedSchema = z
 	})
 	.nullable();
 
-/**
- * Form input type for account creation (allows nulls during editing).
- */
 export interface AccountCreationFormInput {
 	name: string;
 	description?: string;
@@ -31,10 +17,6 @@ export interface AccountCreationFormInput {
 	owner: Enumerated | null;
 }
 
-/**
- * Schema for creating an account - simple version.
- * Required field validation happens at submit time.
- */
 export const accountCreationSchema = z.object({
 	name: z.string().min(1, "Name ist erforderlich"),
 	description: z.string().optional(),
@@ -46,9 +28,6 @@ export const accountCreationSchema = z.object({
 
 export type AccountCreationData = z.infer<typeof accountCreationSchema>;
 
-/**
- * Form input type for editing accounts.
- */
 export interface AccountFormInput {
 	name: string;
 	description?: string | null;
@@ -60,9 +39,6 @@ export interface AccountFormInput {
 	discountRate?: number | null;
 }
 
-/**
- * Schema for editing an account.
- */
 export const accountFormSchema = z.object({
 	name: z.string().min(1, "Name ist erforderlich"),
 	description: z.string().optional().nullable(),

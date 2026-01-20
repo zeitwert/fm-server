@@ -387,7 +387,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 					title={`${entityLabelSingular} erstellen`}
 					onCancel={() => setIsCreateOpen(false)}
 					footer={null}
-					destroyOnClose
+					destroyOnHidden
 				>
 					<CreateForm
 						onSuccess={() => setIsCreateOpen(false)}

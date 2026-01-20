@@ -1,17 +1,3 @@
-/**
- * AccountCreationForm - Modal form for creating a new account.
- *
- * Required fields:
- * - tenant (auto-set for non-kernel tenants)
- * - owner (required)
- * - name (required)
- * - accountType (required)
- *
- * Optional fields:
- * - clientSegment
- * - description
- */
-
 import { Button, Space, message } from "antd";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -27,17 +13,11 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 	const { t: tCommon } = useTranslation("common");
 	const { sessionInfo } = useSessionStore();
 	const createMutation = useCreateAccount();
-
-	// Check if user is kernel tenant (can select any tenant)
 	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
-
-	// Default tenant for non-kernel users
 	const defaultTenant =
 		!isKernelTenant && sessionInfo?.tenant
 			? { id: sessionInfo.tenant.id, name: sessionInfo.tenant.name }
 			: null;
-
-	// Default owner to current user
 	const defaultOwner = sessionInfo?.user
 		? { id: sessionInfo.user.id, name: sessionInfo.user.name }
 		: null;
@@ -54,7 +34,6 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 	});
 
 	const handleSubmit = async (data: AccountCreationFormInput) => {
-		// Validate required fields
 		let hasError = false;
 
 		if (!data.name?.trim()) {

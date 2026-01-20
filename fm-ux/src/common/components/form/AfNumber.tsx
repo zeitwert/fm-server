@@ -16,6 +16,8 @@ interface AfNumberProps extends AfFieldProps {
 	suffix?: string;
 	/** Step increment for arrows */
 	step?: number;
+	/** Text alignment */
+	align?: "left" | "center" | "right";
 }
 
 /**
@@ -37,6 +39,7 @@ export function AfNumber({
 	prefix,
 	suffix,
 	step = 1,
+	align = "right",
 	readOnly,
 	disabled,
 	...fieldProps
@@ -62,12 +65,15 @@ export function AfNumber({
 				control={control}
 				render={({ field: { value, onChange, onBlur } }) =>
 					readOnly ? (
-						<Typography.Text style={{ fontWeight: "600" }}>{formatValue(value as number | null | undefined)}</Typography.Text>
+						<Typography.Text style={{ textAlign: align, display: "block", fontWeight: "600" }}>
+							{formatValue(value as number | null | undefined)}
+						</Typography.Text>
 					) : (
 						<InputNumber
 							value={value as number | null | undefined}
 							onChange={(val) => onChange(val)}
 							onBlur={onBlur}
+							controls={false}
 							min={min}
 							max={max}
 							precision={precision}
@@ -75,6 +81,7 @@ export function AfNumber({
 							prefix={prefix}
 							suffix={suffix}
 							disabled={disabled}
+							className={`af-number-align-${align}`}
 							style={{ width: "100%" }}
 							decimalSeparator="."
 							formatter={(val) => (val ? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, "'") : "")}

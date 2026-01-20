@@ -32,17 +32,11 @@ class EnumController {
 	@Autowired
 	lateinit var userRepo: ObjUserRepository
 
-	// 	@GetMapping("/oe/objTenant")
-	// 	public ResponseEntity<List<EnumeratedDto>> getTenants() {
-	// 		QuerySpec querySpec = new QuerySpec(ObjUser.class);
-	// 		List<ObjTenantVRecord> tenants = tenantRepo.find(querySpec);
-	// 		return ResponseEntity.ok(
-	// 				tenants.stream()
-	// 						.map(obj -> (TableRecord<?>) obj)
-	// 						.map(tenant -> EnumeratedDto.builder().id(tenant.get(ObjFields.ID).toString())
-	// 								.name(tenant.get(ObjFields.CAPTION)).build())
-	// 						.toList());
-	// 	}
+	@GetMapping("/oe/objTenant")
+	fun getTenants(): ResponseEntity<List<EnumeratedDto>> {
+		val tenants = tenantRepo.find(null).map { tenantRepo.get(it) }
+		return ResponseEntity.ok(tenants.map { EnumeratedDto.of(it)!! })
+	}
 
 	@GetMapping("/oe/objTenant/{id}")
 	fun getTenant(
@@ -56,7 +50,7 @@ class EnumController {
 	fun getUsers(): ResponseEntity<List<EnumeratedDto>> {
 		sessionContext.tenantId
 		val users = userRepo.find(null).map { userRepo.get(it) }
-		return ResponseEntity.ok(users.map { EnumeratedDto.of(it.id.toString(), it.caption) })
+		return ResponseEntity.ok(users.map { EnumeratedDto.of(it)!! })
 	}
 
 	@GetMapping("/oe/objUser/{idOrEmail}")

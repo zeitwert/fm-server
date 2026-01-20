@@ -1,14 +1,3 @@
-/**
- * AccountMainForm - Main tab form for account details.
- *
- * Displays:
- * - Basic info: name, description
- * - Type/Segment: accountType, clientSegment
- * - Relations: tenant, owner
- * - Calculation parameters: inflationRate, discountRate
- * - Contacts table (read-only)
- */
-
 import { Card, Table, Typography } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
@@ -24,17 +13,13 @@ import { useSessionStore } from "../../../../session/model/sessionStore";
 import { KERNEL_TENANT } from "../../../../session/model/types";
 
 interface AccountMainFormProps {
-	/** Whether form is in read-only mode (not editing) */
 	disabled: boolean;
-	/** Contacts associated with the account (read-only display) */
 	contacts?: AccountContact[];
 }
 
 export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProps) {
 	const { t } = useTranslation("account");
 	const { sessionInfo } = useSessionStore();
-
-	// Only kernel tenants can change the tenant
 	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
 
 	const contactColumns: ColumnType<AccountContact>[] = [
@@ -57,13 +42,11 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 
 	return (
 		<div>
-			{/* Basic Info Section */}
 			<Card size="small" title={t("basicInfo")} style={{ marginBottom: 16 }}>
 				<AfInput name="name" label={t("name")} required readOnly={disabled} />
 				<AfTextArea name="description" label={t("description")} rows={4} readOnly={disabled} />
 			</Card>
 
-			{/* Type & Classification Section */}
 			<Card size="small" title={t("classification")} style={{ marginBottom: 16 }}>
 				<AfFieldRow>
 					<AfSelect
@@ -84,7 +67,6 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 				</AfFieldRow>
 			</Card>
 
-			{/* Organization Section */}
 			<Card size="small" title={t("organization")} style={{ marginBottom: 16 }}>
 				<AfFieldRow>
 					{isKernelTenant ? (
@@ -143,7 +125,6 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 				</AfFieldRow>
 			</Card>
 
-			{/* Contacts Section (always read-only) */}
 			{contacts.length > 0 && (
 				<Card size="small" title={t("contacts")}>
 					<Table<AccountContact>

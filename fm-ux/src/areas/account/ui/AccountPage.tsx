@@ -1,13 +1,3 @@
-/**
- * AccountPage - Detail view for a single account.
- *
- * Uses the compositional pattern with:
- * - useEditableEntity hook for edit/cancel/store
- * - ItemPageHeader for entity header
- * - ItemPageLayout for split layout with right panel
- * - FormProvider wrapping the editable form
- */
-
 import { Card, Spin, Result, Tabs } from "antd";
 import { BankOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
@@ -34,17 +24,10 @@ interface AccountPageProps {
 	accountId: string;
 }
 
-/**
- * Check if user can edit accounts.
- * From fm-ui: session.isAdmin || session.hasSuperUserRole
- */
 function canEditAccount(role?: string): boolean {
 	return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
 }
 
-/**
- * Transform Account entity to form data.
- */
 function transformToForm(account: Account): AccountFormInput {
 	return {
 		name: account.name,
@@ -58,9 +41,6 @@ function transformToForm(account: Account): AccountFormInput {
 	};
 }
 
-/**
- * Transform form data back to entity data for update.
- */
 function transformFromForm(formData: Partial<AccountFormInput>): Partial<Account> {
 	const result: Partial<Account> = {};
 
@@ -105,7 +85,6 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		transformFromForm,
 	});
 
-	// Loading state
 	if (isLoading) {
 		return (
 			<div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
@@ -114,7 +93,6 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		);
 	}
 
-	// Error state
 	if (isError || !account) {
 		return (
 			<Result

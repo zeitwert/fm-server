@@ -18,7 +18,7 @@ import org.jooq.DSLContext
  * respective table structures (base and extension tables).
  */
 abstract class AggregateSqlPersistenceProviderBase<A : Aggregate>(
-	intfClass: Class<A>,
+	protected val intfClass: Class<A>,
 ) : AggregatePersistenceProviderBase<A>(intfClass),
 	AggregateSqlPersistenceProvider<A>,
 	AggregateFindMixin {

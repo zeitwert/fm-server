@@ -1,12 +1,3 @@
-/**
- * AccountArea - List view for accounts using ItemsPage.
- *
- * Displays a table of accounts with:
- * - Create button for new accounts
- * - Click-to-navigate to account detail page
- * - Searchable table columns
- */
-
 import { BankOutlined } from "@ant-design/icons";
 import type { ColumnType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
@@ -18,11 +9,6 @@ import type { AccountListItem } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
 import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
 
-/**
- * Check if user can create accounts.
- * From fm-ui: session.isAdmin && (session.isKernelTenant || session.isAdvisorTenant)
- * Simplified for now: admin or super_user roles can create
- */
 function canCreateAccount(role?: string): boolean {
 	return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
 }

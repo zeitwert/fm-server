@@ -36,7 +36,7 @@ export function PreviewDrawer({
 			title={title}
 			width={width}
 			onClose={onClose}
-			destroyOnClose
+			destroyOnHidden
 			styles={{
 				body: { paddingTop: 0 },
 			}}

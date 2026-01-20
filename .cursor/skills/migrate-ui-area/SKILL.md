@@ -5,16 +5,27 @@ description: Migrate or create a new aggregate area in the fm-ux application.
 
 # Implementing an Entity Area in fm-ux
 
-This cookbook describes how to migrate or create a new entity area in the fm-ux application. It covers the complete implementation from types to UI components.
+This cookbook describes how to migrate or create a new entity area in the fm-ux application.
 
 ## Overview
 
-An entity area typically consists of:
+An entity area consists of:
 - **List View** (`{Entity}Area`) - Table with create modal using `ItemsPage`
 - **Detail View** (`{Entity}Page`) - Edit form with `useEditableEntity` hook
 - **API Layer** - CRUD operations using `createEntityApi`
 - **Query Hooks** - TanStack Query hooks for data fetching
 - **Routes** - TanStack Router file-based routes
+
+## Code Style
+
+**Avoid superfluous comments.** The code should be self-documenting. Do not add:
+- File header JSDoc comments that just restate the file name
+- Interface/type comments that repeat what's obvious from the code
+- Inline comments explaining obvious code (e.g., `// Basic fields`, `// Relations`)
+- Function comments that just repeat the function name
+- Section comments in JSX that label obvious sections
+
+Only add comments when they explain *why* something is done a certain way, not *what* the code does.
 
 ## Directory Structure
 
@@ -48,8 +59,6 @@ fm-ux/src/routes/
 
 ### 1. Types (`types.ts`)
 
-Define the entity types based on the existing fm-ui model.
-
 ```typescript
 import type { Enumerated } from "../../common/types";
 import type { EntityMeta } from "../../common/api/jsonapi";
@@ -58,19 +67,13 @@ export interface {Entity} {
   id: string;
   meta?: EntityMeta;
   
-  // Basic fields
   name: string;
   description?: string;
-  
-  // Code tables (Enumerated)
   status: Enumerated;
-  
-  // Relations (also Enumerated for references)
   owner: Enumerated;
   tenant: Enumerated;
 }
 
-// Lighter type for list view (fewer relations loaded)
 export interface {Entity}ListItem {
   id: string;
   name: string;
@@ -78,7 +81,6 @@ export interface {Entity}ListItem {
   owner: Enumerated;
 }
 
-// Form input type (allows nulls for unselected dropdowns)
 export interface {Entity}FormInput {
   name: string;
   description?: string | null;
@@ -90,9 +92,7 @@ export interface {Entity}FormInput {
 
 ### 2. Schemas (`schemas.ts`)
 
-Create Zod schemas for form validation.
-
-> **Important**: Due to Zod 4 compatibility issues with `@hookform/resolvers`, avoid using `.refine()` on nullable schemas. Validate required fields at submit time instead.
+Create Zod schemas for form validation. Avoid `.refine()` on nullable schemas due to Zod 4 compatibility; validate required fields at submit time instead.
 
 ```typescript
 import { z } from "zod";
@@ -105,7 +105,6 @@ const enumeratedSchema = z
   })
   .nullable();
 
-// Form input type (exported for useForm generic)
 export interface {Entity}FormInput {
   name: string;
   description?: string | null;
@@ -113,7 +112,6 @@ export interface {Entity}FormInput {
   owner: Enumerated | null;
 }
 
-// Schema without .refine() for Zod 4 compatibility
 export const {entity}FormSchema = z.object({
   name: z.string().min(1, "Name ist erforderlich"),
   description: z.string().optional().nullable(),
@@ -126,40 +124,34 @@ export type {Entity}FormData = z.infer<typeof {entity}FormSchema>;
 
 ### 3. API (`api.ts`)
 
-Use the `createEntityApi` factory for CRUD operations.
+Use the `createEntityApi` factory for CRUD operations. Only relationships go in `includes` and `relations`; code tables come inline as attributes.
 
 ```typescript
 import { createEntityApi } from "../../common/api/entityApi";
 import type { {Entity}, {Entity}ListItem } from "./types";
 
 export const {entity}Api = createEntityApi<{Entity}>({
-  module: "{module}",           // API module (e.g., "building", "account")
-  path: "{entities}",           // API path (e.g., "buildings", "accounts")
-  type: "{entity}",             // JSONAPI type
-  includes: "include[{entity}]=owner,status,tenant",  // Relations to include
+  module: "{module}",
+  path: "{entities}",
+  type: "{entity}",
+  includes: "include[{entity}]=mainContact",
   relations: {
-    owner: "user",
-    status: "{entity}Status",
-    tenant: "tenant",
+    mainContact: "contact",
   },
 });
 
-// Lighter API for list view
 export const {entity}ListApi = createEntityApi<{Entity}ListItem>({
   module: "{module}",
   path: "{entities}",
   type: "{entity}",
-  includes: "include[{entity}]=owner,status",
+  includes: "include[{entity}]=mainContact",
   relations: {
-    owner: "user",
-    status: "{entity}Status",
+    mainContact: "contact",
   },
 });
 ```
 
 ### 4. Query Hooks (`queries.ts`)
-
-Create TanStack Query hooks for data fetching.
 
 ```typescript
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -224,8 +216,6 @@ export function useUpdate{Entity}() {
 
 ### 5. List View (`ui/{Entity}Area.tsx`)
 
-Use the `ItemsPage` component for the list view.
-
 ```typescript
 import { {Icon}Outlined } from "@ant-design/icons";
 import type { ColumnType } from "antd/es/table";
@@ -273,7 +263,7 @@ export function {Entity}Area() {
       entityLabel={t("{entities}")}
       entityLabelSingular={t("{entity}")}
       icon={<{Icon}Outlined />}
-      queryKey={[...{entity}Keys.lists()]}  // Spread to convert readonly to mutable
+      queryKey={[...{entity}Keys.lists()]}
       queryFn={() => {entity}ListApi.list()}
       columns={columns}
       canCreate={canCreate(userRole)}
@@ -285,8 +275,6 @@ export function {Entity}Area() {
 ```
 
 ### 6. Detail View (`ui/{Entity}Page.tsx`)
-
-Use the `useEditableEntity` hook for the detail page.
 
 ```typescript
 import { Card, Spin, Result, Tabs } from "antd";
@@ -486,7 +474,7 @@ export function {Entity}MainForm({ disabled }: {Entity}MainFormProps) {
 
 #### Creation Form (`{Entity}CreationForm.tsx`)
 
-> **Important**: Due to Zod 4 compatibility issues, skip `zodResolver` for creation forms and validate manually at submit time.
+Skip `zodResolver` for creation forms and validate manually at submit time.
 
 ```typescript
 import { Button, Space, message } from "antd";
@@ -512,7 +500,6 @@ export function {Entity}CreationForm({ onSuccess, onCancel }: CreateFormProps) {
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    // Validate required fields manually (Zod 4 compatibility)
     let hasError = false;
     if (!data.name?.trim()) {
       form.setError("name", { message: "Name ist erforderlich" });
@@ -560,17 +547,13 @@ export function {Entity}CreationForm({ onSuccess, onCancel }: CreateFormProps) {
 
 ### 8. Routes
 
-TanStack Router uses file-based routing with dot notation for nested routes. For entity areas with list and detail views, you need **three** route files:
+TanStack Router uses file-based routing. Create three route files:
 
-1. **Layout Route** (`{entity}.tsx`) - Renders `<Outlet />` to pass through to child routes
-2. **Index Route** (`{entity}.index.tsx`) - The list view at `/{entity}`
-3. **Detail Route** (`{entity}.${entityId}.tsx`) - The detail view at `/{entity}/123`
-
-> **Important**: If you only create `{entity}.tsx` with the list component and `{entity}.$id.tsx` for details, the detail route won't render. This is because in TanStack Router, `{entity}.$id.tsx` is a **nested child** of `{entity}.tsx`. The parent must render `<Outlet />` for children to display.
+1. **Layout Route** (`{entity}.tsx`) - Renders `<Outlet />` for child routes
+2. **Index Route** (`{entity}.index.tsx`) - List view at `/{entity}`
+3. **Detail Route** (`{entity}.${entityId}.tsx`) - Detail view at `/{entity}/123`
 
 #### Layout Route (`routes/{entity}.tsx`)
-
-This is a simple pass-through layout that renders children:
 
 ```typescript
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -586,8 +569,6 @@ function {Entity}Layout() {
 
 #### Index Route (`routes/{entity}.index.tsx`)
 
-This renders the list view at `/{entity}`:
-
 ```typescript
 import { createFileRoute } from "@tanstack/react-router";
 import { {Entity}Area } from "../areas/{entity}/ui/{Entity}Area";
@@ -598,8 +579,6 @@ export const Route = createFileRoute("/{entity}/")({
 ```
 
 #### Detail Route (`routes/{entity}.${{entity}Id}.tsx`)
-
-This renders the detail view at `/{entity}/$id`:
 
 ```typescript
 import { createFileRoute } from "@tanstack/react-router";
@@ -617,9 +596,7 @@ function {Entity}PageRoute() {
 
 ### 9. Translations
 
-Create translation files for both German and English:
-
-#### `i18n/locales/de/{entity}.json`
+#### `i18n/locales/de/{entity}.json` and `i18n/locales/en/{entity}.json`
 
 ```json
 {
@@ -640,30 +617,22 @@ Create translation files for both German and English:
 
 #### Update `i18n/index.ts`
 
-```typescript
-// Add imports
-import en{Entity} from "./locales/en/{entity}.json";
-import de{Entity} from "./locales/de/{entity}.json";
-
-// Add to resources
-const resources = {
-  en: {
-    // ...existing
-    {entity}: en{Entity},
-  },
-  de: {
-    // ...existing
-    {entity}: de{Entity},
-  },
-};
-
-// Add to ns array
-ns: ["common", "login", "app", "home", "{entity}"],
-```
+Add imports, add to resources, and add `"{entity}"` to the `ns` array.
 
 ## Common Patterns & Gotchas
 
-### 1. Readonly Array in queryKey
+### 1. Code Tables vs Relationships (CRITICAL)
+
+**Common mistake**: Adding code tables or base fields to `relations` causes errors like `"Invalid relationship name: owner for account"`.
+
+**Rule:**
+- **Code tables**: NOT in `includes` or `relations` (they're attributes)
+- **Base fields** (`owner`, `tenant`): NOT in `includes` or `relations` - these are fields from `AggregateDtoAdapterBase`, not relationships
+- **Relationships**: MUST be in both `includes` and `relations`
+
+**How to identify:** Check the DTO adapter (`{Entity}DtoAdapter.kt`) - fields with `config.relationship()` are relationships, fields with `config.field()` are attributes. The base class `AggregateDtoAdapterBase` configures `owner` and `tenant` as fields (attributes), not relationships. Alternatively, check the JSONAPI response: `relationships` section = relationships, `attributes` = attributes/code tables/base fields.
+
+### 2. Readonly Array in queryKey
 
 `ItemsPage` expects `string[]` but query keys are `readonly`. Spread to convert:
 
@@ -671,12 +640,6 @@ ns: ["common", "login", "app", "home", "{entity}"],
 queryKey={[...{entity}Keys.lists()]}  // ✓ Correct
 queryKey={{entity}Keys.lists()}       // ✗ Type error
 ```
-
-### 2. Zod 4 Compatibility
-
-The `@hookform/resolvers/zod` has compatibility issues with Zod 4. Workarounds:
-- For `useEditableEntity`: The hook casts the resolver internally
-- For creation forms: Skip zodResolver, validate manually at submit time
 
 ### 3. Related Panel Components
 
@@ -690,38 +653,13 @@ The `@hookform/resolvers/zod` has compatibility issues with Zod 4. Workarounds:
 
 ### 4. Relative Imports
 
-The project uses relative imports, not path aliases. Import paths are relative to the file location:
+The project uses relative imports, not path aliases. Import paths are relative to the file location.
 
-```typescript
-// From areas/{entity}/ui/{Entity}Area.tsx
-import { ItemsPage } from "../../../common/components/items";
-import { useSessionStore } from "../../../session/model/sessionStore";
-```
+### 5. Form Components
 
-### 5. Route Generation & Nested Routes
+Use `Af*` components from `common/components/form` (see form examples above).
 
-TanStack Router generates routes automatically. After creating route files, run `pnpm dev` or `pnpm build` to trigger regeneration of `routeTree.gen.ts`.
-
-**Nested route pattern**: Files with dot notation (e.g., `{entity}.$id.tsx`) create nested child routes under the parent (`{entity}.tsx`). For children to render, the parent **must** include `<Outlet />`. Use an index route (`{entity}.index.tsx`) for the list view:
-
-```
-routes/
-├── account.tsx           # Layout with <Outlet />
-├── account.index.tsx     # List view at /account
-└── account.$accountId.tsx  # Detail view at /account/123
-```
-
-### 6. Form Components
-
-Use `Af*` components from `common/components/form`:
-- `AfInput` - Text input
-- `AfTextArea` - Multi-line text
-- `AfSelect` - Dropdown with code table source
-- `AfNumber` - Numeric input with formatting
-- `AfFieldRow` - Horizontal row layout (uses `size` prop for grid columns)
-- `AfCheckbox`, `AfDatePicker`, etc.
-
-### 7. Permission Checks
+### 6. Permission Checks
 
 Use role constants from `session/model/types`:
 
@@ -732,6 +670,10 @@ function canEdit(role?: string): boolean {
   return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
 }
 ```
+
+### 7. Code Comments
+
+Avoid superfluous comments. The code should be self-documenting. Do not add file headers, interface comments, or inline comments that restate what the code already shows. Only comment when explaining *why*, not *what*.
 
 ## Verification Checklist
 

@@ -70,3 +70,14 @@ input:-webkit-autofill:active,
 .ant-form-item-vertical .ant-col-x1-24.ant-form-item-label {
 	padding-bottom: 0px !important;
 }
+
+/* Ensure InputNumber input respects text-align classes */
+.af-number-align-left .ant-input-number-input {
+	text-align: left;
+}
+.af-number-align-center .ant-input-number-input {
+	text-align: center;
+}
+.af-number-align-right .ant-input-number-input {
+	text-align: right;
+}

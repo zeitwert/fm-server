@@ -17,6 +17,7 @@ abstract class ObjSqlPersistenceProviderBase<O : Obj>(
 	companion object {
 
 		val logger = LoggerFactory.getLogger(ObjSqlPersistenceProviderBase::class.java)!!
+
 	}
 
 	override val hasAccount = true
@@ -25,16 +26,18 @@ abstract class ObjSqlPersistenceProviderBase<O : Obj>(
 
 	override fun find(query: QuerySpec?): List<Any> {
 		var querySpec = queryWithFilter(query)
-		logger.trace("find.1: {}", querySpec)
+		logger.trace("find.1({}, {}): {}", intfClass.simpleName, query, querySpec)
 
 		// Add isClosed filter if not already present
 		if (!hasFilterFor(querySpec, "isClosed")) {
 			val filters = querySpec.filters.toMutableList()
 			filters.add(FilterSpec.Comparison(Tables.OBJ.CLOSED_AT.name, ComparisonOperator.EQ, null))
 			querySpec = querySpec.copy(filters = filters)
-			logger.trace("find.2: {}", querySpec)
+			logger.trace("find.2({}): {}", intfClass.simpleName, querySpec)
 		}
-		return doFind(querySpec)
+		val ids = doFind(querySpec)
+		logger.trace("find({}, {}): {}", intfClass.simpleName, querySpec, ids)
+		return ids
 	}
 
 	private fun hasFilterFor(

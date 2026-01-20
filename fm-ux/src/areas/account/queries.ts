@@ -1,14 +1,9 @@
-/**
- * TanStack Query hooks for Account data fetching.
- */
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { accountApi, accountListApi } from "./api";
 import type { Account } from "./types";
 import type { EntityMeta } from "../../common/api/jsonapi";
 
-// Query keys
 export const accountKeys = {
 	all: ["account"] as const,
 	lists: () => [...accountKeys.all, "list"] as const,
@@ -17,9 +12,6 @@ export const accountKeys = {
 	detail: (id: string) => [...accountKeys.details(), id] as const,
 };
 
-/**
- * Hook for fetching the list of accounts.
- */
 export function useAccountList() {
 	return useQuery({
 		queryKey: accountKeys.lists(),
@@ -27,9 +19,6 @@ export function useAccountList() {
 	});
 }
 
-/**
- * Hook for fetching a single account by ID.
- */
 export function useAccount(id: string) {
 	return useQuery({
 		queryKey: accountKeys.detail(id),
@@ -38,9 +27,6 @@ export function useAccount(id: string) {
 	});
 }
 
-/**
- * Hook for creating a new account.
- */
 export function useCreateAccount() {
 	const queryClient = useQueryClient();
 
@@ -56,9 +42,6 @@ export function useCreateAccount() {
 	});
 }
 
-/**
- * Hook for updating an account.
- */
 export function useUpdateAccount() {
 	const queryClient = useQueryClient();
 
@@ -76,9 +59,6 @@ export function useUpdateAccount() {
 	});
 }
 
-/**
- * Hook for deleting an account.
- */
 export function useDeleteAccount() {
 	const queryClient = useQueryClient();
 
@@ -94,9 +74,6 @@ export function useDeleteAccount() {
 	});
 }
 
-/**
- * Helper to get query options for prefetching an account.
- */
 export function getAccountQueryOptions(id: string) {
 	return {
 		queryKey: accountKeys.detail(id),
@@ -104,9 +81,6 @@ export function getAccountQueryOptions(id: string) {
 	};
 }
 
-/**
- * Helper to get query options for prefetching the account list.
- */
 export function getAccountListQueryOptions() {
 	return {
 		queryKey: accountKeys.lists(),

@@ -24,6 +24,8 @@ class ObjUserMemPersistenceProviderImpl(
 ) : ObjMemPersistenceProviderBase<ObjUser>(ObjUser::class.java),
 	ObjUserPersistenceProvider {
 
+	override val hasAccount = false
+
 	override fun getByEmail(email: String): Optional<Any> {
 		val userMap =
 			MemoryDb
