@@ -89,7 +89,11 @@ export function AfCombobox({
 					const currentValue = value as Enumerated | null | undefined;
 
 					if (readOnly) {
-						return <Typography.Text style={{ fontWeight: "600" }}>{currentValue?.name || "\u00A0"}</Typography.Text>;
+						return (
+							<Typography.Text style={{ fontWeight: "600" }}>
+								{currentValue?.name || "\u00A0"}
+							</Typography.Text>
+						);
 					}
 
 					return (

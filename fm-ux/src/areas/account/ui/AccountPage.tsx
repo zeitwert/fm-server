@@ -110,9 +110,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		<>
 			<ItemPageHeader
 				icon={<BankOutlined />}
-				entityLabel={t("account")}
 				title={account.name}
-				subtitle={account.accountType?.name}
 				details={[
 					{
 						label: t("tenant"),
@@ -127,17 +125,6 @@ export function AccountPage({ accountId }: AccountPageProps) {
 						content: account.mainContact?.name || "-",
 					},
 				]}
-				actions={
-					<EditControls
-						isEditing={isEditing}
-						isDirty={isDirty}
-						isStoring={isStoring}
-						canEdit={canEdit}
-						onEdit={handleEdit}
-						onCancel={handleCancel}
-						onStore={handleStore}
-					/>
-				}
 			/>
 
 			<ItemPageLayout
@@ -166,6 +153,17 @@ export function AccountPage({ accountId }: AccountPageProps) {
 				<Card>
 					<AfForm form={form}>
 						<Tabs
+							tabBarExtraContent={
+								<EditControls
+									isEditing={isEditing}
+									isDirty={isDirty}
+									isStoring={isStoring}
+									canEdit={canEdit}
+									onEdit={handleEdit}
+									onCancel={handleCancel}
+									onStore={handleStore}
+								/>
+							}
 							items={[
 								{
 									key: "main",

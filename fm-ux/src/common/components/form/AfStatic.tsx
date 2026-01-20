@@ -28,7 +28,7 @@ export function AfStatic({ value, multiline, label, size = 12 }: AfStaticProps) 
 						style={{
 							display: "block",
 							marginBottom: 8,
-							color: "rgba(0, 0, 0, 0.88)",
+							color: "rgba(0, 0, 0, 0.45)",
 							fontSize: 14,
 						}}
 					>

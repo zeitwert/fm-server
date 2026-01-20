@@ -207,9 +207,9 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 
 	const rowSelection = selectable
 		? {
-			selectedRowKeys,
-			onChange: (keys: Key[]) => setSelectedRowKeys(keys),
-		}
+				selectedRowKeys,
+				onChange: (keys: Key[]) => setSelectedRowKeys(keys),
+			}
 		: undefined;
 
 	return (

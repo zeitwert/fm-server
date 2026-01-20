@@ -39,7 +39,7 @@ export function AfNumber({
 	prefix,
 	suffix,
 	step = 1,
-	align = "right",
+	align = "left",
 	readOnly,
 	disabled,
 	...fieldProps

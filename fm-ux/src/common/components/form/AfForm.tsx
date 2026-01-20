@@ -50,7 +50,7 @@ export function AfForm<T extends FieldValues = FieldValues>({
 	const handleSubmit = onSubmit
 		? form.handleSubmit(async (data) => {
 				await onSubmit(data);
-		  })
+			})
 		: undefined;
 
 	const content = onSubmit ? (

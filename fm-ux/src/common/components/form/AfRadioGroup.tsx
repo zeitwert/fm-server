@@ -48,7 +48,11 @@ export function AfRadioGroup({
 					const selectedOption = options.find((o) => o.id === currentValue);
 
 					if (readOnly) {
-						return <Typography.Text style={{ fontWeight: "600" }}>{selectedOption?.name || "\u00A0"}</Typography.Text>;
+						return (
+							<Typography.Text style={{ fontWeight: "600" }}>
+								{selectedOption?.name || "\u00A0"}
+							</Typography.Text>
+						);
 					}
 
 					return (

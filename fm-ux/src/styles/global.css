@@ -59,9 +59,10 @@ input:-webkit-autofill:active,
 	background: #f5f5f5;
 }
 
-/* Reduce form label font size by 1pt */
+/* Reduce form label font size by 1pt and match secondary text opacity */
 .ant-form-item .ant-form-item-label > label {
 	font-size: calc(1em - 1px);
+	color: rgba(0, 0, 0, 0.45);
 }
 
 /* Reduce vertical distance between label and form component content */
