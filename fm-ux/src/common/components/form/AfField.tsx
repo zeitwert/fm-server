@@ -43,6 +43,7 @@ export function AfField({
 					label && (
 						<span>
 							{label}
+							{required && <span style={{ color: "red", marginLeft: 2 }}>*</span>}
 							{helpText && (
 								<Tooltip title={helpText}>
 									<QuestionCircleOutlined style={{ marginLeft: 4, color: "#999" }} />
@@ -51,7 +52,7 @@ export function AfField({
 						</span>
 					)
 				}
-				required={required}
+				required={false}
 				validateStatus={errorMessage ? "error" : undefined}
 				help={errorMessage}
 				style={{ marginBottom: 16 }}

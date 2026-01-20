@@ -1,3 +1,11 @@
+---
+name: Add New Aggregate Base Field
+description: Add a new base field to an aggregate with clear rules for:
+- manual vs calculated fields
+- calculation modes
+- volatile vs persistent storage
+---
+
 # Add New Aggregate Base Field
 
 ## Goal

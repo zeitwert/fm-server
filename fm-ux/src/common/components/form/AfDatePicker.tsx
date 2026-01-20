@@ -56,7 +56,7 @@ export function AfDatePicker({
 
 					if (readOnly) {
 						return (
-							<Typography.Text>{dateValue ? dateValue.format(format) : "\u00A0"}</Typography.Text>
+							<Typography.Text style={{ fontWeight: "600" }}>{dateValue ? dateValue.format(format) : "\u00A0"}</Typography.Text>
 						);
 					}
 

@@ -1,3 +1,6 @@
+// Form wrapper
+export { AfForm } from "./AfForm";
+
 // Layout components
 export { AfField } from "./AfField";
 export { AfFieldGroup } from "./AfFieldGroup";

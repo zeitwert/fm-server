@@ -94,3 +94,10 @@ export interface SessionInfo {
 export const KERNEL_TENANT = "kernel";
 export const ADVISOR_TENANT = "advisor";
 export const COMMUNITY_TENANT = "community";
+
+// User role constants (matching CodeUserRole enum on server, lowercase IDs)
+export const ROLE_APP_ADMIN = "app_admin";
+export const ROLE_ADMIN = "admin";
+export const ROLE_SUPER_USER = "super_user";
+export const ROLE_USER = "user";
+export const ROLE_READ_ONLY = "read_only";

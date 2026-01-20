@@ -20,6 +20,8 @@ import { Route as ContactRouteImport } from "./routes/contact"
 import { Route as BuildingRouteImport } from "./routes/building"
 import { Route as AccountRouteImport } from "./routes/account"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as AccountIndexRouteImport } from "./routes/account.index"
+import { Route as AccountAccountIdRouteImport } from "./routes/account.$accountId"
 
 const UserRoute = UserRouteImport.update({
   id: "/user",
@@ -76,10 +78,20 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => AccountRoute,
+} as any)
+const AccountAccountIdRoute = AccountAccountIdRouteImport.update({
+  id: "/$accountId",
+  path: "/$accountId",
+  getParentRoute: () => AccountRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
-  "/account": typeof AccountRoute
+  "/account": typeof AccountRouteWithChildren
   "/building": typeof BuildingRoute
   "/contact": typeof ContactRoute
   "/document": typeof DocumentRoute
@@ -89,10 +101,11 @@ export interface FileRoutesByFullPath {
   "/task": typeof TaskRoute
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
+  "/account/$accountId": typeof AccountAccountIdRoute
+  "/account/": typeof AccountIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
-  "/account": typeof AccountRoute
   "/building": typeof BuildingRoute
   "/contact": typeof ContactRoute
   "/document": typeof DocumentRoute
@@ -102,11 +115,13 @@ export interface FileRoutesByTo {
   "/task": typeof TaskRoute
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
+  "/account/$accountId": typeof AccountAccountIdRoute
+  "/account": typeof AccountIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
-  "/account": typeof AccountRoute
+  "/account": typeof AccountRouteWithChildren
   "/building": typeof BuildingRoute
   "/contact": typeof ContactRoute
   "/document": typeof DocumentRoute
@@ -116,6 +131,8 @@ export interface FileRoutesById {
   "/task": typeof TaskRoute
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
+  "/account/$accountId": typeof AccountAccountIdRoute
+  "/account/": typeof AccountIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,10 +148,11 @@ export interface FileRouteTypes {
     | "/task"
     | "/tenant"
     | "/user"
+    | "/account/$accountId"
+    | "/account/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
-    | "/account"
     | "/building"
     | "/contact"
     | "/document"
@@ -144,6 +162,8 @@ export interface FileRouteTypes {
     | "/task"
     | "/tenant"
     | "/user"
+    | "/account/$accountId"
+    | "/account"
   id:
     | "__root__"
     | "/"
@@ -157,11 +177,13 @@ export interface FileRouteTypes {
     | "/task"
     | "/tenant"
     | "/user"
+    | "/account/$accountId"
+    | "/account/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
+  AccountRoute: typeof AccountRouteWithChildren
   BuildingRoute: typeof BuildingRoute
   ContactRoute: typeof ContactRoute
   DocumentRoute: typeof DocumentRoute
@@ -252,12 +274,39 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/account/": {
+      id: "/account/"
+      path: "/"
+      fullPath: "/account/"
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof AccountRoute
+    }
+    "/account/$accountId": {
+      id: "/account/$accountId"
+      path: "/$accountId"
+      fullPath: "/account/$accountId"
+      preLoaderRoute: typeof AccountAccountIdRouteImport
+      parentRoute: typeof AccountRoute
+    }
   }
 }
 
+interface AccountRouteChildren {
+  AccountAccountIdRoute: typeof AccountAccountIdRoute
+  AccountIndexRoute: typeof AccountIndexRoute
+}
+
+const AccountRouteChildren: AccountRouteChildren = {
+  AccountAccountIdRoute: AccountAccountIdRoute,
+  AccountIndexRoute: AccountIndexRoute,
+}
+
+const AccountRouteWithChildren =
+  AccountRoute._addFileChildren(AccountRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccountRoute: AccountRoute,
+  AccountRoute: AccountRouteWithChildren,
   BuildingRoute: BuildingRoute,
   ContactRoute: ContactRoute,
   DocumentRoute: DocumentRoute,

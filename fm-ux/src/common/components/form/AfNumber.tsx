@@ -62,7 +62,7 @@ export function AfNumber({
 				control={control}
 				render={({ field: { value, onChange, onBlur } }) =>
 					readOnly ? (
-						<Typography.Text>{formatValue(value as number | null | undefined)}</Typography.Text>
+						<Typography.Text style={{ fontWeight: "600" }}>{formatValue(value as number | null | undefined)}</Typography.Text>
 					) : (
 						<InputNumber
 							value={value as number | null | undefined}

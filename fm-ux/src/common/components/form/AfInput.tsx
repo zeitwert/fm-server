@@ -40,7 +40,7 @@ export function AfInput({
 				control={control}
 				render={({ field: { value, onChange, onBlur, ref } }) =>
 					readOnly ? (
-						<Typography.Text style={{ textAlign: align, display: "block" }}>
+						<Typography.Text style={{ textAlign: align, display: "block", fontWeight: "600" }}>
 							{(value as string) || "\u00A0"}
 						</Typography.Text>
 					) : (

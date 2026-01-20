@@ -9,8 +9,8 @@
  * - Header with title, icon, and custom actions
  */
 
-import { useState, useMemo } from "react";
-import { Card, Table, Button, Space, Modal, Typography, Empty, message } from "antd";
+import { useState, useMemo, useRef } from "react";
+import { Card, Table, Button, Space, Modal, Typography, Empty, message, Pagination } from "antd";
 import type { TableProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
@@ -138,6 +138,10 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 	const [isCreateOpen, setIsCreateOpen] = useState(false);
 	const [previewId, setPreviewId] = useState<string | null>(null);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+	const containerRef = useRef<HTMLDivElement>(null);
+	const headerRef = useRef<HTMLDivElement>(null);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [pageSize, setPageSize] = useState(20);
 
 	// -------------------------------------------------------------------------
 	// Data fetching
@@ -190,22 +194,50 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 		}
 	};
 
+	// Pagination logic
+	const paginatedItems = useMemo(() => {
+		const start = (currentPage - 1) * pageSize;
+		const end = start + pageSize;
+		return items.slice(start, end);
+	}, [items, currentPage, pageSize]);
+
 	// -------------------------------------------------------------------------
 	// Render
 	// -------------------------------------------------------------------------
 
 	const rowSelection = selectable
 		? {
-				selectedRowKeys,
-				onChange: (keys: Key[]) => setSelectedRowKeys(keys),
-			}
+			selectedRowKeys,
+			onChange: (keys: Key[]) => setSelectedRowKeys(keys),
+		}
 		: undefined;
 
 	return (
-		<>
+		<div
+			ref={containerRef}
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				height: "100%",
+				overflow: "hidden",
+			}}
+		>
 			{/* Header */}
-			<Card style={{ marginBottom: 16 }}>
+			<Card
+				style={{
+					marginBottom: 0,
+					background: "#f5f5f5",
+					borderBottomLeftRadius: 0,
+					borderBottomRightRadius: 0,
+				}}
+				styles={{
+					body: {
+						padding: "8px 16px",
+					},
+				}}
+			>
 				<div
+					ref={headerRef}
 					style={{
 						display: "flex",
 						justifyContent: "space-between",
@@ -261,32 +293,90 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 			</Card>
 
 			{/* Table */}
-			<Card>
+			<Card
+				style={{
+					flex: 1,
+					minHeight: 0,
+					display: "flex",
+					flexDirection: "column",
+					borderTopLeftRadius: 0,
+					borderTopRightRadius: 0,
+					margin: 0,
+				}}
+				styles={{
+					body: {
+						flex: 1,
+						minHeight: 0,
+						display: "flex",
+						flexDirection: "column",
+						padding: 0,
+						overflow: "hidden",
+					},
+				}}
+			>
 				{isError ? (
 					<Empty
 						description={`Fehler beim Laden der ${entityLabel}`}
 						image={Empty.PRESENTED_IMAGE_SIMPLE}
 					/>
 				) : (
-					<Table<T>
-						columns={columns}
-						dataSource={items}
-						rowKey={rowKey}
-						loading={isLoading}
-						rowSelection={rowSelection}
-						onChange={handleTableChange}
-						sortDirections={["ascend", "descend"]}
-						pagination={{
-							showSizeChanger: true,
-							showTotal: (total, range) => `${range[0]}-${range[1]} von ${total}`,
-							defaultPageSize: 20,
-							pageSizeOptions: ["10", "20", "50", "100"],
+					<div
+						style={{
+							flex: 1,
+							minHeight: 0,
+							display: "flex",
+							flexDirection: "column",
+							overflow: "hidden",
+							position: "relative",
 						}}
-						onRow={(record) => ({
-							onClick: () => handleRowClick(record),
-							style: { cursor: getDetailPath || PreviewComponent ? "pointer" : undefined },
-						})}
-					/>
+						className="items-page-table-wrapper"
+					>
+						<div
+							style={{
+								flex: 1,
+								minHeight: 0,
+								overflow: "auto",
+							}}
+						>
+							<Table<T>
+								columns={columns}
+								dataSource={paginatedItems}
+								rowKey={rowKey}
+								loading={isLoading}
+								rowSelection={rowSelection}
+								onChange={handleTableChange}
+								sortDirections={["ascend", "descend"]}
+								pagination={false}
+								onRow={(record) => ({
+									onClick: () => handleRowClick(record),
+									style: { cursor: getDetailPath || PreviewComponent ? "pointer" : undefined },
+								})}
+							/>
+						</div>
+						<div
+							style={{
+								padding: "16px",
+								borderTop: "1px solid #f0f0f0",
+								display: "flex",
+								justifyContent: "flex-end",
+								flexShrink: 0,
+								background: "#ffffff",
+							}}
+						>
+							<Pagination
+								current={currentPage}
+								total={items.length}
+								pageSize={pageSize}
+								showSizeChanger
+								showTotal={(total, range) => `${range[0]}-${range[1]} von ${total}`}
+								pageSizeOptions={["10", "20", "50", "100"]}
+								onChange={(page, size) => {
+									setCurrentPage(page);
+									setPageSize(size);
+								}}
+							/>
+						</div>
+					</div>
 				)}
 			</Card>
 
@@ -316,6 +406,6 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 					<PreviewComponent id={previewId} onClose={() => setPreviewId(null)} />
 				</PreviewDrawer>
 			)}
-		</>
+		</div>
 	);
 }

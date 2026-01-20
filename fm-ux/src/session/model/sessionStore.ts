@@ -8,9 +8,15 @@ import {
 } from "../../common/api/client";
 import { changeLanguage } from "../../i18n";
 import {
+	ADVISOR_TENANT,
 	Enumerated,
+	KERNEL_TENANT,
 	LoginTenantInfo,
 	LoginUserInfo,
+	ROLE_ADMIN,
+	ROLE_APP_ADMIN,
+	ROLE_READ_ONLY,
+	ROLE_SUPER_USER,
 	SessionInfo,
 	SessionState,
 	TypedEnumerated,
@@ -32,6 +38,20 @@ interface SessionStore {
 	needsAccountSelection: () => boolean;
 	isSessionReady: () => boolean;
 	availableAccounts: () => Enumerated[];
+
+	// Permission helpers
+	/** True if user has APP_ADMIN or ADMIN role */
+	isAdmin: () => boolean;
+	/** True if user has APP_ADMIN role (kernel tenant admin) */
+	isAppAdmin: () => boolean;
+	/** True if current tenant is the kernel tenant */
+	isKernelTenant: () => boolean;
+	/** True if current tenant is an advisor tenant */
+	isAdvisorTenant: () => boolean;
+	/** True if user has SUPER_USER role */
+	hasSuperUserRole: () => boolean;
+	/** True if user has READ_ONLY role */
+	hasReadOnlyRole: () => boolean;
 
 	// Actions
 	login: (email: string, password: string) => Promise<void>;
@@ -89,6 +109,38 @@ export const useSessionStore = create<SessionStore>((set, get) => ({
 	availableAccounts: () => {
 		const { tenantInfo } = get();
 		return tenantInfo?.accounts ?? [];
+	},
+
+	// Permission helpers
+	isAdmin: () => {
+		const { sessionInfo } = get();
+		const roleId = sessionInfo?.user?.role?.id;
+		return roleId === ROLE_APP_ADMIN || roleId === ROLE_ADMIN;
+	},
+
+	isAppAdmin: () => {
+		const { sessionInfo } = get();
+		return sessionInfo?.user?.role?.id === ROLE_APP_ADMIN;
+	},
+
+	isKernelTenant: () => {
+		const { sessionInfo } = get();
+		return sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
+	},
+
+	isAdvisorTenant: () => {
+		const { sessionInfo } = get();
+		return sessionInfo?.tenant?.tenantType?.id === ADVISOR_TENANT;
+	},
+
+	hasSuperUserRole: () => {
+		const { sessionInfo } = get();
+		return sessionInfo?.user?.role?.id === ROLE_SUPER_USER;
+	},
+
+	hasReadOnlyRole: () => {
+		const { sessionInfo } = get();
+		return sessionInfo?.user?.role?.id === ROLE_READ_ONLY;
 	},
 
 	// Actions
