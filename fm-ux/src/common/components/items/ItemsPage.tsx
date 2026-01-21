@@ -10,9 +10,9 @@
  */
 
 import { useState, useMemo, useRef } from "react";
-import { Card, Table, Button, Space, Modal, Typography, Empty, message, Pagination } from "antd";
+import { Card, Table, Button, Modal, Typography, Empty, message, Pagination } from "antd";
 import type { TableProps } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -89,6 +89,8 @@ export interface ItemsPageProps<T extends { id: string }> {
 	// Preview (optional side panel)
 	/** Component for previewing an entity */
 	PreviewComponent?: React.ComponentType<{ id: string; onClose: () => void }>;
+	/** Whether to show a preview column (defaults to true when PreviewComponent is provided) */
+	showPreviewColumn?: boolean;
 
 	// Navigation
 	/** Callback when a row is clicked */
@@ -123,6 +125,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 		canCreate = false,
 		CreateForm,
 		PreviewComponent,
+		showPreviewColumn,
 		onRowClick,
 		getDetailPath,
 		selectable = false,
@@ -167,6 +170,45 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 		[items, selectedRowKeys]
 	);
 
+	// Build columns with optional preview icon in the first column
+	const finalColumns = useMemo(() => {
+		if (!PreviewComponent || showPreviewColumn === false) {
+			return columns;
+		}
+
+		const [first, ...rest] = columns;
+
+		// Enhance the first column to include the preview icon on the right
+		const firstColumnWithPreview: ColumnType<T> = {
+			...first,
+			render: (value, record, index) => {
+				// Get the original render content
+				const originalContent = first.render
+					? first.render(value, record, index)
+					: value;
+
+				return (
+					<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+						<span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{originalContent}</span>
+						<Button
+							type="text"
+							size="small"
+							icon={<EyeOutlined />}
+							onClick={(e) => {
+								e.stopPropagation();
+								setPreviewId(record.id);
+							}}
+							aria-label="common:preview"
+							style={{ flexShrink: 0 }}
+						/>
+					</div>
+				);
+			},
+		};
+
+		return [firstColumnWithPreview, ...rest];
+	}, [columns, PreviewComponent, showPreviewColumn]);
+
 	// -------------------------------------------------------------------------
 	// Handlers
 	// -------------------------------------------------------------------------
@@ -176,8 +218,6 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 			onRowClick(record);
 		} else if (getDetailPath) {
 			navigate({ to: getDetailPath(record) });
-		} else if (PreviewComponent) {
-			setPreviewId(record.id);
 		}
 	};
 
@@ -229,23 +269,27 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 					},
 				}}
 			>
-				<div ref={headerRef} className="af-flex-between">
-					<Space>
+				{/* Main header row */}
+				<div
+					ref={headerRef}
+					style={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						marginTop: 12,
+					}}
+				>
+					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
 						{icon && <span style={styles.primaryIcon}>{icon}</span>}
-						<div>
-							<Title level={4} className="af-mb-0">
-								{entityLabel}
-							</Title>
-							<Text type="secondary">
-								{items.length} {items.length === 1 ? entityLabelSingular : entityLabel}
-							</Text>
-						</div>
-					</Space>
+						<Title level={4} style={{ margin: 0, lineHeight: "24px" }}>
+							{entityLabel}
+						</Title>
+					</div>
 
-					<Space>
+					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
 						{/* Bulk actions */}
 						{selectedRowKeys.length > 0 && bulkActions.length > 0 && (
-							<Space>
+							<>
 								<Text type="secondary">{selectedRowKeys.length} ausgewählt</Text>
 								{bulkActions.map((action) => (
 									<Button
@@ -257,7 +301,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 										{action.label}
 									</Button>
 								))}
-							</Space>
+							</>
 						)}
 
 						{/* Custom header actions */}
@@ -274,8 +318,12 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 								{t("create")} {entityLabelSingular}
 							</Button>
 						)}
-					</Space>
+					</div>
 				</div>
+				{/* Count row */}
+				<Text type="secondary" style={{ marginLeft: 32 }}>
+					{items.length} {items.length === 1 ? entityLabelSingular : entityLabel}
+				</Text>
 			</Card>
 
 			{/* Table */}
@@ -321,7 +369,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 							}}
 						>
 							<Table<T>
-								columns={columns}
+								columns={finalColumns}
 								dataSource={paginatedItems}
 								rowKey={rowKey}
 								loading={isLoading}

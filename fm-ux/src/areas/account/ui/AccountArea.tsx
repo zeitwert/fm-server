@@ -5,6 +5,7 @@ import { ItemsPage } from "../../../common/components/items";
 import { accountListApi } from "../api";
 import { accountKeys } from "../queries";
 import { AccountCreationForm } from "./forms/AccountCreationForm";
+import { AccountPreview } from "./AccountPreview";
 import type { AccountListItem } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
 import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
@@ -62,6 +63,7 @@ export function AccountArea() {
 			columns={columns}
 			canCreate={canCreateAccount(userRole)}
 			CreateForm={AccountCreationForm}
+			PreviewComponent={AccountPreview}
 			getDetailPath={(record) => `/account/${record.id}`}
 		/>
 	);

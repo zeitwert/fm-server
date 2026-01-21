@@ -31,5 +31,6 @@
 	"completeTask": "Mark as complete",
 	"overdue": "Overdue",
 	"completed": "Completed",
-	"noActivity": "No activity"
+	"noActivity": "No activity",
+	"preview": "Preview"
 }

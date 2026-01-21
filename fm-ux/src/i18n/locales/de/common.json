@@ -31,5 +31,6 @@
 	"completeTask": "Als erledigt markieren",
 	"overdue": "Überfällig",
 	"completed": "Erledigt",
-	"noActivity": "Keine Aktivität"
+	"noActivity": "Keine Aktivität",
+	"preview": "Vorschau"
 }

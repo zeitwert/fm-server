@@ -59,6 +59,21 @@ input:-webkit-autofill:active,
 	background: #f5f5f5;
 }
 
+/* Row hover - light blue background */
+.items-page-table-wrapper .ant-table-tbody > tr:hover > td {
+	background: #e6f4ff !important; /* Ant Design's colorPrimaryBg */
+}
+
+/* Text cells appear as links on row hover - blue color */
+.items-page-table-wrapper .ant-table-tbody > tr:hover > td {
+	color: var(--ant-color-primary, #1677ff);
+}
+
+/* Underline only when hovering the text itself */
+.items-page-table-wrapper .ant-table-tbody > tr > td:hover {
+	text-decoration: underline;
+}
+
 /* Reduce form label font size by 1pt and match secondary text opacity */
 .ant-form-item .ant-form-item-label > label {
 	font-size: calc(1em - 1px);

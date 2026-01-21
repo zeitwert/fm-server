@@ -49,6 +49,8 @@ export function useStyles() {
 		primaryIcon: {
 			fontSize: 24,
 			color: token.colorPrimary,
+			display: "inline-flex",
+			alignItems: "center",
 		} as CSSProperties,
 
 		/**

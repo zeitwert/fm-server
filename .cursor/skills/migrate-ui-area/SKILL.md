@@ -41,6 +41,7 @@ fm-ux/src/areas/{entity}/
 └── ui/
     ├── {Entity}Area.tsx           # List view (ItemsPage)
     ├── {Entity}Page.tsx           # Detail view
+    ├── {Entity}Preview.tsx        # Preview drawer (optional)
     └── forms/
         ├── {Entity}MainForm.tsx       # Main form tab
         └── {Entity}CreationForm.tsx   # Creation modal form
@@ -224,6 +225,7 @@ import { ItemsPage } from "../../../common/components/items";
 import { {entity}ListApi } from "../api";
 import { {entity}Keys } from "../queries";
 import { {Entity}CreationForm } from "./forms/{Entity}CreationForm";
+import { {Entity}Preview } from "./{Entity}Preview";
 import type { {Entity}ListItem } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
 import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
@@ -268,13 +270,159 @@ export function {Entity}Area() {
       columns={columns}
       canCreate={canCreate(userRole)}
       CreateForm={{Entity}CreationForm}
+      PreviewComponent={{Entity}Preview}
       getDetailPath={(record) => `/{entity}/${record.id}`}
     />
   );
 }
 ```
 
-### 6. Detail View (`ui/{Entity}Page.tsx`)
+### 6. Preview Panel (`ui/{Entity}Preview.tsx`) - Optional
+
+When `PreviewComponent` is provided to `ItemsPage`, an eye icon column appears after the first column. Clicking it opens a preview drawer; clicking elsewhere on the row navigates to the detail page.
+
+The preview component receives `id` and `onClose` props and should:
+- Fetch the full entity data using the query hook
+- Display a summary of key information (logo/image, name, key fields)
+- Provide an "Edit" button that navigates to the detail page
+
+```typescript
+import { useEffect, useState } from "react";
+import { Button, Descriptions, Spin, Result, Space, Typography, theme } from "antd";
+import { {Icon}Outlined, EditOutlined } from "@ant-design/icons";
+import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
+import { use{Entity} } from "../queries";
+import { getLogoUrl } from "../../../common/api/client";
+
+const { Text, Paragraph } = Typography;
+const { useToken } = theme;
+
+interface {Entity}PreviewProps {
+  id: string;
+  onClose: () => void;
+}
+
+export function {Entity}Preview({ id, onClose }: {Entity}PreviewProps) {
+  const { t } = useTranslation("{entity}");
+  const { t: tc } = useTranslation("common");
+  const navigate = useNavigate();
+  const { token } = useToken();
+  const [logoError, setLogoError] = useState(false);
+
+  const { data: entity, isLoading, isError } = use{Entity}(id);
+
+  // Reset logo error when entity changes
+  useEffect(() => {
+    setLogoError(false);
+  }, [id]);
+
+  const handleEdit = () => {
+    onClose();
+    navigate({ to: `/{entity}/${id}` });
+  };
+
+  if (isLoading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", padding: 40 }}>
+        <Spin />
+      </div>
+    );
+  }
+
+  if (isError || !entity) {
+    return <Result status="error" title={t("notFound")} />;
+  }
+
+  // Use getLogoUrl if entity has a logo, otherwise show placeholder
+  const logoUrl = getLogoUrl("{entity}", id);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Logo/Image - show placeholder if no logo or error */}
+      <div style={{ display: "flex", justifyContent: "center", padding: 16 }}>
+        {!logoError ? (
+          <img
+            src={logoUrl}
+            alt={entity.name}
+            style={{
+              width: 120,
+              height: 120,
+              borderRadius: 8,
+              objectFit: "contain",
+              border: `1px solid ${token.colorBorderSecondary}`,
+              background: token.colorBgLayout,
+            }}
+            onError={() => setLogoError(true)}
+          />
+        ) : (
+          <div
+            style={{
+              width: 120,
+              height: 120,
+              borderRadius: 8,
+              border: `1px solid ${token.colorBorderSecondary}`,
+              background: token.colorBgLayout,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <{Icon}Outlined style={{ fontSize: 48, color: token.colorTextQuaternary }} />
+          </div>
+        )}
+      </div>
+
+      {/* Name */}
+      <div style={{ textAlign: "center" }}>
+        <Text strong style={{ fontSize: 18 }}>
+          {entity.name}
+        </Text>
+      </div>
+
+      {/* Details */}
+      <Descriptions column={1} size="small">
+        <Descriptions.Item label={t("status")}>
+          {entity.status?.name || "-"}
+        </Descriptions.Item>
+        <Descriptions.Item label={t("owner")}>
+          {entity.owner?.name || "-"}
+        </Descriptions.Item>
+      </Descriptions>
+
+      {/* Description (if exists) */}
+      {entity.description && (
+        <div>
+          <Text type="secondary" style={{ fontSize: 12 }}>
+            {t("description")}
+          </Text>
+          <Paragraph
+            style={{ marginTop: 4, marginBottom: 0 }}
+            ellipsis={{ rows: 3, expandable: true }}
+          >
+            {entity.description}
+          </Paragraph>
+        </div>
+      )}
+
+      {/* Actions */}
+      <Space style={{ marginTop: 8 }}>
+        <Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>
+          {tc("edit")}
+        </Button>
+      </Space>
+    </div>
+  );
+}
+```
+
+**Key points:**
+- The `getLogoUrl()` function from `common/api/client` builds the logo URL for entities that have a logo relationship
+- Use `onError` on the image to fall back to a placeholder icon when no logo exists
+- The "Edit" button should call `onClose()` before navigating to prevent the drawer from staying open
+- You can disable the preview column by passing `showPreviewColumn={false}` to `ItemsPage`
+
+### 7. Detail View (`ui/{Entity}Page.tsx`)
 
 ```typescript
 import { Card, Spin, Result, Tabs } from "antd";
@@ -424,7 +572,7 @@ export function {Entity}Page({ {entity}Id }: {Entity}PageProps) {
 }
 ```
 
-### 7. Forms (`ui/forms/`)
+### 8. Forms (`ui/forms/`)
 
 #### Main Form (`{Entity}MainForm.tsx`)
 
@@ -545,7 +693,7 @@ export function {Entity}CreationForm({ onSuccess, onCancel }: CreateFormProps) {
 }
 ```
 
-### 8. Routes
+### 9. Routes
 
 TanStack Router uses file-based routing. Create three route files:
 
@@ -594,7 +742,7 @@ function {Entity}PageRoute() {
 }
 ```
 
-### 9. Translations
+### 10. Translations
 
 #### `i18n/locales/de/{entity}.json` and `i18n/locales/en/{entity}.json`
 
