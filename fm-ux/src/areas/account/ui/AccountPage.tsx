@@ -1,4 +1,5 @@
-import { Card, Spin, Result, Tabs } from "antd";
+import { useState } from "react";
+import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
 import { BankOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
@@ -15,6 +16,7 @@ import type { Activity } from "../../../common/components/related/ActivityTimeli
 import { accountApi } from "../api";
 import { accountFormSchema, type AccountFormInput } from "../schemas";
 import { AccountMainForm } from "./forms/AccountMainForm";
+import { ContactCreationForm } from "../../contact/ui/forms/ContactCreationForm";
 import type { Account } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
 import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
@@ -29,9 +31,11 @@ function canEditAccount(role?: string): boolean {
 
 export function AccountPage({ accountId }: AccountPageProps) {
 	const { t } = useTranslation("account");
+	const { t: tContact } = useTranslation("contact");
 	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id;
+	const [isContactCreateOpen, setIsContactCreateOpen] = useState(false);
 
 	const {
 		entity: account,
@@ -92,6 +96,11 @@ export function AccountPage({ accountId }: AccountPageProps) {
 						content: account.mainContact?.name || "-",
 					},
 				]}
+				actions={
+					<Button onClick={() => setIsContactCreateOpen(true)}>
+						{tContact("newContact")}
+					</Button>
+				}
 			/>
 
 			<ItemPageLayout
@@ -142,6 +151,20 @@ export function AccountPage({ accountId }: AccountPageProps) {
 					</AfForm>
 				</Card>
 			</ItemPageLayout>
+
+			<Modal
+				open={isContactCreateOpen}
+				title={`${tContact("entitySingular")} erstellen`}
+				onCancel={() => setIsContactCreateOpen(false)}
+				footer={null}
+				destroyOnHidden
+			>
+				<ContactCreationForm
+					account={{ id: account.id, name: account.name }}
+					onSuccess={() => setIsContactCreateOpen(false)}
+					onCancel={() => setIsContactCreateOpen(false)}
+				/>
+			</Modal>
 		</div>
 	);
 }

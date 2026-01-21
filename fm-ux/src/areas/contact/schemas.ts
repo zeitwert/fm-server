@@ -10,6 +10,7 @@ export interface ContactCreationFormInput {
 	mobile?: string;
 	salutation: Enumerated | null;
 	contactRole?: Enumerated | null;
+	account?: Enumerated | null;
 	tenant: Enumerated | null;
 	owner: Enumerated | null;
 }
@@ -22,6 +23,7 @@ export const contactCreationSchema = z.object({
 	mobile: z.string().optional(),
 	salutation: enumeratedSchema,
 	contactRole: enumeratedSchema.optional().nullable(),
+	account: enumeratedSchema.optional().nullable(),
 	tenant: enumeratedSchema,
 	owner: enumeratedSchema,
 });

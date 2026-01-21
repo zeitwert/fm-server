@@ -63,7 +63,7 @@ export function AfForm<T extends FieldValues = FieldValues>({
 
 	return (
 		<FormProvider {...form}>
-			<Form layout={layout} {...formProps}>
+			<Form layout={layout} component={onSubmit ? false : undefined} {...formProps}>
 				{content}
 			</Form>
 		</FormProvider>

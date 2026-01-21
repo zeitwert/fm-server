@@ -1,6 +1,8 @@
 {
 	"contact": "Contact",
 	"contacts": "Contacts",
+	"entitySingular": "Contact",
+	"newContact": "New Contact",
 	"name": "Name",
 	"firstName": "First Name",
 	"lastName": "Last Name",
