@@ -1,14 +1,7 @@
 import { z } from "zod";
 import type { Enumerated } from "../../common/types";
 import type { AccountContact } from "./types";
-import { displayOnly } from "../../common/utils/zodMeta";
-
-const enumeratedSchema = z
-	.object({
-		id: z.string(),
-		name: z.string(),
-	})
-	.nullable();
+import { displayOnly, enumeratedSchema } from "../../common/utils/zodMeta";
 
 export interface AccountCreationFormInput {
 	name: string;

@@ -5,7 +5,22 @@
  * This makes the schema the single source of truth for all field configuration.
  */
 
-import type { z } from "zod";
+import { z } from "zod";
+
+// ============================================================================
+// Shared Schemas
+// ============================================================================
+
+/**
+ * Zod schema for Enumerated type (code tables and entity references).
+ * Use in form schemas for fields typed as `Enumerated | null`.
+ */
+export const enumeratedSchema = z
+	.object({
+		id: z.string(),
+		name: z.string(),
+	})
+	.nullable();
 
 // ============================================================================
 // Types

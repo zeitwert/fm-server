@@ -1,5 +1,6 @@
 import type { Enumerated } from "../../common/types";
 import type { EntityMeta } from "../../common/api/jsonapi";
+import type { Contact } from "../contact/types";
 
 export interface AccountContact {
 	id: string;
@@ -18,7 +19,7 @@ export interface Account {
 	clientSegment?: Enumerated;
 	tenant: Enumerated;
 	owner: Enumerated;
-	mainContact?: Enumerated;
+	mainContact?: Contact;
 	inflationRate?: number;
 	discountRate?: number;
 	logo?: {
@@ -36,7 +37,7 @@ export interface AccountListItem {
 	clientSegment?: Enumerated;
 	tenant: Enumerated;
 	owner: Enumerated;
-	mainContact?: Enumerated;
+	mainContact?: Contact;
 }
 
 export interface AccountFormData {

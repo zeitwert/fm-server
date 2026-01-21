@@ -34,21 +34,32 @@ export function AccountArea() {
 			sorter: (a, b) => (a.accountType?.name ?? "").localeCompare(b.accountType?.name ?? ""),
 		},
 		{
-			title: t("clientSegment"),
-			dataIndex: ["clientSegment", "name"],
-			key: "clientSegment",
-			sorter: (a, b) => (a.clientSegment?.name ?? "").localeCompare(b.clientSegment?.name ?? ""),
+			title: t("tenant"),
+			dataIndex: ["tenant", "name"],
+			key: "tenant",
+			sorter: (a, b) => (a.tenant?.name ?? "").localeCompare(b.tenant?.name ?? ""),
+		},
+		{
+			title: t("mainContact"),
+			dataIndex: ["mainContact", "caption"],
+			key: "mainContact",
+			sorter: (a, b) => (a.mainContact?.caption ?? "").localeCompare(b.mainContact?.caption ?? ""),
+		},
+		{
+			title: t("contactEmail"),
+			dataIndex: ["mainContact", "email"],
+			key: "email",
+		},
+		{
+			title: t("contactPhone"),
+			key: "phone",
+			render: (_, record) => record.mainContact?.mobile || record.mainContact?.phone,
 		},
 		{
 			title: t("owner"),
 			dataIndex: ["owner", "name"],
 			key: "owner",
 			sorter: (a, b) => (a.owner?.name ?? "").localeCompare(b.owner?.name ?? ""),
-		},
-		{
-			title: t("mainContact"),
-			dataIndex: ["mainContact", "name"],
-			key: "mainContact",
 		},
 	];
 

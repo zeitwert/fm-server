@@ -27,6 +27,75 @@ An entity area consists of:
 
 Only add comments when they explain *why* something is done a certain way, not *what* the code does.
 
+## Discovering Entity Fields
+
+Before implementing the UI, gather field definitions from these sources:
+
+### 1. List Columns (`fm-domain`)
+
+**Location:** `fm-domain/src/main/resources/config/t0/{module}/datamarts/{entities}/layouts/default.json`
+
+Primary source for list view columns. The `header` array defines which columns to show:
+
+```json
+{
+  "header": [
+    { "id": "name", "label": "Name", "value": "name" },
+    { "id": "accountType", "label": "Type", "value": "accountType" },
+    { "id": "owner", "label": "Owner", "value": "owner" }
+  ]
+}
+```
+
+Map these to `columns` in `{Entity}Area.tsx`. Note: nested values like `accountType` (which maps to `accountType.name` in the data section) should use `dataIndex: ["accountType", "name"]` in the column definition.
+
+### 2. Form Definitions (`fm-ui`)
+
+**Location:** `fm-ui/src/areas/{entity}/ui/forms/{Entity}Form.ts`
+
+Primary source for form field list, types, required flags, and data sources:
+
+| Field Type | TypeScript Type | UI Component |
+|------------|-----------------|--------------|
+| `TextField` | `string` | `AfInput` / `AfTextArea` |
+| `EnumeratedField` | `Enumerated` | `AfSelect` (code table) |
+| `AggregateField` | `Enumerated` | `AfSelect` (relationship) |
+| `NumberField` | `number` | `AfNumber` |
+| `DateField` | `string` (ISO) | `AfDatePicker` |
+| `IdField` | `string` | (display only) |
+
+### 3. API Implementation (`fm-ui`)
+
+**Location:** `fm-ui/src/@zeitwert/ui-model/fm/{entity}/service/impl/{Entity}ApiImpl.ts`
+
+Primary source for JSON:API configuration (module, path, includes, relations).
+
+Copy these values directly to your new `api.ts`:
+- `MODULE` → `module`
+- `PATH` → `path`
+- `TYPE` → `type`
+- `INCLUDES` → `includes`
+- `RELATIONS` → `relations`
+
+### Workflow
+
+1. **Check layout config** (`fm-domain/.../layouts/default.json`) - Columns for list view
+2. **Check `{Entity}Form.ts`** - Form fields, types, required flags, and dropdown sources
+3. **Check `{Entity}ApiImpl.ts`** - Copy module, path, includes, and relations for the API
+
+### Troubleshooting: Server Sources
+
+If tests fail or you need to verify field definitions, check these server files:
+
+**`{Entity}Impl.kt`** (`fm-domain/src/main/java/io/zeitwert/fm/{module}/model/impl/`)
+- Authoritative field definitions using property delegates
+- `baseProperty<T>` for primitives, `enumProperty<T>` for code tables, `referenceProperty<T>` for relationships
+
+**`{Entity}DtoAdapter.kt`** (`fm-domain/src/main/java/io/zeitwert/fm/{module}/adapter/jsonapi/impl/`)
+- `config.relationship()` defines JSON:API relationships
+- `config.field()` defines field name mappings or custom getters/setters
+- `config.exclude()` hides fields from the DTO
+
 ## Directory Structure
 
 Create the following structure under `fm-ux/src/areas/{entity}/`:
@@ -58,660 +127,145 @@ fm-ux/src/routes/
 
 ## Step-by-Step Implementation
 
+The **account area** is the canonical reference implementation. For each file below, read the corresponding account file and adapt it to your entity.
+
 ### 1. Types (`types.ts`)
 
-```typescript
-import type { Enumerated } from "../../common/types";
-import type { EntityMeta } from "../../common/api/jsonapi";
+Defines TypeScript interfaces for the entity, list item, and form data.
 
-export interface {Entity} {
-  id: string;
-  meta?: EntityMeta;
-  
-  name: string;
-  description?: string;
-  status: Enumerated;
-  owner: Enumerated;
-  tenant: Enumerated;
-}
+**Reference:** `fm-ux/src/areas/account/types.ts`
 
-export interface {Entity}ListItem {
-  id: string;
-  name: string;
-  status: Enumerated;
-  owner: Enumerated;
-}
-
-export interface {Entity}FormInput {
-  name: string;
-  description?: string | null;
-  status: Enumerated | null;
-  owner: Enumerated | null;
-  tenant: Enumerated | null;
-}
-```
+**Adaptation notes:**
+- Replace `Account*` with your entity name
+- Add/remove fields based on field discovery from fm-ui
+- Include `EntityMeta` for optimistic locking support
+- Define separate interfaces: full entity, list item (fewer fields), and form data
 
 ### 2. Schemas (`schemas.ts`)
 
-Create Zod schemas for form validation. Avoid `.refine()` on nullable schemas due to Zod 4 compatibility; validate required fields at submit time instead.
+Zod validation schemas for form validation.
 
-**Display-only fields**: Use the `displayOnly()` helper from `common/utils/zodMeta` to mark fields that should be shown in the form but excluded from submission. This makes the schema the single source of truth.
+**Reference:** `fm-ux/src/areas/account/schemas.ts`
 
-```typescript
-import { z } from "zod";
-import type { Enumerated } from "../../common/types";
-import { displayOnly } from "../../common/utils/zodMeta";
-
-const enumeratedSchema = z
-  .object({
-    id: z.string(),
-    name: z.string(),
-  })
-  .nullable();
-
-export interface {Entity}FormInput {
-  name: string;
-  description?: string | null;
-  status: Enumerated | null;
-  owner: Enumerated | null;
-  // Display-only fields (not validated, not submitted)
-  relatedItems?: RelatedItem[];
-}
-
-export const {entity}FormSchema = z.object({
-  name: z.string().min(1, "Name ist erforderlich"),
-  description: z.string().optional().nullable(),
-  status: enumeratedSchema,
-  owner: enumeratedSchema,
-  // Display-only: excluded from submission via schema metadata
-  relatedItems: displayOnly(z.array(z.any()).optional()),
-});
-
-export type {Entity}FormData = z.infer<typeof {entity}FormSchema>;
-```
+**Adaptation notes:**
+- Create both `{entity}CreationSchema` and `{entity}FormSchema` (separate schemas for creation vs editing)
+- Import `enumeratedSchema` and `displayOnly` from `common/utils/zodMeta`
+- Match required flags from fm-ui field definitions
 
 ### 3. API (`api.ts`)
 
-Use the `createEntityApi` factory for CRUD operations. Only relationships go in `includes` and `relations`; code tables come inline as attributes.
+Entity API using `createEntityApi` factory for CRUD operations.
 
-```typescript
-import { createEntityApi } from "../../common/api/entityApi";
-import type { {Entity}, {Entity}ListItem } from "./types";
+**Reference:** `fm-ux/src/areas/account/api.ts`
 
-export const {entity}Api = createEntityApi<{Entity}>({
-  module: "{module}",
-  path: "{entities}",
-  type: "{entity}",
-  includes: "include[{entity}]=mainContact",
-  relations: {
-    mainContact: "contact",
-  },
-});
-
-export const {entity}ListApi = createEntityApi<{Entity}ListItem>({
-  module: "{module}",
-  path: "{entities}",
-  type: "{entity}",
-  includes: "include[{entity}]=mainContact",
-  relations: {
-    mainContact: "contact",
-  },
-});
-```
+**Adaptation notes:**
+- Copy module, path, type, includes, and relations from `{Entity}ApiImpl.ts` in fm-ui
+- Create both `{entity}Api` (full entity) and `{entity}ListApi` (list with fewer includes)
+- Only true relationships go in `includes` and `relations` (see "Code Tables vs Relationships" gotcha)
 
 ### 4. Query Hooks (`queries.ts`)
 
-```typescript
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
-import { {entity}Api, {entity}ListApi } from "./api";
-import type { {Entity} } from "./types";
-import type { EntityMeta } from "../../common/api/jsonapi";
+TanStack Query hooks for data fetching and mutations.
 
-export const {entity}Keys = {
-  all: ["{entity}"] as const,
-  lists: () => [...{entity}Keys.all, "list"] as const,
-  list: (params?: string) => [...{entity}Keys.lists(), params] as const,
-  details: () => [...{entity}Keys.all, "detail"] as const,
-  detail: (id: string) => [...{entity}Keys.details(), id] as const,
-};
+**Reference:** `fm-ux/src/areas/account/queries.ts`
 
-export function use{Entity}List() {
-  return useQuery({
-    queryKey: {entity}Keys.lists(),
-    queryFn: () => {entity}ListApi.list(),
-  });
-}
-
-export function use{Entity}(id: string) {
-  return useQuery({
-    queryKey: {entity}Keys.detail(id),
-    queryFn: () => {entity}Api.get(id),
-    enabled: !!id,
-  });
-}
-
-export function useCreate{Entity}() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: Omit<{Entity}, "id">) => {entity}Api.create(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
-      message.success("{Entity} erstellt");
-    },
-    onError: (error: Error & { detail?: string }) => {
-      message.error(error.detail || `Fehler: ${error.message}`);
-    },
-  });
-}
-
-export function useUpdate{Entity}() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (data: Partial<{Entity}> & { id: string; meta?: EntityMeta }) =>
-      {entity}Api.update(data),
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: {entity}Keys.detail(variables.id) });
-      queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
-      message.success("{Entity} gespeichert");
-    },
-    onError: (error: Error & { detail?: string }) => {
-      message.error(error.detail || `Fehler: ${error.message}`);
-    },
-  });
-}
-```
+**Adaptation notes:**
+- Replace entity name in query keys, function names, and success messages
+- Include `useCreate{Entity}`, `useUpdate{Entity}`, optionally `useDelete{Entity}`
+- Add `get{Entity}QueryOptions` for prefetching if needed
+- Use German messages for success/error notifications
 
 ### 5. List View (`ui/{Entity}Area.tsx`)
 
-```typescript
-import { {Icon}Outlined } from "@ant-design/icons";
-import type { ColumnType } from "antd/es/table";
-import { useTranslation } from "react-i18next";
-import { ItemsPage } from "../../../common/components/items";
-import { {entity}ListApi } from "../api";
-import { {entity}Keys } from "../queries";
-import { {Entity}CreationForm } from "./forms/{Entity}CreationForm";
-import { {Entity}Preview } from "./{Entity}Preview";
-import type { {Entity}ListItem } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
+Table view using `ItemsPage` component with create modal.
 
-function canCreate(role?: string): boolean {
-  return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
-}
+**Reference:** `fm-ux/src/areas/account/ui/AccountArea.tsx`
 
-export function {Entity}Area() {
-  const { t } = useTranslation("{entity}");
-  const { sessionInfo } = useSessionStore();
-  const userRole = sessionInfo?.user?.role?.id;
-
-  const columns: ColumnType<{Entity}ListItem>[] = [
-    {
-      title: t("name"),
-      dataIndex: "name",
-      key: "name",
-      sorter: (a, b) => a.name.localeCompare(b.name),
-      defaultSortOrder: "ascend",
-    },
-    {
-      title: t("status"),
-      dataIndex: ["status", "name"],
-      key: "status",
-    },
-    {
-      title: t("owner"),
-      dataIndex: ["owner", "name"],
-      key: "owner",
-    },
-  ];
-
-  return (
-    <ItemsPage<{Entity}ListItem>
-      entityType="{entity}"
-      entityLabel={t("{entities}")}
-      entityLabelSingular={t("{entity}")}
-      icon={<{Icon}Outlined />}
-      queryKey={[...{entity}Keys.lists()]}
-      queryFn={() => {entity}ListApi.list()}
-      columns={columns}
-      canCreate={canCreate(userRole)}
-      CreateForm={{Entity}CreationForm}
-      PreviewComponent={{Entity}Preview}
-      getDetailPath={(record) => `/{entity}/${record.id}`}
-    />
-  );
-}
-```
+**Adaptation notes:**
+- Define columns based on `header` array from layout config (`fm-domain/.../layouts/default.json`)
+- For `Enumerated` fields, use `dataIndex: ["{field}", "name"]` to access the nested `name` property
+- Choose appropriate icon from `@ant-design/icons`
+- Use `canCreate()` permission check with appropriate roles
+- Pass `PreviewComponent` if you want a preview drawer (optional)
+- Use `[...{entity}Keys.lists()]` spread for queryKey (readonly array conversion)
 
 ### 6. Preview Panel (`ui/{Entity}Preview.tsx`) - Optional
 
-When `PreviewComponent` is provided to `ItemsPage`, an eye icon column appears after the first column. Clicking it opens a preview drawer; clicking elsewhere on the row navigates to the detail page.
+Preview drawer shown when clicking the eye icon in the list.
 
-The preview component receives `id` and `onClose` props and should:
-- Fetch the full entity data using the query hook
-- Display a summary of key information (logo/image, name, key fields)
-- Provide an "Edit" button that navigates to the detail page
+**Reference:** `fm-ux/src/areas/account/ui/AccountPreview.tsx`
 
-```typescript
-import { useEffect, useState } from "react";
-import { Button, Descriptions, Spin, Result, Space, Typography, theme } from "antd";
-import { {Icon}Outlined, EditOutlined } from "@ant-design/icons";
-import { useNavigate } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
-import { use{Entity} } from "../queries";
-import { getLogoUrl } from "../../../common/api/client";
-
-const { Text, Paragraph } = Typography;
-const { useToken } = theme;
-
-interface {Entity}PreviewProps {
-  id: string;
-  onClose: () => void;
-}
-
-export function {Entity}Preview({ id, onClose }: {Entity}PreviewProps) {
-  const { t } = useTranslation("{entity}");
-  const { t: tc } = useTranslation("common");
-  const navigate = useNavigate();
-  const { token } = useToken();
-  const [logoError, setLogoError] = useState(false);
-
-  const { data: entity, isLoading, isError } = use{Entity}(id);
-
-  // Reset logo error when entity changes
-  useEffect(() => {
-    setLogoError(false);
-  }, [id]);
-
-  const handleEdit = () => {
-    onClose();
-    navigate({ to: `/{entity}/${id}` });
-  };
-
-  if (isLoading) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center", padding: 40 }}>
-        <Spin />
-      </div>
-    );
-  }
-
-  if (isError || !entity) {
-    return <Result status="error" title={t("notFound")} />;
-  }
-
-  // Use getLogoUrl if entity has a logo, otherwise show placeholder
-  const logoUrl = getLogoUrl("{entity}", id);
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Logo/Image - show placeholder if no logo or error */}
-      <div style={{ display: "flex", justifyContent: "center", padding: 16 }}>
-        {!logoError ? (
-          <img
-            src={logoUrl}
-            alt={entity.name}
-            style={{
-              width: 120,
-              height: 120,
-              borderRadius: 8,
-              objectFit: "contain",
-              border: `1px solid ${token.colorBorderSecondary}`,
-              background: token.colorBgLayout,
-            }}
-            onError={() => setLogoError(true)}
-          />
-        ) : (
-          <div
-            style={{
-              width: 120,
-              height: 120,
-              borderRadius: 8,
-              border: `1px solid ${token.colorBorderSecondary}`,
-              background: token.colorBgLayout,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <{Icon}Outlined style={{ fontSize: 48, color: token.colorTextQuaternary }} />
-          </div>
-        )}
-      </div>
-
-      {/* Name */}
-      <div style={{ textAlign: "center" }}>
-        <Text strong style={{ fontSize: 18 }}>
-          {entity.name}
-        </Text>
-      </div>
-
-      {/* Details */}
-      <Descriptions column={1} size="small">
-        <Descriptions.Item label={t("status")}>
-          {entity.status?.name || "-"}
-        </Descriptions.Item>
-        <Descriptions.Item label={t("owner")}>
-          {entity.owner?.name || "-"}
-        </Descriptions.Item>
-      </Descriptions>
-
-      {/* Description (if exists) */}
-      {entity.description && (
-        <div>
-          <Text type="secondary" style={{ fontSize: 12 }}>
-            {t("description")}
-          </Text>
-          <Paragraph
-            style={{ marginTop: 4, marginBottom: 0 }}
-            ellipsis={{ rows: 3, expandable: true }}
-          >
-            {entity.description}
-          </Paragraph>
-        </div>
-      )}
-
-      {/* Actions */}
-      <Space style={{ marginTop: 8 }}>
-        <Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>
-          {tc("edit")}
-        </Button>
-      </Space>
-    </div>
-  );
-}
-```
-
-**Key points:**
-- The `getLogoUrl()` function from `common/api/client` builds the logo URL for entities that have a logo relationship
-- Use `onError` on the image to fall back to a placeholder icon when no logo exists
-- The "Edit" button should call `onClose()` before navigating to prevent the drawer from staying open
-- You can disable the preview column by passing `showPreviewColumn={false}` to `ItemsPage`
+**Adaptation notes:**
+- Receives `id` and `onClose` props
+- Fetch full entity using query hook
+- Show key fields in `Descriptions` component
+- Include "Edit" button that navigates to detail page
+- Use `getLogoUrl()` if entity has a logo, with `onError` fallback
 
 ### 7. Detail View (`ui/{Entity}Page.tsx`)
 
-```typescript
-import { Card, Spin, Result, Tabs } from "antd";
-import { {Icon}Outlined } from "@ant-design/icons";
-import { FormProvider } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "@tanstack/react-router";
-import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
-import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
-import { RelatedPanel } from "../../../common/components/related";
-import { NotesList } from "../../../common/components/related/NotesList";
-import { TasksList } from "../../../common/components/related/TasksList";
-import { ActivityTimeline } from "../../../common/components/related/ActivityTimeline";
-import type { Note } from "../../../common/components/related/NotesList";
-import type { Task } from "../../../common/components/related/TasksList";
-import type { Activity } from "../../../common/components/related/ActivityTimeline";
-import { {entity}Api } from "../api";
-import { {entity}FormSchema, type {Entity}FormInput } from "../schemas";
-import { {Entity}MainForm } from "./forms/{Entity}MainForm";
-import type { {Entity} } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
-import type { Enumerated } from "../../../common/types";
+Edit form using `useEditableEntity` hook with tabs.
 
-interface {Entity}PageProps {
-  {entity}Id: string;
-}
+**Reference:** `fm-ux/src/areas/account/ui/AccountPage.tsx`
 
-function canEdit(role?: string): boolean {
-  return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
-}
+**Key patterns from account (follow exactly):**
+- Use `AfForm` wrapper (not `FormProvider` directly)
+- Place `EditControls` in `Tabs tabBarExtraContent` (not in header)
+- Wrap page in `<div className="af-flex-column af-full-height">`
+- Use `ItemPageHeader` with `details` array for metadata display
+- Use `ItemPageLayout` with `RelatedPanel` in `rightPanel`
 
-function transformToForm(entity: {Entity}): {Entity}FormInput {
-  return {
-    name: entity.name,
-    description: entity.description ?? "",
-    status: entity.status,
-    owner: entity.owner,
-  };
-}
+**Adaptation notes:**
+- Pass schema to `useEditableEntity` - display-only fields are auto-detected
+- Update field references in header details
+- Add additional tabs for related data if needed
 
-function transformFromForm(formData: Partial<{Entity}FormInput>): Partial<{Entity}> {
-  const result: Partial<{Entity}> = {};
-  if (formData.name !== undefined) result.name = formData.name;
-  if (formData.description !== undefined) result.description = formData.description || undefined;
-  if (formData.status !== undefined) result.status = formData.status as Enumerated;
-  if (formData.owner !== undefined) result.owner = formData.owner as Enumerated;
-  return result;
-}
+### 8. Main Form (`ui/forms/{Entity}MainForm.tsx`)
 
-export function {Entity}Page({ {entity}Id }: {Entity}PageProps) {
-  const { t } = useTranslation("{entity}");
-  const navigate = useNavigate();
-  const { sessionInfo } = useSessionStore();
-  const userRole = sessionInfo?.user?.role?.id;
+Form fields for the main tab.
 
-  const {
-    entity,
-    form,
-    isLoading,
-    isError,
-    isEditing,
-    isDirty,
-    isStoring,
-    handleEdit,
-    handleCancel,
-    handleStore,
-  } = useEditableEntity<{Entity}, {Entity}FormInput>({
-    id: {entity}Id,
-    queryKey: ["{entity}"],
-    queryFn: (id) => {entity}Api.get(id),
-    updateFn: {entity}Api.update,
-    schema: {entity}FormSchema,
-  });
+**Reference:** `fm-ux/src/areas/account/ui/forms/AccountMainForm.tsx`
 
-  // Note: Display-only fields (marked with displayOnly() in schema) are
-  // automatically excluded from submission - no extra configuration needed.
+**Key patterns from account (follow exactly):**
+- Use `AfFieldGroup` with `legend` for grouping (not `Card`)
+- Use `Row`/`Col` for multi-column layout
+- Use `AfFieldRow` for inline field groups
+- Use `useFormContext` to access form state if needed
 
-  if (isLoading) {
-    return (
-      <div className="af-loading-inline">
-        <Spin size="large" />
-      </div>
-    );
-  }
+**Adaptation notes:**
+- Match field layout to the old fm-ui form
+- Use correct `source` prop for AfSelect dropdowns
+- Handle conditional logic (e.g., `KERNEL_TENANT` for tenant field)
 
-  if (isError || !entity) {
-    return (
-      <Result
-        status="404"
-        title={t("notFound")}
-        subTitle={t("notFoundDescription")}
-        extra={<a onClick={() => navigate({ to: "/{entity}" })}>{t("backToList")}</a>}
-      />
-    );
-  }
+### 9. Creation Form (`ui/forms/{Entity}CreationForm.tsx`)
 
-  return (
-    <>
-      <ItemPageHeader
-        icon={<{Icon}Outlined />}
-        entityLabel={t("{entity}")}
-        title={entity.name}
-        subtitle={entity.status?.name}
-        details={[
-          { label: t("owner"), content: entity.owner?.name },
-        ]}
-        actions={
-          <EditControls
-            isEditing={isEditing}
-            isDirty={isDirty}
-            isStoring={isStoring}
-            canEdit={canEdit(userRole)}
-            onEdit={handleEdit}
-            onCancel={handleCancel}
-            onStore={handleStore}
-          />
-        }
-      />
+Modal form for creating new entities.
 
-      <ItemPageLayout
-        rightPanel={
-          <RelatedPanel
-            sections={[
-              { key: "notes", label: "Notizen", children: <NotesList notes={[] as Note[]} /> },
-              { key: "tasks", label: "Aufgaben", children: <TasksList tasks={[] as Task[]} /> },
-              { key: "activity", label: "Aktivität", children: <ActivityTimeline activities={[] as Activity[]} /> },
-            ]}
-          />
-        }
-      >
-        <Card>
-          <FormProvider {...form}>
-            <Tabs
-              items={[
-                {
-                  key: "main",
-                  label: t("tabMain"),
-                  children: <{Entity}MainForm disabled={!isEditing} />,
-                },
-              ]}
-            />
-          </FormProvider>
-        </Card>
-      </ItemPageLayout>
-    </>
-  );
-}
-```
+**Reference:** `fm-ux/src/areas/account/ui/forms/AccountCreationForm.tsx`
 
-### 8. Forms (`ui/forms/`)
+**Key patterns from account (follow exactly):**
+- Use `AfForm` with `onSubmit` prop (handles form wrapper + submission)
+- Validate required fields manually in submit handler (no zodResolver)
+- Set smart defaults (e.g., current user as owner, current tenant)
 
-#### Main Form (`{Entity}MainForm.tsx`)
+**Adaptation notes:**
+- Include only fields needed for creation (minimal set)
+- Use `useCreate{Entity}` mutation hook
+- Call `onSuccess()` after successful creation
+
+### 10. Routes
+
+TanStack Router file-based routes. These are boilerplate with minimal variation.
+
+**Reference files:**
+- `fm-ux/src/routes/account.tsx` (layout)
+- `fm-ux/src/routes/account.index.tsx` (list)
+- `fm-ux/src/routes/account.$accountId.tsx` (detail)
+
+**Route structure:**
 
 ```typescript
-import { Card } from "antd";
-import { useTranslation } from "react-i18next";
-import { AfInput, AfTextArea, AfSelect, AfFieldRow } from "../../../../common/components/form";
-
-interface {Entity}MainFormProps {
-  disabled: boolean;
-}
-
-export function {Entity}MainForm({ disabled }: {Entity}MainFormProps) {
-  const { t } = useTranslation("{entity}");
-
-  return (
-    <div>
-      <Card size="small" title={t("basicInfo")} className="af-mb-16">
-        <AfInput name="name" label={t("name")} required readOnly={disabled} />
-        <AfTextArea name="description" label={t("description")} rows={4} readOnly={disabled} />
-      </Card>
-
-      <Card size="small" title={t("classification")} className="af-mb-16">
-        <AfFieldRow>
-          <AfSelect
-            name="status"
-            label={t("status")}
-            source="{entity}/code{Entity}Status"
-            required
-            readOnly={disabled}
-            size={12}
-          />
-          <AfSelect
-            name="owner"
-            label={t("owner")}
-            source="oe/objUser"
-            required
-            readOnly={disabled}
-            size={12}
-          />
-        </AfFieldRow>
-      </Card>
-    </div>
-  );
-}
-```
-
-#### Creation Form (`{Entity}CreationForm.tsx`)
-
-Skip `zodResolver` for creation forms and validate manually at submit time.
-
-```typescript
-import { Button, Space, message } from "antd";
-import { FormProvider, useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
-import { AfInput, AfTextArea, AfSelect } from "../../../../common/components/form";
-import { useCreate{Entity} } from "../../queries";
-import type { {Entity}FormInput } from "../../schemas";
-import type { CreateFormProps } from "../../../../common/components/items";
-
-export function {Entity}CreationForm({ onSuccess, onCancel }: CreateFormProps) {
-  const { t } = useTranslation("{entity}");
-  const { t: tCommon } = useTranslation("common");
-  const createMutation = useCreate{Entity}();
-
-  const form = useForm<{Entity}FormInput>({
-    defaultValues: {
-      name: "",
-      description: "",
-      status: null,
-      owner: null,
-    },
-  });
-
-  const handleSubmit = form.handleSubmit(async (data) => {
-    let hasError = false;
-    if (!data.name?.trim()) {
-      form.setError("name", { message: "Name ist erforderlich" });
-      hasError = true;
-    }
-    if (!data.status) {
-      form.setError("status", { message: "Status ist erforderlich" });
-      hasError = true;
-    }
-    if (hasError) {
-      message.error("Bitte füllen Sie alle Pflichtfelder aus");
-      return;
-    }
-
-    await createMutation.mutateAsync({
-      name: data.name,
-      description: data.description,
-      status: data.status!,
-      owner: data.owner!,
-    });
-    onSuccess();
-  });
-
-  return (
-    <FormProvider {...form}>
-      <form onSubmit={handleSubmit}>
-        <AfInput name="name" label={t("name")} required />
-        <AfSelect name="status" label={t("status")} source="{entity}/code{Entity}Status" required />
-        <AfSelect name="owner" label={t("owner")} source="oe/objUser" required />
-        <AfTextArea name="description" label={t("description")} rows={3} />
-
-        <div className="af-flex-end af-mt-24">
-          <Space>
-            <Button onClick={onCancel}>{tCommon("cancel")}</Button>
-            <Button type="primary" htmlType="submit" loading={createMutation.isPending}>
-              {tCommon("create")}
-            </Button>
-          </Space>
-        </div>
-      </form>
-    </FormProvider>
-  );
-}
-```
-
-### 9. Routes
-
-TanStack Router uses file-based routing. Create three route files:
-
-1. **Layout Route** (`{entity}.tsx`) - Renders `<Outlet />` for child routes
-2. **Index Route** (`{entity}.index.tsx`) - List view at `/{entity}`
-3. **Detail Route** (`{entity}.${entityId}.tsx`) - Detail view at `/{entity}/123`
-
-#### Layout Route (`routes/{entity}.tsx`)
-
-```typescript
+// {entity}.tsx - Layout route
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/{entity}")({
@@ -723,9 +277,8 @@ function {Entity}Layout() {
 }
 ```
 
-#### Index Route (`routes/{entity}.index.tsx`)
-
 ```typescript
+// {entity}.index.tsx - List route
 import { createFileRoute } from "@tanstack/react-router";
 import { {Entity}Area } from "../areas/{entity}/ui/{Entity}Area";
 
@@ -734,9 +287,8 @@ export const Route = createFileRoute("/{entity}/")({
 });
 ```
 
-#### Detail Route (`routes/{entity}.${{entity}Id}.tsx`)
-
 ```typescript
+// {entity}.${entity}Id.tsx - Detail route
 import { createFileRoute } from "@tanstack/react-router";
 import { {Entity}Page } from "../areas/{entity}/ui/{Entity}Page";
 
@@ -750,30 +302,29 @@ function {Entity}PageRoute() {
 }
 ```
 
-### 10. Translations
+### 11. Translations
 
-#### `i18n/locales/de/{entity}.json` and `i18n/locales/en/{entity}.json`
+Create translation files for both German and English.
 
-```json
-{
-  "{entity}": "{Entity}",
-  "{entities}": "{Entities}",
-  "name": "Name",
-  "description": "Beschreibung",
-  "status": "Status",
-  "owner": "Verantwortlich",
-  "basicInfo": "Allgemeine Informationen",
-  "classification": "Klassifizierung",
-  "tabMain": "Stammdaten",
-  "notFound": "{Entity} nicht gefunden",
-  "notFoundDescription": "Der angeforderte {Entity} konnte nicht gefunden werden.",
-  "backToList": "Zurück zur Liste"
-}
+**Location:** `fm-ux/src/i18n/locales/de/{entity}.json` and `.../en/{entity}.json`
+
+**Required keys:**
+- Entity singular/plural names
+- All field labels
+- Tab labels (e.g., "tabMain": "Stammdaten")
+- Error messages (notFound, notFoundDescription, backToList)
+
+**Update `i18n/index.ts`:** Add imports, add to resources, add `"{entity}"` to the `ns` array.
+
+### 12. Index Export (`index.ts`)
+
+Re-export public API from the area module.
+
+```typescript
+export * from "./types";
+export * from "./api";
+export * from "./queries";
 ```
-
-#### Update `i18n/index.ts`
-
-Add imports, add to resources, and add `"{entity}"` to the `ns` array.
 
 ## Common Patterns & Gotchas
 
@@ -793,10 +344,11 @@ Add imports, add to resources, and add `"{entity}"` to the `ns` array.
 Use the `displayOnly()` helper to mark form fields that should be displayed but not submitted:
 
 ```typescript
-import { displayOnly } from "../../common/utils/zodMeta";
+import { displayOnly, enumeratedSchema } from "../../common/utils/zodMeta";
 
 export const {entity}FormSchema = z.object({
   name: z.string().min(1, "Name ist erforderlich"),
+  status: enumeratedSchema,  // shared schema for Enumerated fields
   // Display-only: automatically excluded from submission
   contacts: displayOnly(z.array(z.any()).optional()),
 });
@@ -806,11 +358,6 @@ export const {entity}FormSchema = z.object({
 - `displayOnly()` wraps a Zod schema and adds metadata via `.describe()`
 - `transformFromForm()` automatically detects and excludes these fields
 - No need to pass `displayOnlyFields` to `useEditableEntity` - it's detected from schema metadata
-
-**Benefits:**
-- Schema is the single source of truth for field configuration
-- No duplication between schema definition and hook options
-- Extensible for future field metadata (e.g., `readOnly`, `computed`)
 
 ### 3. Readonly Array in queryKey
 
@@ -837,7 +384,16 @@ The project uses relative imports, not path aliases. Import paths are relative t
 
 ### 6. Form Components
 
-Use `Af*` components from `common/components/form` (see form examples above).
+Use `Af*` components from `common/components/form`:
+- `AfForm` - Form wrapper (combines FormProvider + Ant Form + optional HTML form)
+- `AfInput` - Text input
+- `AfTextArea` - Multi-line text
+- `AfNumber` - Numeric input with precision/suffix support
+- `AfSelect` - Dropdown with `source` prop for code tables or `options` for manual options
+- `AfDatePicker` - Date selection
+- `AfCheckbox` - Boolean checkbox
+- `AfFieldRow` - Horizontal field container
+- `AfFieldGroup` - Fieldset with legend
 
 ### 7. Grid System (24-Column)
 
@@ -865,55 +421,13 @@ The AF form components use a **24-column grid system** (consistent with Ant Desi
 - **CSS utility classes** in `global.css` (e.g., `.af-mb-16`, `.af-loading-inline`, `.af-flex-center`)
 - **`useStyles()` hook** from `common/hooks/useStyles` for theme-aware style patterns
 
-**Common patterns:**
-
-```typescript
-// ✓ Correct: Use CSS class for margin
-<Card size="small" title={t("basicInfo")} className="af-mb-16">
-
-// ✗ Avoid: Inline style
-<Card size="small" title={t("basicInfo")} style={{ marginBottom: 16 }}>
-
-// ✓ Correct: Use CSS class for loading state
-<div className="af-loading-inline">
-  <Spin size="large" />
-</div>
-
-// ✗ Avoid: Inline style
-<div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
-  <Spin size="large" />
-</div>
-
-// ✓ Correct: Use CSS class for button row
-<div className="af-flex-end af-mt-24">
-  <Space>...</Space>
-</div>
-```
-
 **Available CSS utility classes:**
 
 - Layout: `.af-flex`, `.af-flex-column`, `.af-flex-center`, `.af-flex-between`, `.af-flex-end`
 - Spacing: `.af-mb-0`, `.af-mb-4`, `.af-mb-8`, `.af-mb-16`, `.af-mb-24`, `.af-ml-*`, `.af-p-*`
 - Loading: `.af-loading-container` (full-height), `.af-loading-inline` (with padding)
 - Cards: `.af-card-header`, `.af-card-header-connected`, `.af-card-body-connected`
-
-**When to use `useStyles()` hook:**
-
-Use the hook when you need theme-aware styles that depend on Ant Design tokens:
-
-```typescript
-import { useStyles } from "../../../common/hooks/useStyles";
-
-function MyComponent() {
-  const { styles, token } = useStyles();
-  
-  // Use token for dynamic colors
-  return <div style={{ color: token.colorPrimary }}>...</div>;
-  
-  // Or use pre-built patterns
-  return <Typography.Text style={styles.readonlyField}>...</Typography.Text>;
-}
-```
+- Full height: `.af-full-height`
 
 ### 9. Permission Checks
 
@@ -927,9 +441,17 @@ function canEdit(role?: string): boolean {
 }
 ```
 
-### 10. Code Comments
+### 10. Tenant Handling
 
-Avoid superfluous comments. The code should be self-documenting. Do not add file headers, interface comments, or inline comments that restate what the code already shows. Only comment when explaining *why*, not *what*.
+For multi-tenant scenarios, check `KERNEL_TENANT` to conditionally show/hide or enable/disable the tenant field:
+
+```typescript
+import { KERNEL_TENANT } from "../../../../session/model/types";
+
+const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
+// If kernel tenant: show tenant selector
+// If regular tenant: hide or show read-only tenant field
+```
 
 ## Verification Checklist
 
@@ -942,12 +464,19 @@ After implementing, verify:
 
 ## Reference Files
 
-- **ItemsPage design**: `.cursor/plans/itemspage_itempage_design_*.plan.md`
-- **Account implementation**: `fm-ux/src/areas/account/` (reference implementation)
-- **Form components**: `fm-ux/src/common/components/form/`
-- **Item components**: `fm-ux/src/common/components/items/`
-- **Schema metadata**: `fm-ux/src/common/utils/zodMeta.ts` (displayOnly helper)
-- **Form transformers**: `fm-ux/src/common/utils/formTransformers.ts` (entity ↔ form conversion)
-- **Design system**: `fm-ux/src/styles/global.css` (CSS utility classes)
-- **Style hooks**: `fm-ux/src/common/hooks/useStyles.ts` (theme-aware styles)
-- **Style constants**: `fm-ux/src/common/styles/constants.ts` (dynamic style builders)
+**Account implementation (canonical example):**
+- `fm-ux/src/areas/account/` - Complete area implementation
+
+**Common components:**
+- `fm-ux/src/common/components/form/` - Form components (AfForm, AfInput, etc.)
+- `fm-ux/src/common/components/items/` - ItemsPage, ItemPageHeader, EditControls
+- `fm-ux/src/common/components/related/` - RelatedPanel, NotesList, TasksList
+
+**Utilities:**
+- `fm-ux/src/common/utils/zodMeta.ts` - enumeratedSchema, displayOnly helper
+- `fm-ux/src/common/utils/formTransformers.ts` - entity ↔ form conversion
+- `fm-ux/src/common/api/entityApi.ts` - createEntityApi factory
+
+**Styling:**
+- `fm-ux/src/styles/global.css` - CSS utility classes
+- `fm-ux/src/common/hooks/useStyles.ts` - Theme-aware styles
