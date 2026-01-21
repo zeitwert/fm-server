@@ -7,12 +7,14 @@ import enLogin from "./locales/en/login.json";
 import enApp from "./locales/en/app.json";
 import enHome from "./locales/en/home.json";
 import enAccount from "./locales/en/account.json";
+import enContact from "./locales/en/contact.json";
 
 import deCommon from "./locales/de/common.json";
 import deLogin from "./locales/de/login.json";
 import deApp from "./locales/de/app.json";
 import deHome from "./locales/de/home.json";
 import deAccount from "./locales/de/account.json";
+import deContact from "./locales/de/contact.json";
 
 // Resources bundled inline for synchronous loading
 const resources = {
@@ -22,6 +24,7 @@ const resources = {
 		app: enApp,
 		home: enHome,
 		account: enAccount,
+		contact: enContact,
 	},
 	de: {
 		common: deCommon,
@@ -29,6 +32,7 @@ const resources = {
 		app: deApp,
 		home: deHome,
 		account: deAccount,
+		contact: deContact,
 	},
 };
 
@@ -36,7 +40,7 @@ i18n.use(initReactI18next).init({
 	resources,
 	lng: "de", // Default language before login
 	fallbackLng: "de",
-	ns: ["common", "login", "app", "home", "account"],
+	ns: ["common", "login", "app", "home", "account", "contact"],
 	defaultNS: "common",
 	interpolation: {
 		escapeValue: false, // React already escapes values
