@@ -252,6 +252,30 @@ Modal form for creating new entities.
 - Include only fields needed for creation (minimal set)
 - Use `useCreate{Entity}` mutation hook
 - Call `onSuccess()` after successful creation
+- Navigate to the created entity's detail page after success
+
+**Parent context pattern:** If the entity can be created from a parent entity's page (e.g., creating a Contact from an Account), extend `CreateFormProps` to accept the parent:
+
+```typescript
+interface {Entity}CreationFormProps extends CreateFormProps {
+	parentEntity?: { id: string; name: string };
+}
+```
+
+**Submission pattern with navigation:**
+
+```typescript
+const handleSubmit = async (data: {Entity}CreationFormInput) => {
+	// ... validation ...
+	try {
+		const created = await createMutation.mutateAsync({...});
+		onSuccess();
+		navigate({ to: "/{entity}/${{entity}Id}", params: { {entity}Id: created.id } });
+	} catch {
+		// Error handling done in useCreate{Entity}'s onError callback
+	}
+};
+```
 
 ### 10. Routes
 
@@ -309,10 +333,13 @@ Create translation files for both German and English.
 **Location:** `fm-ux/src/i18n/locales/de/{entity}.json` and `.../en/{entity}.json`
 
 **Required keys:**
-- Entity singular/plural names
+- `{entity}`: Entity singular name (e.g., "Kontakt")
+- `{entities}`: Entity plural name (e.g., "Kontakte")
+- `entitySingular`: Alternate singular for UI labels (e.g., "Kontakt")
+- `new{Entity}`: Create button/modal title (e.g., "Neuer Kontakt")
 - All field labels
 - Tab labels (e.g., "tabMain": "Stammdaten")
-- Error messages (notFound, notFoundDescription, backToList)
+- Error messages: `notFound`, `notFoundDescription`, `backToList`
 
 **Update `i18n/index.ts`:** Add imports, add to resources, add `"{entity}"` to the `ns` array.
 
