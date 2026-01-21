@@ -124,6 +124,15 @@ export function SelectionWizard() {
 								<Card
 									hoverable
 									onClick={() => handleTenantSelect(tenant)}
+									onKeyDown={(e) => {
+										if (e.key === "Enter" || e.key === " ") {
+											e.preventDefault();
+											handleTenantSelect(tenant);
+										}
+									}}
+									tabIndex={0}
+									role="button"
+									aria-label={`login:selectTenant:${tenant.name}`}
 									style={{
 										textAlign: "center",
 										cursor: "pointer",
@@ -157,6 +166,15 @@ export function SelectionWizard() {
 									<Card
 										hoverable
 										onClick={() => handleAccountSelect(account)}
+										onKeyDown={(e) => {
+											if (e.key === "Enter" || e.key === " ") {
+												e.preventDefault();
+												handleAccountSelect(account);
+											}
+										}}
+										tabIndex={0}
+										role="button"
+										aria-label={`login:selectAccount:${account.name}`}
 										style={{
 											textAlign: "center",
 											cursor: "pointer",

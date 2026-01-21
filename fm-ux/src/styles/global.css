@@ -45,6 +45,23 @@ input:-webkit-autofill:active,
 	padding: 6px 16px !important;
 }
 
+/* Remove border-radius from all tables for clean rectangular appearance */
+.ant-table-container {
+	border-radius: 0 !important;
+}
+
+.ant-table-container table {
+	border-radius: 0 !important;
+}
+
+.ant-table-thead > tr:first-child > th:first-child {
+	border-start-start-radius: 0 !important;
+}
+
+.ant-table-thead > tr:first-child > th:last-child {
+	border-start-end-radius: 0 !important;
+}
+
 /* Ensure table container uses full height for scrolling */
 .items-page-table-wrapper {
 	display: flex;

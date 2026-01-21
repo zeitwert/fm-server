@@ -3,7 +3,7 @@ import type { EntityMeta } from "../../common/api/jsonapi";
 
 export interface AccountContact {
 	id: string;
-	name: string;
+	caption: string;
 	email?: string;
 	phone?: string;
 	isMainContact?: boolean;

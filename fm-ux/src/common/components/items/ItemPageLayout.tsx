@@ -21,13 +21,13 @@ export function ItemPageLayout({ children, rightPanel }: ItemPageLayoutProps) {
 
 	// No right panel provided - render full width
 	if (!rightPanel) {
-		return <div>{children}</div>;
+		return <div style={{ flex: 1, minHeight: 0 }}>{children}</div>;
 	}
 
 	// Panel collapsed - full width with toggle button
 	if (rightPanelCollapsed) {
 		return (
-			<div style={{ position: "relative" }}>
+			<div style={{ position: "relative", flex: 1, minHeight: 0 }}>
 				<Button
 					icon={<MenuUnfoldOutlined />}
 					onClick={toggleRightPanel}
@@ -42,8 +42,8 @@ export function ItemPageLayout({ children, rightPanel }: ItemPageLayoutProps) {
 
 	// Panel expanded - split layout
 	return (
-		<Row gutter={16}>
-			<Col xs={24} lg={16} xl={18}>
+		<Row gutter={16} style={{ flex: 1, minHeight: 0 }}>
+			<Col xs={24} lg={16} xl={18} style={{ display: "flex", flexDirection: "column" }}>
 				{children}
 			</Col>
 			<Col xs={24} lg={8} xl={6}>

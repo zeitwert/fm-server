@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Enumerated } from "../../common/types";
+import type { AccountContact } from "./types";
 
 const enumeratedSchema = z
 	.object({
@@ -29,6 +30,7 @@ export const accountCreationSchema = z.object({
 export type AccountCreationData = z.infer<typeof accountCreationSchema>;
 
 export interface AccountFormInput {
+	// Editable fields
 	name: string;
 	description?: string | null;
 	accountType: Enumerated | null;
@@ -37,6 +39,9 @@ export interface AccountFormInput {
 	owner: Enumerated | null;
 	inflationRate?: number | null;
 	discountRate?: number | null;
+	mainContact?: Enumerated | null;
+	// Display-only fields (not validated, not submitted)
+	contacts?: AccountContact[];
 }
 
 export const accountFormSchema = z.object({
@@ -48,6 +53,9 @@ export const accountFormSchema = z.object({
 	owner: enumeratedSchema,
 	inflationRate: z.number().optional().nullable(),
 	discountRate: z.number().optional().nullable(),
+	mainContact: enumeratedSchema.optional(),
+	// contacts is display-only, no validation needed
+	contacts: z.array(z.any()).optional(),
 });
 
 export type AccountFormData = z.infer<typeof accountFormSchema>;

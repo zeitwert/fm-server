@@ -82,6 +82,7 @@ export function useStyles() {
 		cardHeader: {
 			marginBottom: token.margin,
 			background: token.colorBgLayout,
+			flexShrink: 0,
 		} as CSSProperties,
 
 		/**

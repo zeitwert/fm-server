@@ -30,6 +30,7 @@ function canEditAccount(role?: string): boolean {
 
 function transformToForm(account: Account): AccountFormInput {
 	return {
+		// Editable fields
 		name: account.name,
 		description: account.description ?? "",
 		accountType: account.accountType,
@@ -38,6 +39,9 @@ function transformToForm(account: Account): AccountFormInput {
 		owner: account.owner,
 		inflationRate: account.inflationRate ?? null,
 		discountRate: account.discountRate ?? null,
+		mainContact: account.mainContact ?? null,
+		// Display-only fields
+		contacts: account.contacts ?? [],
 	};
 }
 
@@ -54,6 +58,8 @@ function transformFromForm(formData: Partial<AccountFormInput>): Partial<Account
 	if (formData.inflationRate !== undefined)
 		result.inflationRate = formData.inflationRate ?? undefined;
 	if (formData.discountRate !== undefined) result.discountRate = formData.discountRate ?? undefined;
+	if (formData.mainContact !== undefined) result.mainContact = formData.mainContact ?? undefined;
+	// Note: contacts is display-only, not included in submission
 
 	return result;
 }
@@ -107,7 +113,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 	const canEdit = canEditAccount(userRole);
 
 	return (
-		<>
+		<div className="af-flex-column af-full-height">
 			<ItemPageHeader
 				icon={<BankOutlined />}
 				title={account.name}
@@ -150,7 +156,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 					/>
 				}
 			>
-				<Card>
+				<Card className="af-full-height">
 					<AfForm form={form}>
 						<Tabs
 							tabBarExtraContent={
@@ -168,13 +174,13 @@ export function AccountPage({ accountId }: AccountPageProps) {
 								{
 									key: "main",
 									label: t("tabMain"),
-									children: <AccountMainForm disabled={!isEditing} contacts={account.contacts} />,
+									children: <AccountMainForm disabled={!isEditing} />,
 								},
 							]}
 						/>
 					</AfForm>
 				</Card>
 			</ItemPageLayout>
-		</>
+		</div>
 	);
 }

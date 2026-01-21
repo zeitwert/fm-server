@@ -5,10 +5,11 @@ export const accountApi = createEntityApi<Account>({
 	module: "account",
 	path: "accounts",
 	type: "account",
-	includes: "include[account]=mainContact,logo",
+	includes: "include[account]=mainContact,logo,contacts",
 	relations: {
 		mainContact: "contact",
 		logo: "document",
+		contacts: "contact",
 	},
 });
 

@@ -116,11 +116,3 @@ vi.mock('google-map-react', () => ({
 # Visual Tests with embedded browser
 
 These tests need a running development server (which it usually is when you are developing the UI).
-
-## Login
-
-http://localhost:5173/
-
-user: hannes@zeitwert.io
-pwd: demo
-
