@@ -51,15 +51,7 @@ function RootComponent() {
 	if (state === SessionState.pendingOpen) {
 		return (
 			<ConfigProvider theme={appTheme}>
-				<div
-					style={{
-						minHeight: "100vh",
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						background: "#ffffff",
-					}}
-				>
+				<div className="af-loading-container">
 					<Spin size="large" />
 				</div>
 			</ConfigProvider>
@@ -70,15 +62,7 @@ function RootComponent() {
 	if (!isFullyAuthenticated) {
 		return (
 			<ConfigProvider theme={appTheme}>
-				<div
-					style={{
-						minHeight: "100vh",
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						background: "#ffffff",
-					}}
-				>
+				<div className="af-loading-container">
 					<Spin size="large" />
 				</div>
 			</ConfigProvider>

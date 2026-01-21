@@ -3,6 +3,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/de";
 import { AfField } from "./AfField";
+import { useStyles } from "../../hooks/useStyles";
 import type { AfFieldProps } from "../../types";
 
 // Set German locale for date picker
@@ -41,6 +42,7 @@ export function AfDatePicker({
 	...fieldProps
 }: AfDatePickerProps) {
 	const { control } = useFormContext();
+	const { styles } = useStyles();
 
 	return (
 		<AfField name={name} {...fieldProps}>
@@ -56,7 +58,7 @@ export function AfDatePicker({
 
 					if (readOnly) {
 						return (
-							<Typography.Text style={{ fontWeight: "600" }}>
+							<Typography.Text style={styles.readonlyField}>
 								{dateValue ? dateValue.format(format) : "\u00A0"}
 							</Typography.Text>
 						);
@@ -68,7 +70,7 @@ export function AfDatePicker({
 							onChange={(date: Dayjs | null) => onChange(date?.toDate() ?? null)}
 							format={format}
 							disabled={disabled}
-							style={{ width: "100%" }}
+							className="af-full-width"
 							minDate={minDate ? dayjs(minDate) : undefined}
 							maxDate={maxDate ? dayjs(maxDate) : undefined}
 							placeholder="Datum auswählen"

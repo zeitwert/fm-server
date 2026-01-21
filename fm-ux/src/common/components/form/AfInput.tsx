@@ -2,6 +2,7 @@ import { Input, Typography } from "antd";
 import { Controller, useFormContext } from "react-hook-form";
 import { AfField } from "./AfField";
 import type { AfFieldProps } from "../../types";
+import { useStyles } from "../../hooks/useStyles";
 
 interface AfInputProps extends AfFieldProps {
 	/** Input type */
@@ -32,6 +33,7 @@ export function AfInput({
 	...fieldProps
 }: AfInputProps) {
 	const { control } = useFormContext();
+	const { styles } = useStyles();
 
 	return (
 		<AfField name={name} {...fieldProps}>
@@ -40,7 +42,7 @@ export function AfInput({
 				control={control}
 				render={({ field: { value, onChange, onBlur, ref } }) =>
 					readOnly ? (
-						<Typography.Text style={{ textAlign: align, display: "block", fontWeight: "600" }}>
+						<Typography.Text style={styles.readonlyFieldAligned(align)}>
 							{(value as string) || "\u00A0"}
 						</Typography.Text>
 					) : (

@@ -42,12 +42,12 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 
 	return (
 		<div>
-			<Card size="small" title={t("basicInfo")} style={{ marginBottom: 16 }}>
+			<Card size="small" title={t("basicInfo")} className="af-mb-16">
 				<AfInput name="name" label={t("name")} required readOnly={disabled} />
 				<AfTextArea name="description" label={t("description")} rows={4} readOnly={disabled} />
 			</Card>
 
-			<Card size="small" title={t("classification")} style={{ marginBottom: 16 }}>
+			<Card size="small" title={t("classification")} className="af-mb-16">
 				<AfFieldRow>
 					<AfSelect
 						name="accountType"
@@ -67,7 +67,7 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 				</AfFieldRow>
 			</Card>
 
-			<Card size="small" title={t("organization")} style={{ marginBottom: 16 }}>
+			<Card size="small" title={t("organization")} className="af-mb-16">
 				<AfFieldRow>
 					{isKernelTenant ? (
 						<AfSelect
@@ -100,7 +100,7 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 			</Card>
 
 			{/* Calculation Parameters Section */}
-			<Card size="small" title={t("calculationParams")} style={{ marginBottom: 16 }}>
+			<Card size="small" title={t("calculationParams")} className="af-mb-16">
 				<AfFieldRow>
 					<AfNumber
 						name="inflationRate"

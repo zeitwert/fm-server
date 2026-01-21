@@ -87,7 +87,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 
 	if (isLoading) {
 		return (
-			<div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
+			<div className="af-loading-inline">
 				<Spin size="large" />
 			</div>
 		);

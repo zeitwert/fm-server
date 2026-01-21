@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AfField } from "./AfField";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useAggregateSearch } from "../../hooks/useAggregateSearch";
+import { useStyles } from "../../hooks/useStyles";
 import type { AfFieldProps, Enumerated } from "../../types";
 
 interface AfComboboxProps extends AfFieldProps {
@@ -63,6 +64,7 @@ export function AfCombobox({
 	const { control } = useFormContext();
 	const [searchText, setSearchText] = useState("");
 	const debouncedSearch = useDebouncedValue(searchText, 200);
+	const { styles } = useStyles();
 
 	const { data: searchResults = [], isLoading } = useAggregateSearch(
 		entityType,
@@ -90,7 +92,7 @@ export function AfCombobox({
 
 					if (readOnly) {
 						return (
-							<Typography.Text style={{ fontWeight: "600" }}>
+							<Typography.Text style={styles.readonlyField}>
 								{currentValue?.name || "\u00A0"}
 							</Typography.Text>
 						);
@@ -120,7 +122,7 @@ export function AfCombobox({
 							disabled={disabled}
 							allowClear
 							placeholder="Suchen..."
-							style={{ width: "100%" }}
+							className="af-full-width"
 							notFoundContent={
 								isLoading ? (
 									<Spin size="small" />

@@ -35,7 +35,7 @@ export function AfTextArea({
 				control={control}
 				render={({ field: { value, onChange, onBlur, ref } }) =>
 					readOnly ? (
-						<Typography.Paragraph style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+						<Typography.Paragraph className="af-readonly-field-text">
 							{(value as string) || "\u00A0"}
 						</Typography.Paragraph>
 					) : (

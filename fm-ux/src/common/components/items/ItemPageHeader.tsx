@@ -7,6 +7,7 @@
 
 import { Card, Row, Col, Space, Typography } from "antd";
 import { Link } from "@tanstack/react-router";
+import { useStyles } from "../../hooks/useStyles";
 import type { ReactNode } from "react";
 
 const { Title, Text } = Typography;
@@ -34,36 +35,35 @@ export interface ItemPageHeaderProps {
 }
 
 export function ItemPageHeader({ icon, title, details, actions }: ItemPageHeaderProps) {
+	const { styles, token } = useStyles();
+
 	return (
 		<Card
-			style={{
-				marginBottom: 16,
-				background: "#f5f5f5",
-			}}
+			style={styles.cardHeader}
 			styles={{
 				body: {
-					padding: "8px 16px",
+					padding: `${token.paddingXS}px ${token.padding}px`,
 				},
 			}}
 		>
 			<Row justify="space-between" align="middle" wrap={false}>
 				<Col flex="none">
 					<Space size="middle">
-						{icon && <span style={{ fontSize: 24, color: "#1677ff" }}>{icon}</span>}
-						<Title level={4} style={{ margin: 0 }}>
+						{icon && <span style={styles.primaryIcon}>{icon}</span>}
+						<Title level={4} className="af-mb-0">
 							{title}
 						</Title>
 					</Space>
 				</Col>
 				{details && details.length > 0 && (
-					<Col flex="auto" style={{ marginLeft: 48 }}>
+					<Col flex="auto" className="af-ml-48">
 						<Space size={40}>
 							{details.map((detail, index) => (
 								<div key={index}>
 									<Text type="secondary" style={{ fontSize: 12, display: "block" }}>
 										{detail.label}
 									</Text>
-									<div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+									<div className="af-flex af-gap-4" style={{ alignItems: "center" }}>
 										{detail.icon}
 										{detail.link ? (
 											<Link to={detail.link}>{detail.content}</Link>

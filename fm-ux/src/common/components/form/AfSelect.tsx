@@ -2,6 +2,7 @@ import { Select, Typography, Spin } from "antd";
 import { Controller, useFormContext } from "react-hook-form";
 import { AfField } from "./AfField";
 import { useCodeTable } from "../../hooks/useCodeTable";
+import { useStyles } from "../../hooks/useStyles";
 import type { AfFieldProps, Enumerated } from "../../types";
 
 interface AfSelectProps extends AfFieldProps {
@@ -51,6 +52,7 @@ export function AfSelect({
 	const { data: codeTableOptions, isLoading } = useCodeTable(source ?? "", {
 		enabled: !!source,
 	});
+	const { styles } = useStyles();
 
 	const options = explicitOptions ?? codeTableOptions ?? [];
 
@@ -71,7 +73,7 @@ export function AfSelect({
 
 					if (readOnly) {
 						return (
-							<Typography.Text style={{ fontWeight: "600" }}>
+							<Typography.Text style={styles.readonlyField}>
 								{currentValue?.name || "\u00A0"}
 							</Typography.Text>
 						);
@@ -89,7 +91,7 @@ export function AfSelect({
 							disabled={disabled}
 							allowClear={allowClear && !required}
 							placeholder={isLoading ? "Laden..." : "Auswählen..."}
-							style={{ width: "100%" }}
+							className="af-full-width"
 							notFoundContent={isLoading ? <Spin size="small" /> : "Keine Optionen"}
 							options={options.map((o) => ({ value: o.id, label: o.name }))}
 							showSearch

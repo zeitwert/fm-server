@@ -2,6 +2,7 @@ import { InputNumber, Typography } from "antd";
 import { Controller, useFormContext } from "react-hook-form";
 import { AfField } from "./AfField";
 import type { AfFieldProps } from "../../types";
+import { useStyles } from "../../hooks/useStyles";
 
 interface AfNumberProps extends AfFieldProps {
 	/** Minimum allowed value */
@@ -45,6 +46,7 @@ export function AfNumber({
 	...fieldProps
 }: AfNumberProps) {
 	const { control } = useFormContext();
+	const { styles } = useStyles();
 
 	const formatValue = (value: number | null | undefined): string => {
 		if (value === undefined || value === null) return "\u00A0";
@@ -65,7 +67,7 @@ export function AfNumber({
 				control={control}
 				render={({ field: { value, onChange, onBlur } }) =>
 					readOnly ? (
-						<Typography.Text style={{ textAlign: align, display: "block", fontWeight: "600" }}>
+						<Typography.Text style={styles.readonlyFieldAligned(align)}>
 							{formatValue(value as number | null | undefined)}
 						</Typography.Text>
 					) : (
@@ -81,8 +83,7 @@ export function AfNumber({
 							prefix={prefix}
 							suffix={suffix}
 							disabled={disabled}
-							className={`af-number-align-${align}`}
-							style={{ width: "100%" }}
+							className={`af-number-align-${align} af-full-width`}
 							decimalSeparator="."
 							formatter={(val) => (val ? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, "'") : "")}
 							parser={(val) => (val ? Number(val.replace(/'/g, "")) : (null as unknown as number))}

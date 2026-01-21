@@ -33,12 +33,7 @@ export function ItemPageLayout({ children, rightPanel }: ItemPageLayoutProps) {
 					onClick={toggleRightPanel}
 					title="Panel einblenden"
 					aria-label="common:showPanel"
-					style={{
-						position: "absolute",
-						right: 0,
-						top: -48, // Position above the content, aligned with header actions
-						zIndex: 1,
-					}}
+					className="af-panel-toggle"
 				/>
 				{children}
 			</div>
@@ -59,12 +54,7 @@ export function ItemPageLayout({ children, rightPanel }: ItemPageLayoutProps) {
 						size="small"
 						title="Panel ausblenden"
 						aria-label="common:hidePanel"
-						style={{
-							position: "absolute",
-							right: 8,
-							top: 8,
-							zIndex: 1,
-						}}
+						className="af-panel-toggle-inner"
 					/>
 					{rightPanel}
 				</div>

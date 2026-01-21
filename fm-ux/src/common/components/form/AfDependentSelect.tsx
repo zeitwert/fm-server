@@ -3,6 +3,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { useEffect, useRef } from "react";
 import { AfField } from "./AfField";
 import { useDependentCodeTable } from "../../hooks/useDependentCodeTable";
+import { useStyles } from "../../hooks/useStyles";
 import type { AfFieldProps, Enumerated } from "../../types";
 
 interface AfDependentSelectProps extends AfFieldProps {
@@ -50,6 +51,7 @@ export function AfDependentSelect({
 	const parentValue = watch(parentField) as Enumerated | null | undefined;
 	const parentId = parentValue?.id;
 	const prevParentIdRef = useRef<string | undefined>(parentId);
+	const { styles } = useStyles();
 
 	const source = parentId ? sourceBuilder(parentId) : "";
 	const { data: options = [], isLoading } = useDependentCodeTable(source, parentId);
@@ -78,7 +80,11 @@ export function AfDependentSelect({
 					const currentValue = value as Enumerated | null | undefined;
 
 					if (readOnly) {
-						return <Typography.Text>{currentValue?.name || "\u00A0"}</Typography.Text>;
+						return (
+							<Typography.Text style={styles.readonlyField}>
+								{currentValue?.name || "\u00A0"}
+							</Typography.Text>
+						);
 					}
 
 					return (
@@ -93,7 +99,7 @@ export function AfDependentSelect({
 							disabled={disabled || !parentId}
 							allowClear={allowClear && !required}
 							placeholder={!parentId ? "Zuerst übergeordnetes Feld auswählen" : "Auswählen..."}
-							style={{ width: "100%" }}
+							className="af-full-width"
 							notFoundContent={isLoading ? <Spin size="small" /> : "Keine Optionen"}
 							options={options.map((o) => ({ value: o.id, label: o.name }))}
 							showSearch

@@ -1,6 +1,8 @@
 import { Radio, Typography } from "antd";
 import { Controller, useFormContext } from "react-hook-form";
 import { AfField } from "./AfField";
+import { useStyles } from "../../hooks/useStyles";
+import { getFlexDirectionStyle } from "../../styles";
 import type { AfFieldProps, Enumerated } from "../../types";
 
 interface AfRadioGroupProps extends AfFieldProps {
@@ -33,6 +35,7 @@ export function AfRadioGroup({
 	...fieldProps
 }: AfRadioGroupProps) {
 	const { control } = useFormContext();
+	const { styles } = useStyles();
 
 	return (
 		<AfField name={name} {...fieldProps}>
@@ -49,7 +52,7 @@ export function AfRadioGroup({
 
 					if (readOnly) {
 						return (
-							<Typography.Text style={{ fontWeight: "600" }}>
+							<Typography.Text style={styles.readonlyField}>
 								{selectedOption?.name || "\u00A0"}
 							</Typography.Text>
 						);
@@ -62,10 +65,7 @@ export function AfRadioGroup({
 							disabled={disabled}
 							optionType="button"
 							buttonStyle="solid"
-							style={{
-								display: "flex",
-								flexDirection: direction === "vertical" ? "column" : "row",
-							}}
+							style={getFlexDirectionStyle(direction)}
 						>
 							{options.map((option) => (
 								<Radio key={option.id} value={option.id}>

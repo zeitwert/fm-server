@@ -4,3 +4,4 @@ export { useDebouncedValue } from "./useDebouncedValue";
 export { useAggregateSearch } from "./useAggregateSearch";
 export { useEditableEntity } from "./useEditableEntity";
 export type { UseEditableEntityOptions, UseEditableEntityResult } from "./useEditableEntity";
+export { useStyles } from "./useStyles";

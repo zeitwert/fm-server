@@ -1,4 +1,6 @@
 import { Typography } from "antd";
+import { useStyles } from "../../hooks/useStyles";
+import { getFieldContainerStyle } from "../../styles";
 import type { AfFieldProps } from "../../types";
 
 interface AfStaticProps extends Omit<AfFieldProps, "name" | "disabled" | "readOnly"> {
@@ -19,16 +21,18 @@ interface AfStaticProps extends Omit<AfFieldProps, "name" | "disabled" | "readOn
  * <AfStatic label="Beschreibung" value={description} multiline />
  */
 export function AfStatic({ value, multiline, label, size = 12 }: AfStaticProps) {
+	const { styles, token } = useStyles();
+
 	// Use a simplified version of AfField layout without form context dependency
 	return (
-		<div style={{ width: `${(size / 12) * 100}%`, padding: "0 8px", boxSizing: "border-box" }}>
-			<div style={{ marginBottom: 16 }}>
+		<div style={getFieldContainerStyle(size)}>
+			<div style={styles.formItemMargin}>
 				{label && (
 					<label
 						style={{
 							display: "block",
-							marginBottom: 8,
-							color: "rgba(0, 0, 0, 0.45)",
+							marginBottom: token.marginSM,
+							color: token.colorTextSecondary,
 							fontSize: 14,
 						}}
 					>
@@ -36,7 +40,7 @@ export function AfStatic({ value, multiline, label, size = 12 }: AfStaticProps) 
 					</label>
 				)}
 				{multiline ? (
-					<Typography.Paragraph style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+					<Typography.Paragraph className="af-readonly-field-text">
 						{value ?? "\u00A0"}
 					</Typography.Paragraph>
 				) : (

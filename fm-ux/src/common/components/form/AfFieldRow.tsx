@@ -21,14 +21,7 @@ interface AfFieldRowProps {
  */
 export function AfFieldRow({ children, gutter = 0 }: AfFieldRowProps) {
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexWrap: "wrap",
-				margin: `0 -8px`,
-				gap: gutter > 0 ? `${gutter}px` : undefined,
-			}}
-		>
+		<div className="af-field-row" style={gutter > 0 ? { gap: `${gutter}px` } : undefined}>
 			{children}
 		</div>
 	);

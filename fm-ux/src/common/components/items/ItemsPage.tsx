@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { PreviewDrawer } from "./PreviewDrawer";
+import { useStyles } from "../../hooks/useStyles";
 import type { ColumnType, Key } from "antd/es/table/interface";
 import type { ReactNode } from "react";
 
@@ -130,6 +131,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 	} = props;
 	const { t } = useTranslation("common");
 	const navigate = useNavigate();
+	const { styles, token } = useStyles();
 
 	// -------------------------------------------------------------------------
 	// State
@@ -215,39 +217,23 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 	return (
 		<div
 			ref={containerRef}
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				height: "100%",
-				overflow: "hidden",
-			}}
+			className="af-flex-column af-full-height"
+			style={{ overflow: "hidden" }}
 		>
 			{/* Header */}
 			<Card
-				style={{
-					marginBottom: 0,
-					background: "#f5f5f5",
-					borderBottomLeftRadius: 0,
-					borderBottomRightRadius: 0,
-				}}
+				className="af-card-header-connected"
 				styles={{
 					body: {
-						padding: "8px 16px",
+						padding: `${token.paddingXS}px ${token.padding}px`,
 					},
 				}}
 			>
-				<div
-					ref={headerRef}
-					style={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "center",
-					}}
-				>
+				<div ref={headerRef} className="af-flex-between">
 					<Space>
-						{icon && <span style={{ fontSize: 24, color: "#1677ff" }}>{icon}</span>}
+						{icon && <span style={styles.primaryIcon}>{icon}</span>}
 						<div>
-							<Title level={4} style={{ margin: 0 }}>
+							<Title level={4} className="af-mb-0">
 								{entityLabel}
 							</Title>
 							<Text type="secondary">
@@ -294,14 +280,12 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 
 			{/* Table */}
 			<Card
+				className="af-card-body-connected"
 				style={{
 					flex: 1,
 					minHeight: 0,
 					display: "flex",
 					flexDirection: "column",
-					borderTopLeftRadius: 0,
-					borderTopRightRadius: 0,
-					margin: 0,
 				}}
 				styles={{
 					body: {
@@ -321,15 +305,13 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 					/>
 				) : (
 					<div
+						className="items-page-table-wrapper af-flex-column"
 						style={{
 							flex: 1,
 							minHeight: 0,
-							display: "flex",
-							flexDirection: "column",
 							overflow: "hidden",
 							position: "relative",
 						}}
-						className="items-page-table-wrapper"
 					>
 						<div
 							style={{
@@ -353,16 +335,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 								})}
 							/>
 						</div>
-						<div
-							style={{
-								padding: "16px",
-								borderTop: "1px solid #f0f0f0",
-								display: "flex",
-								justifyContent: "flex-end",
-								flexShrink: 0,
-								background: "#ffffff",
-							}}
-						>
+						<div style={styles.paginationFooter}>
 							<Pagination
 								current={currentPage}
 								total={items.length}

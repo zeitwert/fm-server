@@ -3,6 +3,8 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useFormContext } from "react-hook-form";
 import type { ReactNode } from "react";
 import type { AfFieldProps } from "../../types";
+import { useStyles } from "../../hooks/useStyles";
+import { getFieldContainerStyle } from "../../styles";
 
 interface AfFieldInternalProps extends AfFieldProps {
 	children: ReactNode;
@@ -30,6 +32,7 @@ export function AfField({
 	const {
 		formState: { errors },
 	} = useFormContext();
+	const { styles } = useStyles();
 
 	// Support nested paths like "currentRating.ratingDate"
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,16 +40,16 @@ export function AfField({
 	const errorMessage = error?.message as string | undefined;
 
 	return (
-		<div style={{ width: `${(size / 12) * 100}%`, padding: "0 8px", boxSizing: "border-box" }}>
+		<div style={getFieldContainerStyle(size)}>
 			<Form.Item
 				label={
 					label && (
 						<span>
 							{label}
-							{required && <span style={{ color: "red", marginLeft: 2 }}>*</span>}
+							{required && <span className="af-required-asterisk">*</span>}
 							{helpText && (
 								<Tooltip title={helpText}>
-									<QuestionCircleOutlined style={{ marginLeft: 4, color: "#999" }} />
+									<QuestionCircleOutlined className="af-help-icon" />
 								</Tooltip>
 							)}
 						</span>
@@ -55,7 +58,7 @@ export function AfField({
 				required={false}
 				validateStatus={errorMessage ? "error" : undefined}
 				help={errorMessage}
-				style={{ marginBottom: 16 }}
+				style={styles.formItemMargin}
 			>
 				{children}
 			</Form.Item>

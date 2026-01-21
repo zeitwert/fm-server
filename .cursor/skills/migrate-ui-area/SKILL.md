@@ -354,7 +354,7 @@ export function {Entity}Page({ {entity}Id }: {Entity}PageProps) {
 
   if (isLoading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
+      <div className="af-loading-inline">
         <Spin size="large" />
       </div>
     );
@@ -442,12 +442,12 @@ export function {Entity}MainForm({ disabled }: {Entity}MainFormProps) {
 
   return (
     <div>
-      <Card size="small" title={t("basicInfo")} style={{ marginBottom: 16 }}>
+      <Card size="small" title={t("basicInfo")} className="af-mb-16">
         <AfInput name="name" label={t("name")} required readOnly={disabled} />
         <AfTextArea name="description" label={t("description")} rows={4} readOnly={disabled} />
       </Card>
 
-      <Card size="small" title={t("classification")} style={{ marginBottom: 16 }}>
+      <Card size="small" title={t("classification")} className="af-mb-16">
         <AfFieldRow>
           <AfSelect
             name="status"
@@ -531,7 +531,7 @@ export function {Entity}CreationForm({ onSuccess, onCancel }: CreateFormProps) {
         <AfSelect name="owner" label={t("owner")} source="oe/objUser" required />
         <AfTextArea name="description" label={t("description")} rows={3} />
 
-        <div style={{ marginTop: 24, textAlign: "right" }}>
+        <div className="af-flex-end af-mt-24">
           <Space>
             <Button onClick={onCancel}>{tCommon("cancel")}</Button>
             <Button type="primary" htmlType="submit" loading={createMutation.isPending}>
@@ -659,7 +659,64 @@ The project uses relative imports, not path aliases. Import paths are relative t
 
 Use `Af*` components from `common/components/form` (see form examples above).
 
-### 6. Permission Checks
+### 6. Styling with Design Tokens and CSS Classes
+
+**Prefer CSS utility classes over inline styles.** The application uses a design system with:
+
+- **CSS utility classes** in `global.css` (e.g., `.af-mb-16`, `.af-loading-inline`, `.af-flex-center`)
+- **`useStyles()` hook** from `common/hooks/useStyles` for theme-aware style patterns
+
+**Common patterns:**
+
+```typescript
+// ✓ Correct: Use CSS class for margin
+<Card size="small" title={t("basicInfo")} className="af-mb-16">
+
+// ✗ Avoid: Inline style
+<Card size="small" title={t("basicInfo")} style={{ marginBottom: 16 }}>
+
+// ✓ Correct: Use CSS class for loading state
+<div className="af-loading-inline">
+  <Spin size="large" />
+</div>
+
+// ✗ Avoid: Inline style
+<div style={{ display: "flex", justifyContent: "center", padding: 48 }}>
+  <Spin size="large" />
+</div>
+
+// ✓ Correct: Use CSS class for button row
+<div className="af-flex-end af-mt-24">
+  <Space>...</Space>
+</div>
+```
+
+**Available CSS utility classes:**
+
+- Layout: `.af-flex`, `.af-flex-column`, `.af-flex-center`, `.af-flex-between`, `.af-flex-end`
+- Spacing: `.af-mb-0`, `.af-mb-4`, `.af-mb-8`, `.af-mb-16`, `.af-mb-24`, `.af-ml-*`, `.af-p-*`
+- Loading: `.af-loading-container` (full-height), `.af-loading-inline` (with padding)
+- Cards: `.af-card-header`, `.af-card-header-connected`, `.af-card-body-connected`
+
+**When to use `useStyles()` hook:**
+
+Use the hook when you need theme-aware styles that depend on Ant Design tokens:
+
+```typescript
+import { useStyles } from "../../../common/hooks/useStyles";
+
+function MyComponent() {
+  const { styles, token } = useStyles();
+  
+  // Use token for dynamic colors
+  return <div style={{ color: token.colorPrimary }}>...</div>;
+  
+  // Or use pre-built patterns
+  return <Typography.Text style={styles.readonlyField}>...</Typography.Text>;
+}
+```
+
+### 7. Permission Checks
 
 Use role constants from `session/model/types`:
 
@@ -671,7 +728,7 @@ function canEdit(role?: string): boolean {
 }
 ```
 
-### 7. Code Comments
+### 8. Code Comments
 
 Avoid superfluous comments. The code should be self-documenting. Do not add file headers, interface comments, or inline comments that restate what the code already shows. Only comment when explaining *why*, not *what*.
 
@@ -690,3 +747,6 @@ After implementing, verify:
 - **Account implementation**: `fm-ux/src/areas/account/` (reference implementation)
 - **Form components**: `fm-ux/src/common/components/form/`
 - **Item components**: `fm-ux/src/common/components/items/`
+- **Design system**: `fm-ux/src/styles/global.css` (CSS utility classes)
+- **Style hooks**: `fm-ux/src/common/hooks/useStyles.ts` (theme-aware styles)
+- **Style constants**: `fm-ux/src/common/styles/constants.ts` (dynamic style builders)
