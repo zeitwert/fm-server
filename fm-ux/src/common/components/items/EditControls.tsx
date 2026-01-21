@@ -40,14 +40,16 @@ export function EditControls({
 
 	if (!isEditing) {
 		return canEdit ? (
-			<Button icon={<EditOutlined />} onClick={onEdit} aria-label="common:edit">
-				{t("edit")}
-			</Button>
+			<Space style={{ marginBottom: 8 }}>
+				<Button icon={<EditOutlined />} onClick={onEdit} aria-label="common:edit">
+					{t("edit")}
+				</Button>
+			</Space>
 		) : null;
 	}
 
 	return (
-		<Space>
+		<Space style={{ marginBottom: 8 }}>
 			<Button icon={<CloseOutlined />} onClick={onCancel} aria-label="common:cancel">
 				{t("cancel")}
 			</Button>

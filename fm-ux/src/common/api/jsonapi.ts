@@ -171,10 +171,14 @@ function resolveRelation(
 ): Record<string, unknown> {
 	const included = includedMap.get(`${ref.type}:${ref.id}`);
 	if (included) {
+		const attributes = { ...included.attributes };
+		if ("caption" in attributes) {
+			attributes.name = attributes.caption;
+		}
 		// Return full included resource with flattened attributes
 		return {
 			id: included.id,
-			...included.attributes,
+			...attributes,
 		};
 	}
 	// Fallback: return just the reference id

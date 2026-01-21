@@ -95,9 +95,12 @@ export interface {Entity}FormInput {
 
 Create Zod schemas for form validation. Avoid `.refine()` on nullable schemas due to Zod 4 compatibility; validate required fields at submit time instead.
 
+**Display-only fields**: Use the `displayOnly()` helper from `common/utils/zodMeta` to mark fields that should be shown in the form but excluded from submission. This makes the schema the single source of truth.
+
 ```typescript
 import { z } from "zod";
 import type { Enumerated } from "../../common/types";
+import { displayOnly } from "../../common/utils/zodMeta";
 
 const enumeratedSchema = z
   .object({
@@ -111,6 +114,8 @@ export interface {Entity}FormInput {
   description?: string | null;
   status: Enumerated | null;
   owner: Enumerated | null;
+  // Display-only fields (not validated, not submitted)
+  relatedItems?: RelatedItem[];
 }
 
 export const {entity}FormSchema = z.object({
@@ -118,6 +123,8 @@ export const {entity}FormSchema = z.object({
   description: z.string().optional().nullable(),
   status: enumeratedSchema,
   owner: enumeratedSchema,
+  // Display-only: excluded from submission via schema metadata
+  relatedItems: displayOnly(z.array(z.any()).optional()),
 });
 
 export type {Entity}FormData = z.infer<typeof {entity}FormSchema>;
@@ -496,9 +503,10 @@ export function {Entity}Page({ {entity}Id }: {Entity}PageProps) {
     queryFn: (id) => {entity}Api.get(id),
     updateFn: {entity}Api.update,
     schema: {entity}FormSchema,
-    transformToForm,
-    transformFromForm,
   });
+
+  // Note: Display-only fields (marked with displayOnly() in schema) are
+  // automatically excluded from submission - no extra configuration needed.
 
   if (isLoading) {
     return (
@@ -780,7 +788,31 @@ Add imports, add to resources, and add `"{entity}"` to the `ns` array.
 
 **How to identify:** Check the DTO adapter (`{Entity}DtoAdapter.kt`) - fields with `config.relationship()` are relationships, fields with `config.field()` are attributes. The base class `AggregateDtoAdapterBase` configures `owner` and `tenant` as fields (attributes), not relationships. Alternatively, check the JSONAPI response: `relationships` section = relationships, `attributes` = attributes/code tables/base fields.
 
-### 2. Readonly Array in queryKey
+### 2. Display-Only Fields (Schema Metadata)
+
+Use the `displayOnly()` helper to mark form fields that should be displayed but not submitted:
+
+```typescript
+import { displayOnly } from "../../common/utils/zodMeta";
+
+export const {entity}FormSchema = z.object({
+  name: z.string().min(1, "Name ist erforderlich"),
+  // Display-only: automatically excluded from submission
+  contacts: displayOnly(z.array(z.any()).optional()),
+});
+```
+
+**How it works:**
+- `displayOnly()` wraps a Zod schema and adds metadata via `.describe()`
+- `transformFromForm()` automatically detects and excludes these fields
+- No need to pass `displayOnlyFields` to `useEditableEntity` - it's detected from schema metadata
+
+**Benefits:**
+- Schema is the single source of truth for field configuration
+- No duplication between schema definition and hook options
+- Extensible for future field metadata (e.g., `readOnly`, `computed`)
+
+### 3. Readonly Array in queryKey
 
 `ItemsPage` expects `string[]` but query keys are `readonly`. Spread to convert:
 
@@ -789,7 +821,7 @@ queryKey={[...{entity}Keys.lists()]}  // ✓ Correct
 queryKey={{entity}Keys.lists()}       // ✗ Type error
 ```
 
-### 3. Related Panel Components
+### 4. Related Panel Components
 
 `NotesList`, `TasksList`, and `ActivityTimeline` are presentational components. They expect data arrays, not entity IDs. Pass empty arrays for stubs:
 
@@ -799,15 +831,15 @@ queryKey={{entity}Keys.lists()}       // ✗ Type error
 <ActivityTimeline activities={[] as Activity[]} />
 ```
 
-### 4. Relative Imports
+### 5. Relative Imports
 
 The project uses relative imports, not path aliases. Import paths are relative to the file location.
 
-### 5. Form Components
+### 6. Form Components
 
 Use `Af*` components from `common/components/form` (see form examples above).
 
-### 6. Grid System (24-Column)
+### 7. Grid System (24-Column)
 
 The AF form components use a **24-column grid system** (consistent with Ant Design's `Col` component). The `size` prop determines field width:
 
@@ -826,7 +858,7 @@ The AF form components use a **24-column grid system** (consistent with Ant Desi
 </AfFieldRow>
 ```
 
-### 7. Styling with Design Tokens and CSS Classes
+### 8. Styling with Design Tokens and CSS Classes
 
 **Prefer CSS utility classes over inline styles.** The application uses a design system with:
 
@@ -883,7 +915,7 @@ function MyComponent() {
 }
 ```
 
-### 8. Permission Checks
+### 9. Permission Checks
 
 Use role constants from `session/model/types`:
 
@@ -895,7 +927,7 @@ function canEdit(role?: string): boolean {
 }
 ```
 
-### 9. Code Comments
+### 10. Code Comments
 
 Avoid superfluous comments. The code should be self-documenting. Do not add file headers, interface comments, or inline comments that restate what the code already shows. Only comment when explaining *why*, not *what*.
 
@@ -914,6 +946,8 @@ After implementing, verify:
 - **Account implementation**: `fm-ux/src/areas/account/` (reference implementation)
 - **Form components**: `fm-ux/src/common/components/form/`
 - **Item components**: `fm-ux/src/common/components/items/`
+- **Schema metadata**: `fm-ux/src/common/utils/zodMeta.ts` (displayOnly helper)
+- **Form transformers**: `fm-ux/src/common/utils/formTransformers.ts` (entity ↔ form conversion)
 - **Design system**: `fm-ux/src/styles/global.css` (CSS utility classes)
 - **Style hooks**: `fm-ux/src/common/hooks/useStyles.ts` (theme-aware styles)
 - **Style constants**: `fm-ux/src/common/styles/constants.ts` (dynamic style builders)

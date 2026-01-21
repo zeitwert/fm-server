@@ -6,12 +6,13 @@
  */
 
 import { useState, useEffect } from "react";
-import { useForm, UseFormReturn, FieldValues, Resolver } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, UseFormReturn, FieldValues, Resolver, FieldErrors } from "react-hook-form";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import type { z } from "zod";
 import { extractDirtyValues } from "../utils/formUtils";
+import { transformToForm, transformFromForm } from "../utils/formTransformers";
 import type { BaseEntity } from "../api/entityApi";
 import type { EntityMeta } from "../api/jsonapi";
 
@@ -29,15 +30,21 @@ export interface UseEditableEntityOptions<T extends BaseEntity, TFormData extend
 	/** Function to fetch the entity by ID */
 	queryFn: (id: string) => Promise<T>;
 
-	/** Zod schema for form validation */
+	/** Zod schema for form validation (must be a z.object() schema) */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	schema: z.ZodType<TFormData, any, any>;
 
-	/** Transform entity data to form data (optional, defaults to identity) */
-	transformToForm?: (entity: T) => TFormData;
+	/**
+	 * Custom transform from entity to form data.
+	 * If not provided, uses generic schema-based transformation.
+	 */
+	transformToFormOverride?: (entity: T) => TFormData;
 
-	/** Transform form data back to entity data for updates (optional, defaults to identity) */
-	transformFromForm?: (formData: Partial<TFormData>) => Partial<T>;
+	/**
+	 * Custom transform from form data back to entity data.
+	 * If not provided, uses generic schema-based transformation.
+	 */
+	transformFromFormOverride?: (formData: Partial<TFormData>) => Partial<T>;
 
 	/** Function to update the entity */
 	updateFn: (data: Partial<T> & { id: string; meta?: EntityMeta }) => Promise<T>;
@@ -97,8 +104,8 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 		queryKey,
 		queryFn,
 		schema,
-		transformToForm,
-		transformFromForm,
+		transformToFormOverride,
+		transformFromFormOverride,
 		updateFn,
 		successMessage = "Gespeichert",
 		errorMessagePrefix = "Fehler beim Speichern",
@@ -127,19 +134,20 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 	// -------------------------------------------------------------------------
 
 	const form = useForm<TFormData>({
+		// Use standardSchemaResolver for Zod v4 compatibility
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		resolver: zodResolver(schema) as Resolver<TFormData, any>,
+		resolver: standardSchemaResolver(schema) as Resolver<TFormData, any>,
 	});
 
 	// Sync form with server data when it changes
 	useEffect(() => {
 		if (query.data) {
-			const formData = transformToForm
-				? transformToForm(query.data)
-				: (query.data as unknown as TFormData);
+			const formData = transformToFormOverride
+				? transformToFormOverride(query.data)
+				: transformToForm<TFormData>(query.data, schema);
 			form.reset(formData);
 		}
-	}, [query.data, transformToForm, form]);
+	}, [query.data, transformToFormOverride, schema, form]);
 
 	// -------------------------------------------------------------------------
 	// Update mutation
@@ -180,24 +188,32 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 	/**
 	 * Save changes: submit only dirty fields with optimistic locking.
 	 */
-	const handleStore = form.handleSubmit(async (formData) => {
-		const dirtyFields = form.formState.dirtyFields;
-		const changedData = extractDirtyValues(
-			formData as Record<string, unknown>,
-			dirtyFields as Record<string, unknown>
-		) as Partial<TFormData>;
+	const handleStore = form.handleSubmit(
+		async (formData) => {
+			const dirtyFields = form.formState.dirtyFields;
+			const changedData = extractDirtyValues(
+				formData as Record<string, unknown>,
+				dirtyFields as Record<string, unknown>
+			) as Partial<TFormData>;
 
-		// Transform form data back to entity format if needed
-		const serverData = transformFromForm
-			? transformFromForm(changedData)
-			: (changedData as unknown as Partial<T>);
+			// Transform form data back to entity format
+			const serverData = transformFromFormOverride
+				? transformFromFormOverride(changedData)
+				: transformFromForm<T>(changedData as Record<string, unknown>, schema);
 
-		await mutation.mutateAsync({
-			id,
-			...serverData,
-			meta: { clientVersion: query.data?.meta?.version },
-		});
-	});
+			await mutation.mutateAsync({
+				id,
+				...serverData,
+				meta: { clientVersion: query.data?.meta?.version },
+			});
+		},
+		(errors: FieldErrors<TFormData>) => {
+			console.error("[useEditableEntity] Validation failed; aborting save.", {
+				entityId: id,
+				errors,
+			});
+		}
+	);
 
 	// -------------------------------------------------------------------------
 	// Return value

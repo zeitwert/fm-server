@@ -18,7 +18,6 @@ import { AccountMainForm } from "./forms/AccountMainForm";
 import type { Account } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
 import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
-import type { Enumerated } from "../../../common/types";
 
 interface AccountPageProps {
 	accountId: string;
@@ -26,42 +25,6 @@ interface AccountPageProps {
 
 function canEditAccount(role?: string): boolean {
 	return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
-}
-
-function transformToForm(account: Account): AccountFormInput {
-	return {
-		// Editable fields
-		name: account.name,
-		description: account.description ?? "",
-		accountType: account.accountType,
-		clientSegment: account.clientSegment ?? null,
-		tenant: account.tenant,
-		owner: account.owner,
-		inflationRate: account.inflationRate ?? null,
-		discountRate: account.discountRate ?? null,
-		mainContact: account.mainContact ?? null,
-		// Display-only fields
-		contacts: account.contacts ?? [],
-	};
-}
-
-function transformFromForm(formData: Partial<AccountFormInput>): Partial<Account> {
-	const result: Partial<Account> = {};
-
-	if (formData.name !== undefined) result.name = formData.name;
-	if (formData.description !== undefined) result.description = formData.description || undefined;
-	if (formData.accountType !== undefined) result.accountType = formData.accountType as Enumerated;
-	if (formData.clientSegment !== undefined)
-		result.clientSegment = formData.clientSegment ?? undefined;
-	if (formData.tenant !== undefined) result.tenant = formData.tenant as Enumerated;
-	if (formData.owner !== undefined) result.owner = formData.owner as Enumerated;
-	if (formData.inflationRate !== undefined)
-		result.inflationRate = formData.inflationRate ?? undefined;
-	if (formData.discountRate !== undefined) result.discountRate = formData.discountRate ?? undefined;
-	if (formData.mainContact !== undefined) result.mainContact = formData.mainContact ?? undefined;
-	// Note: contacts is display-only, not included in submission
-
-	return result;
 }
 
 export function AccountPage({ accountId }: AccountPageProps) {
@@ -87,8 +50,6 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		queryFn: (id) => accountApi.get(id),
 		updateFn: accountApi.update,
 		schema: accountFormSchema,
-		transformToForm,
-		transformFromForm,
 	});
 
 	if (isLoading) {

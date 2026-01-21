@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Col, Row, Table, Typography } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { useFormContext } from "react-hook-form";
@@ -10,6 +11,7 @@ import {
 	AfFieldRow,
 	AfFieldGroup,
 } from "../../../../common/components/form";
+import type { Enumerated } from "../../../../common/types";
 import type { AccountContact } from "../../types";
 import type { AccountFormInput } from "../../schemas";
 import { useSessionStore } from "../../../../session/model/sessionStore";
@@ -26,7 +28,13 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
 
 	// Read contacts from form context (display-only)
-	const contacts = watch("contacts") ?? [];
+	const contacts = watch("contacts");
+
+	// Transform contacts to select options for mainContact field
+	const contactOptions: Enumerated[] = useMemo(
+		() => (contacts ?? []).map((c) => ({ id: c.id, name: c.caption })),
+		[contacts]
+	);
 
 	const contactColumns: ColumnType<AccountContact>[] = [
 		{
@@ -122,7 +130,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 							<AfSelect
 								name="mainContact"
 								label={t("mainContact")}
-								source="contact/objContact"
+								options={contactOptions}
 								readOnly={disabled}
 								size={12}
 							/>
@@ -160,10 +168,10 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 			<Row>
 				<Col span={24}>
 					<AfFieldGroup legend={t("contacts")}>
-						{contacts.length === 0 && (
+						{(!contacts || contacts.length === 0) && (
 							<Typography.Text type="secondary">{t("noContacts")}</Typography.Text>
 						)}
-						{contacts.length > 0 && (
+						{contacts && contacts.length > 0 && (
 							<Table<AccountContact>
 								columns={contactColumns}
 								dataSource={contacts}

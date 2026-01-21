@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { Enumerated } from "../../common/types";
 import type { AccountContact } from "./types";
+import { displayOnly } from "../../common/utils/zodMeta";
 
 const enumeratedSchema = z
 	.object({
@@ -54,8 +55,8 @@ export const accountFormSchema = z.object({
 	inflationRate: z.number().optional().nullable(),
 	discountRate: z.number().optional().nullable(),
 	mainContact: enumeratedSchema.optional(),
-	// contacts is display-only, no validation needed
-	contacts: z.array(z.any()).optional(),
+	// contacts is display-only (excluded from submission via schema metadata)
+	contacts: displayOnly(z.array(z.any()).optional()),
 });
 
 export type AccountFormData = z.infer<typeof accountFormSchema>;
