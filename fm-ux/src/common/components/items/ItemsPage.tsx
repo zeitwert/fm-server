@@ -183,12 +183,17 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 			...first,
 			render: (value, record, index) => {
 				// Get the original render content
-				const originalContent = first.render
-					? first.render(value, record, index)
-					: value;
+				const originalContent = first.render ? first.render(value, record, index) : value;
 
 				return (
-					<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
+							gap: 8,
+						}}
+					>
 						<span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{originalContent}</span>
 						<Button
 							type="text"
@@ -248,10 +253,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 	// -------------------------------------------------------------------------
 
 	const rowSelection = selectable
-		? {
-				selectedRowKeys,
-				onChange: (keys: Key[]) => setSelectedRowKeys(keys),
-			}
+		? { selectedRowKeys, onChange: (keys: Key[]) => setSelectedRowKeys(keys) }
 		: undefined;
 
 	return (

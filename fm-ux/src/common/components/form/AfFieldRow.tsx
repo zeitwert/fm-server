@@ -11,12 +11,12 @@ interface AfFieldRowProps {
  * Horizontal layout container for form fields.
  *
  * Replaces `FieldRow` from fm-ui. Uses flexbox for layout.
- * Fields inside determine their own width via the `size` prop (1-12 grid system).
+ * Fields inside determine their own width via the `size` prop (1-24 grid system).
  *
  * @example
  * <AfFieldRow>
- *   <AfInput name="buildingNr" label="Nr" size={3} />
- *   <AfInput name="name" label="Name" size={9} />
+ *   <AfInput name="buildingNr" label="Nr" size={6} />
+ *   <AfInput name="name" label="Name" size={18} />
  * </AfFieldRow>
  */
 export function AfFieldRow({ children, gutter = 0 }: AfFieldRowProps) {

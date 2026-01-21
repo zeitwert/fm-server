@@ -17,7 +17,7 @@ interface AfFieldInternalProps extends AfFieldProps {
  * - Label display with optional required asterisk
  * - Help text tooltip
  * - Error message display from React Hook Form
- * - Grid-based sizing (1-12 columns)
+ * - Grid-based sizing (1-24 columns)
  *
  * This component is used internally by all Af* input components.
  */
@@ -26,7 +26,7 @@ export function AfField({
 	label,
 	required,
 	helpText,
-	size = 12,
+	size = 24,
 	children,
 }: AfFieldInternalProps) {
 	const {

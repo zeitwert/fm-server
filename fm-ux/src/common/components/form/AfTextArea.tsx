@@ -24,12 +24,13 @@ export function AfTextArea({
 	placeholder,
 	readOnly,
 	disabled,
+	size,
 	...fieldProps
 }: AfTextAreaProps) {
 	const { control } = useFormContext();
 
 	return (
-		<AfField name={name} {...fieldProps}>
+		<AfField name={name} size={size} {...fieldProps}>
 			<Controller
 				name={name}
 				control={control}

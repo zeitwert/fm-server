@@ -43,8 +43,16 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 	return (
 		<div>
 			<Card size="small" title={t("basicInfo")} className="af-mb-16">
-				<AfInput name="name" label={t("name")} required readOnly={disabled} />
-				<AfTextArea name="description" label={t("description")} rows={4} readOnly={disabled} />
+				<AfFieldRow>
+					<AfInput name="name" label={t("name")} required readOnly={disabled} size={12} />
+					<AfTextArea
+						name="description"
+						label={t("description")}
+						rows={4}
+						readOnly={disabled}
+						size={12}
+					/>
+				</AfFieldRow>
 			</Card>
 
 			<Card size="small" title={t("classification")} className="af-mb-16">
@@ -55,14 +63,14 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 						source="account/codeAccountType"
 						required
 						readOnly={disabled}
-						size={6}
+						size={12}
 					/>
 					<AfSelect
 						name="clientSegment"
 						label={t("clientSegment")}
 						source="account/codeClientSegment"
 						readOnly={disabled}
-						size={6}
+						size={12}
 					/>
 				</AfFieldRow>
 			</Card>
@@ -76,7 +84,7 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 							source="oe/objTenant"
 							required
 							readOnly={disabled}
-							size={6}
+							size={12}
 						/>
 					) : (
 						<AfSelect
@@ -85,7 +93,7 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 							source="oe/objTenant"
 							required
 							readOnly
-							size={6}
+							size={12}
 						/>
 					)}
 					<AfSelect
@@ -94,7 +102,7 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 						source="oe/objUser"
 						required
 						readOnly={disabled}
-						size={6}
+						size={12}
 					/>
 				</AfFieldRow>
 			</Card>
@@ -110,7 +118,7 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 						min={0}
 						max={100}
 						readOnly={disabled}
-						size={6}
+						size={12}
 					/>
 					<AfNumber
 						name="discountRate"
@@ -120,7 +128,7 @@ export function AccountMainForm({ disabled, contacts = [] }: AccountMainFormProp
 						min={0}
 						max={100}
 						readOnly={disabled}
-						size={6}
+						size={12}
 					/>
 				</AfFieldRow>
 			</Card>

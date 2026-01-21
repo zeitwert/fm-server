@@ -20,7 +20,7 @@ interface AfStaticProps extends Omit<AfFieldProps, "name" | "disabled" | "readOn
  * <AfStatic label="Erstellt am" value={formatDate(createdAt)} />
  * <AfStatic label="Beschreibung" value={description} multiline />
  */
-export function AfStatic({ value, multiline, label, size = 12 }: AfStaticProps) {
+export function AfStatic({ value, multiline, label, size = 24 }: AfStaticProps) {
 	const { styles, token } = useStyles();
 
 	// Use a simplified version of AfField layout without form context dependency

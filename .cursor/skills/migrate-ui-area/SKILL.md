@@ -603,7 +603,7 @@ export function {Entity}MainForm({ disabled }: {Entity}MainFormProps) {
             source="{entity}/code{Entity}Status"
             required
             readOnly={disabled}
-            size={6}
+            size={12}
           />
           <AfSelect
             name="owner"
@@ -611,7 +611,7 @@ export function {Entity}MainForm({ disabled }: {Entity}MainFormProps) {
             source="oe/objUser"
             required
             readOnly={disabled}
-            size={6}
+            size={12}
           />
         </AfFieldRow>
       </Card>
@@ -807,7 +807,26 @@ The project uses relative imports, not path aliases. Import paths are relative t
 
 Use `Af*` components from `common/components/form` (see form examples above).
 
-### 6. Styling with Design Tokens and CSS Classes
+### 6. Grid System (24-Column)
+
+The AF form components use a **24-column grid system** (consistent with Ant Design's `Col` component). The `size` prop determines field width:
+
+| Size | Width | Use Case |
+|------|-------|----------|
+| 6    | 25%   | Quarter width |
+| 8    | 33%   | Third width |
+| 12   | 50%   | Half width |
+| 18   | 75%   | Three-quarters |
+| 24   | 100%  | Full width (default) |
+
+```typescript
+<AfFieldRow>
+  <AfInput name="code" label="Code" size={6} />      {/* 25% */}
+  <AfInput name="name" label="Name" size={18} />     {/* 75% */}
+</AfFieldRow>
+```
+
+### 7. Styling with Design Tokens and CSS Classes
 
 **Prefer CSS utility classes over inline styles.** The application uses a design system with:
 
@@ -864,7 +883,7 @@ function MyComponent() {
 }
 ```
 
-### 7. Permission Checks
+### 8. Permission Checks
 
 Use role constants from `session/model/types`:
 
@@ -876,7 +895,7 @@ function canEdit(role?: string): boolean {
 }
 ```
 
-### 8. Code Comments
+### 9. Code Comments
 
 Avoid superfluous comments. The code should be self-documenting. Do not add file headers, interface comments, or inline comments that restate what the code already shows. Only comment when explaining *why*, not *what*.
 

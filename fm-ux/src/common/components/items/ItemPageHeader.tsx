@@ -5,7 +5,7 @@
  * and action buttons in a consistent layout.
  */
 
-import { Card, Row, Col, Space, Typography } from "antd";
+import { Card, Row, Col, Typography } from "antd";
 import { Link } from "@tanstack/react-router";
 import { useStyles } from "../../hooks/useStyles";
 import type { ReactNode } from "react";
@@ -42,22 +42,22 @@ export function ItemPageHeader({ icon, title, details, actions }: ItemPageHeader
 			style={styles.cardHeader}
 			styles={{
 				body: {
-					padding: `${token.paddingXS}px ${token.padding}px`,
+					padding: `${token.padding}px ${token.padding}px`,
 				},
 			}}
 		>
 			<Row justify="space-between" align="middle" wrap={false}>
 				<Col flex="none">
-					<Space size="middle">
+					<div style={{ display: "flex", alignItems: "center", gap: 12 }}>
 						{icon && <span style={styles.primaryIcon}>{icon}</span>}
-						<Title level={4} className="af-mb-0">
+						<Title level={4} style={{ margin: 0, lineHeight: "24px" }}>
 							{title}
 						</Title>
-					</Space>
+					</div>
 				</Col>
 				{details && details.length > 0 && (
 					<Col flex="auto" className="af-ml-48">
-						<Space size={40}>
+						<div style={{ display: "flex", alignItems: "center", gap: 40 }}>
 							{details.map((detail, index) => (
 								<div key={index}>
 									<Text type="secondary" style={{ fontSize: 12, display: "block" }}>
@@ -73,7 +73,7 @@ export function ItemPageHeader({ icon, title, details, actions }: ItemPageHeader
 									</div>
 								</div>
 							))}
-						</Space>
+						</div>
 					</Col>
 				)}
 				{actions && <Col flex="none">{actions}</Col>}

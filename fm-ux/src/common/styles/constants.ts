@@ -8,12 +8,12 @@ import type { CSSProperties } from "react";
  */
 
 /**
- * Creates a field container style with calculated width based on 12-column grid.
- * @param size - Number of columns (1-12)
+ * Creates a field container style with calculated width based on 24-column grid.
+ * @param size - Number of columns (1-24)
  */
 export function getFieldContainerStyle(size: number): CSSProperties {
 	return {
-		width: `${(size / 12) * 100}%`,
+		width: `${(size / 24) * 100}%`,
 		padding: "0 8px",
 		boxSizing: "border-box",
 	};
