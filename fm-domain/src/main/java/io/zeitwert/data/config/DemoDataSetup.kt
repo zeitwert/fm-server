@@ -8,6 +8,8 @@ import io.zeitwert.data.dsl.Account
 import io.zeitwert.data.dsl.AccountContext
 import io.zeitwert.data.dsl.Building
 import io.zeitwert.data.dsl.DslUtil
+import io.zeitwert.data.dsl.Note
+import io.zeitwert.data.dsl.Task
 import io.zeitwert.data.dsl.Tenant
 import io.zeitwert.fm.building.api.BuildingService
 import io.zeitwert.fm.oe.model.ObjTenant
@@ -19,6 +21,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import kotlin.random.Random
 
 /** Demo data setup - provides demo tenant, users, accounts, and contacts via repositories. */
@@ -60,6 +63,8 @@ class DemoDataSetup(
 		Tenant.init(directory)
 		Account.init(directory)
 		Building.init(directory, buildingService)
+		Note.init(directory)
+		Task.init(directory)
 
 		// Upload kernel tenant logo if empty
 		setupKernelTenantLogo()
@@ -97,6 +102,8 @@ class DemoDataSetup(
 		}.also { (tenantId, userId) ->
 			allTenantIds.add(tenantId)
 			attachRandomContactsToAllBuildings(tenantId, userId)
+			attachRandomNotesToAllEntities(tenantId, userId)
+			attachRandomTasksToAllEntities(tenantId, userId)
 		}
 
 		Tenant("8253", "Diessenhofen", "community", "demo/tenant/logo-8253.jpg") {
@@ -113,6 +120,8 @@ class DemoDataSetup(
 		}.also { (tenantId, userId) ->
 			allTenantIds.add(tenantId)
 			attachRandomContactsToAllBuildings(tenantId, userId)
+			attachRandomNotesToAllEntities(tenantId, userId)
+			attachRandomTasksToAllEntities(tenantId, userId)
 		}
 
 		Tenant("8266", "Steckborn", "community", "demo/tenant/logo-8266.jpg") {
@@ -129,6 +138,8 @@ class DemoDataSetup(
 		}.also { (tenantId, userId) ->
 			allTenantIds.add(tenantId)
 			attachRandomContactsToAllBuildings(tenantId, userId)
+			attachRandomNotesToAllEntities(tenantId, userId)
+			attachRandomTasksToAllEntities(tenantId, userId)
 		}
 
 		Tenant("8476", "Unterstammheim", "community", "demo/tenant/logo-8476.jpg") {
@@ -145,6 +156,8 @@ class DemoDataSetup(
 		}.also { (tenantId, userId) ->
 			allTenantIds.add(tenantId)
 			attachRandomContactsToAllBuildings(tenantId, userId)
+			attachRandomNotesToAllEntities(tenantId, userId)
+			attachRandomTasksToAllEntities(tenantId, userId)
 		}
 
 		// Add all tenants to zeitwert.io users so they can access all tenants
@@ -280,6 +293,106 @@ class DemoDataSetup(
 				Building.buildingRepository.transaction {
 					Building.buildingRepository.store(building)
 				}
+			}
+		}
+	}
+
+	/**
+	 * Post-processing: attach random notes (1-5) to all buildings, accounts, and contacts.
+	 * Notes are standalone aggregates with their own backpointer, so we only need to store the notes.
+	 */
+	private fun attachRandomNotesToAllEntities(
+		tenantId: Any,
+		userId: Any,
+	) {
+		DslUtil.logger.info(
+			"{}Attaching random notes to entities of tenant {} (user: {})",
+			DslUtil.indent,
+			tenantId,
+			userId,
+		)
+
+		// Set tenant context for security
+		TestSessionContext.overrideTenantId(tenantId as Int)
+		TestSessionContext.overrideUserId(userId as Int)
+
+		// Get all accounts for this tenant
+		val accountIds = Account.accountRepository.find(null)
+		if (accountIds.isEmpty()) {
+			DslUtil.logger.warn("{}Tenant {} has no accounts to process for notes.", DslUtil.indent, tenantId)
+			return
+		}
+
+		for (accountId in accountIds) {
+			TestSessionContext.overrideAccountId(accountId as Int)
+
+			// Attach notes to the account
+			val account = Account.accountRepository.get(accountId)
+			Note.attachRandomNotes(account, userId)
+
+			// Attach notes to all contacts in this account
+			val contactIds = Account.contactRepository.find(null)
+			for (contactId in contactIds) {
+				val contact = Account.contactRepository.get(contactId)
+				Note.attachRandomNotes(contact, userId)
+			}
+
+			// Attach notes to all buildings in this account
+			val buildingIds = Building.buildingRepository.find(null)
+			for (buildingId in buildingIds) {
+				val building = Building.buildingRepository.get(buildingId)
+				Note.attachRandomNotes(building, userId)
+			}
+		}
+	}
+
+	/**
+	 * Post-processing: attach random tasks (1-5) to all buildings, accounts, and contacts.
+	 * Tasks are standalone aggregates with their own backpointer, so we only need to store the tasks.
+	 */
+	private fun attachRandomTasksToAllEntities(
+		tenantId: Any,
+		userId: Any,
+	) {
+		DslUtil.logger.info(
+			"{}Attaching random tasks to entities of tenant {} (user: {})",
+			DslUtil.indent,
+			tenantId,
+			userId,
+		)
+
+		// Set tenant context for security
+		TestSessionContext.overrideTenantId(tenantId as Int)
+		TestSessionContext.overrideUserId(userId as Int)
+
+		val timestamp = OffsetDateTime.now()
+
+		// Get all accounts for this tenant
+		val accountIds = Account.accountRepository.find(null)
+		if (accountIds.isEmpty()) {
+			DslUtil.logger.warn("{}Tenant {} has no accounts to process for tasks.", DslUtil.indent, tenantId)
+			return
+		}
+
+		for (accountId in accountIds) {
+			TestSessionContext.overrideAccountId(accountId as Int)
+
+			// Attach tasks to the account
+			val account = Account.accountRepository.get(accountId)
+			Task.attachRandomTasks(account, userId, timestamp)
+
+			// Attach tasks to all contacts in this account
+			val contactIds = Account.contactRepository.find(null)
+			for (contactId in contactIds) {
+				val contact = Account.contactRepository.get(contactId)
+				Task.attachRandomTasks(contact, userId, timestamp)
+			}
+
+			// Attach tasks to all buildings in this account
+			val buildingIds = Building.buildingRepository.find(null)
+			for (buildingId in buildingIds) {
+				val building = Building.buildingRepository.get(buildingId)
+				Task.attachRandomTasks(building, userId, timestamp)
 			}
 		}
 	}

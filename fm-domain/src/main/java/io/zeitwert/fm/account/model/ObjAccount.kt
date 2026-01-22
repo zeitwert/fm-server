@@ -7,11 +7,13 @@ import io.zeitwert.fm.account.model.enums.CodeCurrency
 import io.zeitwert.fm.collaboration.model.ItemWithNotes
 import io.zeitwert.fm.contact.model.ObjContact
 import io.zeitwert.fm.dms.model.ObjDocument
+import io.zeitwert.fm.task.model.ItemWithTasks
 import java.math.BigDecimal
 
 interface ObjAccount :
 	Obj,
-	ItemWithNotes {
+	ItemWithNotes,
+	ItemWithTasks {
 
 	var key: String?
 

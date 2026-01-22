@@ -21,6 +21,7 @@ import io.zeitwert.fm.dms.model.ObjDocument
 import io.zeitwert.fm.dms.model.enums.CodeContentKind
 import io.zeitwert.fm.dms.model.enums.CodeDocumentCategory
 import io.zeitwert.fm.dms.model.enums.CodeDocumentKind
+import io.zeitwert.fm.task.model.impl.AggregateWithTasksMixin
 import java.math.BigDecimal
 
 class ObjAccountImpl(
@@ -28,7 +29,8 @@ class ObjAccountImpl(
 	isNew: Boolean,
 ) : FMObjBase(repository, isNew),
 	ObjAccount,
-	AggregateWithNotesMixin {
+	AggregateWithNotesMixin,
+	AggregateWithTasksMixin {
 
 	// Base properties
 	override var key by baseProperty<String>("key")
@@ -53,6 +55,8 @@ class ObjAccountImpl(
 	override fun aggregate(): ObjAccount = this
 
 	override fun noteRepository() = directory.getRepository(ObjNote::class.java) as ObjNoteRepository
+
+	override fun taskRepository() = repository.taskRepository
 
 	override fun doAfterCreate(sessionContext: SessionContext) {
 		super.doAfterCreate(sessionContext)

@@ -4,12 +4,14 @@ import io.zeitwert.app.obj.model.base.FMObjRepositoryBase
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.account.model.ObjAccount
 import io.zeitwert.fm.account.model.ObjAccountRepository
+import io.zeitwert.fm.task.model.DocTaskRepository
 import io.zeitwert.persist.ObjAccountPersistenceProvider
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component("objAccountRepository")
 class ObjAccountRepositoryImpl(
+	override val taskRepository: DocTaskRepository,
 	override val sessionContext: SessionContext,
 ) : FMObjRepositoryBase<ObjAccount>(
 		ObjAccount::class.java,
