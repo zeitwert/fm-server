@@ -14,7 +14,7 @@ const { useToken } = theme;
 type MenuItem = Required<MenuProps>["items"][number];
 
 export function AppSidebar() {
-	const { t } = useTranslation("app");
+	const { t } = useTranslation();
 	const { token } = useToken();
 	const { sidebarCollapsed, toggleSidebar } = useShellStore();
 	const { sessionInfo } = useSessionStore();
@@ -127,7 +127,7 @@ export function AppSidebar() {
 					}}
 					aria-label="app:collapse"
 				>
-					{!sidebarCollapsed && t("collapse")}
+					{!sidebarCollapsed && t("app:action.collapse")}
 				</Button>
 			</Flex>
 		</Flex>

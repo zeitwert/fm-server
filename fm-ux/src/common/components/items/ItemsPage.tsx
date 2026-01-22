@@ -51,8 +51,8 @@ export interface ItemsPageProps<T extends { id: string }> {
 	// Entity configuration
 	/** Entity type identifier (e.g., "building", "contact") */
 	entityType: string;
-	/** Display name for the entity type (plural, e.g., "Immobilien") */
-	entityLabel: string;
+	/** Translation key for entity count with ICU plural (e.g., "account.label.entityCount") */
+	entityLabelKey: string;
 	/** Display name for the entity type (singular, e.g., "Immobilie") */
 	entityLabelSingular: string;
 	/** Icon for the entity type */
@@ -115,7 +115,7 @@ export interface ItemsPageProps<T extends { id: string }> {
 
 export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 	const {
-		entityLabel,
+		entityLabelKey,
 		entityLabelSingular,
 		icon,
 		queryKey,
@@ -132,7 +132,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 		bulkActions = [],
 		headerActions,
 	} = props;
-	const { t } = useTranslation("common");
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { styles, token } = useStyles();
 
@@ -237,7 +237,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 			setSelectedRowKeys([]);
 		} catch (error) {
 			const err = error as Error & { detail?: string };
-			message.error(err.detail || `Fehler: ${err.message}`);
+			message.error(err.detail || t("common:message.error", { message: err.message }));
 		}
 	};
 
@@ -284,7 +284,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 					<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
 						{icon && <span style={styles.primaryIcon}>{icon}</span>}
 						<Title level={4} style={{ margin: 0, lineHeight: "24px" }}>
-							{entityLabel}
+							{entityLabelSingular}
 						</Title>
 					</div>
 
@@ -292,7 +292,9 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 						{/* Bulk actions */}
 						{selectedRowKeys.length > 0 && bulkActions.length > 0 && (
 							<>
-								<Text type="secondary">{selectedRowKeys.length} ausgewählt</Text>
+								<Text type="secondary">
+									{t("common:label.selectedCount", { count: selectedRowKeys.length })}
+								</Text>
 								{bulkActions.map((action) => (
 									<Button
 										key={action.key}
@@ -317,14 +319,14 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 								onClick={() => setIsCreateOpen(true)}
 								aria-label="common:create"
 							>
-								{t("create")} {entityLabelSingular}
+								{t("common:action.createEntity", { entity: entityLabelSingular })}
 							</Button>
 						)}
 					</div>
 				</div>
 				{/* Count row */}
 				<Text type="secondary" style={{ marginLeft: 32 }}>
-					{items.length} {items.length === 1 ? entityLabelSingular : entityLabel}
+					{t(entityLabelKey, { count: items.length })}
 				</Text>
 			</Card>
 
@@ -350,7 +352,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 			>
 				{isError ? (
 					<Empty
-						description={`Fehler beim Laden der ${entityLabel}`}
+						description={t("common:message.loadError", { entity: entityLabelSingular })}
 						image={Empty.PRESENTED_IMAGE_SIMPLE}
 					/>
 				) : (
@@ -391,7 +393,9 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 								total={items.length}
 								pageSize={pageSize}
 								showSizeChanger
-								showTotal={(total, range) => `${range[0]}-${range[1]} von ${total}`}
+								showTotal={(total, range) =>
+									t("common:message.paginationRange", { start: range[0], end: range[1], total })
+								}
 								pageSizeOptions={["10", "20", "50", "100"]}
 								onChange={(page, size) => {
 									setCurrentPage(page);
@@ -407,7 +411,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 			{CreateForm && (
 				<Modal
 					open={isCreateOpen}
-					title={`${entityLabelSingular} erstellen`}
+					title={t("common:action.createEntity", { entity: entityLabelSingular })}
 					onCancel={() => setIsCreateOpen(false)}
 					footer={null}
 					destroyOnHidden

@@ -28,7 +28,7 @@ function canEditContact(role?: string): boolean {
 }
 
 export function ContactPage({ contactId }: ContactPageProps) {
-	const { t } = useTranslation("contact");
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id;
@@ -64,9 +64,9 @@ export function ContactPage({ contactId }: ContactPageProps) {
 		return (
 			<Result
 				status="404"
-				title={t("notFound")}
-				subTitle={t("notFoundDescription")}
-				extra={<a onClick={() => navigate({ to: "/contact" })}>{t("backToList")}</a>}
+				title={t("contact:message.notFound")}
+				subTitle={t("contact:message.notFoundDescription")}
+				extra={<a onClick={() => navigate({ to: "/contact" })}>{t("contact:action.backToList")}</a>}
 			/>
 		);
 	}
@@ -80,20 +80,20 @@ export function ContactPage({ contactId }: ContactPageProps) {
 				title={contact.caption || `${contact.firstName ?? ""} ${contact.lastName ?? ""}`.trim()}
 				details={[
 					{
-						label: t("account"),
+						label: t("contact:label.account"),
 						content: contact.account?.caption,
 						link: contact.account ? `/account/${contact.account.id}` : undefined,
 					},
 					{
-						label: t("email"),
+						label: t("contact:label.email"),
 						content: contact.email,
 					},
 					{
-						label: t("mobile"),
+						label: t("contact:label.mobile"),
 						content: contact.mobile,
 					},
 					{
-						label: t("owner"),
+						label: t("contact:label.owner"),
 						content: contact.owner?.name,
 					},
 				]}
@@ -105,17 +105,17 @@ export function ContactPage({ contactId }: ContactPageProps) {
 						sections={[
 							{
 								key: "notes",
-								label: "Notizen",
+								label: t("contact:label.notes"),
 								children: <NotesList notes={[] as Note[]} />,
 							},
 							{
 								key: "tasks",
-								label: "Aufgaben",
+								label: t("contact:label.tasks"),
 								children: <TasksList tasks={[] as Task[]} />,
 							},
 							{
 								key: "activity",
-								label: "Aktivität",
+								label: t("contact:label.activity"),
 								children: <ActivityTimeline activities={[] as Activity[]} />,
 							},
 						]}
@@ -139,7 +139,7 @@ export function ContactPage({ contactId }: ContactPageProps) {
 							items={[
 								{
 									key: "main",
-									label: t("tabMain"),
+									label: t("contact:label.tabMain"),
 									children: <ContactMainForm disabled={!isEditing} />,
 								},
 							]}

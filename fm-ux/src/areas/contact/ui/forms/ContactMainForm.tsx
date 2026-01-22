@@ -16,7 +16,7 @@ interface ContactMainFormProps {
 }
 
 export function ContactMainForm({ disabled }: ContactMainFormProps) {
-	const { t } = useTranslation("contact");
+	const { t } = useTranslation();
 	const { sessionInfo } = useSessionStore();
 	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
 
@@ -24,11 +24,11 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 		<div>
 			<Row>
 				<Col span={12}>
-					<AfFieldGroup legend={t("basicInfo")}>
+					<AfFieldGroup legend={t("contact:label.basicInfo")}>
 						<AfFieldRow>
 							<AfSelect
 								name="salutation"
-								label={t("salutation")}
+								label={t("contact:label.salutation")}
 								source="contact/codeSalutation"
 								required
 								readOnly={disabled}
@@ -36,33 +36,48 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 							/>
 							<AfSelect
 								name="title"
-								label={t("title")}
+								label={t("contact:label.title")}
 								source="contact/codeTitle"
 								readOnly={disabled}
 								size={6}
 							/>
-							<AfInput name="firstName" label={t("firstName")} readOnly={disabled} size={12} />
+							<AfInput
+								name="firstName"
+								label={t("contact:label.firstName")}
+								readOnly={disabled}
+								size={12}
+							/>
 						</AfFieldRow>
 						<AfFieldRow>
 							<AfInput
 								name="lastName"
-								label={t("lastName")}
+								label={t("contact:label.lastName")}
 								required
 								readOnly={disabled}
 								size={12}
 							/>
 							<AfSelect
 								name="contactRole"
-								label={t("contactRole")}
+								label={t("contact:label.contactRole")}
 								source="contact/codeContactRole"
 								readOnly={disabled}
 								size={12}
 							/>
 						</AfFieldRow>
 						<AfFieldRow>
-							<AfInput name="email" label={t("email")} readOnly={disabled} size={12} />
-							<AfInput name="mobile" label={t("mobile")} readOnly={disabled} size={6} />
-							<AfInput name="phone" label={t("phone")} readOnly={disabled} size={6} />
+							<AfInput
+								name="email"
+								label={t("contact:label.email")}
+								readOnly={disabled}
+								size={12}
+							/>
+							<AfInput
+								name="mobile"
+								label={t("contact:label.mobile")}
+								readOnly={disabled}
+								size={6}
+							/>
+							<AfInput name="phone" label={t("contact:label.phone")} readOnly={disabled} size={6} />
 						</AfFieldRow>
 					</AfFieldGroup>
 				</Col>
@@ -70,7 +85,7 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 					<AfFieldGroup legend="&nbsp;">
 						<AfTextArea
 							name="description"
-							label={t("description")}
+							label={t("contact:label.description")}
 							rows={4}
 							readOnly={disabled}
 							size={24}
@@ -81,19 +96,24 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 
 			<Row>
 				<Col span={12}>
-					<AfFieldGroup legend={t("personal")}>
+					<AfFieldGroup legend={t("contact:label.personal")}>
 						<AfFieldRow>
-							<AfDatePicker name="birthDate" label={t("birthDate")} readOnly={disabled} size={8} />
+							<AfDatePicker
+								name="birthDate"
+								label={t("contact:label.birthDate")}
+								readOnly={disabled}
+								size={8}
+							/>
 						</AfFieldRow>
 					</AfFieldGroup>
 				</Col>
 				<Col span={12}>
-					<AfFieldGroup legend={t("organization")}>
+					<AfFieldGroup legend={t("contact:label.organization")}>
 						<AfFieldRow>
 							{isKernelTenant ? (
 								<AfSelect
 									name="tenant"
-									label={t("tenant")}
+									label={t("contact:label.tenant")}
 									source="oe/objTenant"
 									required
 									readOnly={disabled}
@@ -102,7 +122,7 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 							) : (
 								<AfSelect
 									name="tenant"
-									label={t("tenant")}
+									label={t("contact:label.tenant")}
 									source="oe/objTenant"
 									required
 									readOnly
@@ -111,7 +131,7 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 							)}
 							<AfSelect
 								name="owner"
-								label={t("owner")}
+								label={t("contact:label.owner")}
 								source="oe/objUser"
 								required
 								readOnly={disabled}

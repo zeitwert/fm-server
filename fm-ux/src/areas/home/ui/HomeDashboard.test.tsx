@@ -36,11 +36,11 @@ describe("Home Dashboard", () => {
 			await waitFor(
 				() => {
 					// Map card
-					expect(screen.getByText("home:mapTitle")).toBeInTheDocument();
+					expect(screen.getByText("home:label.mapTitle")).toBeInTheDocument();
 					// Statistics card
-					expect(screen.getByText("home:statistics")).toBeInTheDocument();
+					expect(screen.getByText("home:label.statistics")).toBeInTheDocument();
 					// Recent actions card
-					expect(screen.getByText("home:recentActions")).toBeInTheDocument();
+					expect(screen.getByText("home:label.recentActions")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
@@ -48,7 +48,7 @@ describe("Home Dashboard", () => {
 			// Open activities card (includes count)
 			await waitFor(
 				() => {
-					expect(screen.getByText(/home:openActivities/)).toBeInTheDocument();
+					expect(screen.getByText(/home\.label\.openActivities/)).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
@@ -84,9 +84,9 @@ describe("Home Dashboard", () => {
 			expect(screen.getByText("18")).toBeInTheDocument();
 
 			// Verify labels are present (using translation keys)
-			expect(screen.getByText("home:buildings")).toBeInTheDocument();
-			expect(screen.getByText("home:portfolios")).toBeInTheDocument();
-			expect(screen.getByText("home:ratings")).toBeInTheDocument();
+			expect(screen.getByText("home:label.buildings")).toBeInTheDocument();
+			expect(screen.getByText("home:label.portfolios")).toBeInTheDocument();
+			expect(screen.getByText("home:label.ratings")).toBeInTheDocument();
 		});
 
 		it("should display formatted currency values", async () => {
@@ -119,7 +119,7 @@ describe("Home Dashboard", () => {
 			// The card title includes the count from fixture (1 activity)
 			await waitFor(
 				() => {
-					expect(screen.getByText("home:openActivities (1)")).toBeInTheDocument();
+					expect(screen.getByText("home:label.openActivities (1)")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
@@ -131,14 +131,14 @@ describe("Home Dashboard", () => {
 			// Wait for activities card to load
 			await waitFor(
 				() => {
-					expect(screen.getByText("home:openActivities (1)")).toBeInTheDocument();
+					expect(screen.getByText("home:label.openActivities (1)")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
 
 			// The activity with dueAt=now is overdue, so it's in a collapsed section
 			// Find and click the collapse panel to expand it
-			const overdueSection = await screen.findByText(/home:overdue/);
+			const overdueSection = await screen.findByText(/home\.label\.overdue/);
 			expect(overdueSection).toBeInTheDocument();
 
 			// Click to expand the overdue section
@@ -163,7 +163,7 @@ describe("Home Dashboard", () => {
 			// Wait for recent actions card to load
 			await waitFor(
 				() => {
-					expect(screen.getByText("home:recentActions")).toBeInTheDocument();
+					expect(screen.getByText("home:label.recentActions")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
@@ -187,13 +187,13 @@ describe("Home Dashboard", () => {
 			// Wait for statistics card
 			await waitFor(
 				() => {
-					expect(screen.getByText("home:statistics")).toBeInTheDocument();
+					expect(screen.getByText("home:label.statistics")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
 
 			// Building condition label
-			expect(screen.getByText("home:buildingCondition")).toBeInTheDocument();
+			expect(screen.getByText("home:label.buildingCondition")).toBeInTheDocument();
 
 			// ZN Portfolio value
 			expect(screen.getByText("0.79")).toBeInTheDocument();
@@ -207,7 +207,7 @@ describe("Home Dashboard", () => {
 			// Wait for map card title
 			await waitFor(
 				() => {
-					expect(screen.getByText("home:mapTitle")).toBeInTheDocument();
+					expect(screen.getByText("home:label.mapTitle")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);

@@ -17,8 +17,7 @@ const getAccountLogoUrl = (accountId: string): string => {
 const { Title, Text } = Typography;
 
 export function SelectionWizard() {
-	const { t } = useTranslation("login");
-	const { t: tCommon } = useTranslation("common");
+	const { t } = useTranslation();
 	const {
 		userInfo,
 		selectedTenant,
@@ -60,14 +59,14 @@ export function SelectionWizard() {
 
 	// Determine title and hint based on current step
 	const getTitle = () => {
-		if (showTenantSelection) return t("selectTenant");
-		if (showAccountSelection) return t("selectAccount");
-		return tCommon("loading");
+		if (showTenantSelection) return t("login:label.selectTenant");
+		if (showAccountSelection) return t("login:label.selectAccount");
+		return t("common:label.loading");
 	};
 
 	const getHint = () => {
-		if (showTenantSelection) return t("selectTenantHint");
-		if (showAccountSelection) return t("selectAccountHint");
+		if (showTenantSelection) return t("login:label.selectTenantHint");
+		if (showAccountSelection) return t("login:label.selectAccountHint");
 		return "";
 	};
 
@@ -206,7 +205,7 @@ export function SelectionWizard() {
 									onClick={handleBack}
 									aria-label="login:backToTenant"
 								>
-									{t("backToTenant")}
+									{t("login:action.backToTenant")}
 								</Button>
 							</div>
 						)}
@@ -216,7 +215,7 @@ export function SelectionWizard() {
 				{/* Logout option - always available */}
 				<div style={{ marginTop: 24, textAlign: "center" }}>
 					<Button type="link" onClick={logout} aria-label="login:signInDifferent">
-						{t("signInDifferent")}
+						{t("login:action.signInDifferent")}
 					</Button>
 				</div>
 			</Card>

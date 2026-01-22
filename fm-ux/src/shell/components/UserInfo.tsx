@@ -7,7 +7,7 @@ const { Text, Link } = Typography;
 const { useToken } = theme;
 
 function UserInfoContent() {
-	const { t } = useTranslation("common");
+	const { t } = useTranslation();
 	const { token } = useToken();
 	const { sessionInfo, logout } = useSessionStore();
 
@@ -25,16 +25,18 @@ function UserInfoContent() {
 			{/* User info rows */}
 			<div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
 				<div style={{ display: "flex" }}>
-					<Text style={labelStyle}>{t("email")}:</Text>
+					<Text style={labelStyle}>{t("common:label.email")}:</Text>
 					<Text style={valueStyle}>{sessionInfo?.user?.email}</Text>
 				</div>
 				<div style={{ display: "flex" }}>
-					<Text style={labelStyle}>{t("tenant")}:</Text>
+					<Text style={labelStyle}>{t("common:label.tenant")}:</Text>
 					<Text style={valueStyle}>{sessionInfo?.tenant?.caption}</Text>
 				</div>
 				<div style={{ display: "flex" }}>
-					<Text style={labelStyle}>{t("account")}:</Text>
-					<Text style={valueStyle}>{sessionInfo?.account?.name ?? t("noAccount")}</Text>
+					<Text style={labelStyle}>{t("common:label.account")}:</Text>
+					<Text style={valueStyle}>
+						{sessionInfo?.account?.name ?? t("common:label.noAccount")}
+					</Text>
 				</div>
 			</div>
 
@@ -42,8 +44,8 @@ function UserInfoContent() {
 
 			{/* Action links */}
 			<div style={{ display: "flex", gap: 16 }}>
-				<Link>{t("settings")}</Link>
-				<Link onClick={() => logout()}>{t("logout")}</Link>
+				<Link>{t("common:label.settings")}</Link>
+				<Link onClick={() => logout()}>{t("common:action.logout")}</Link>
 			</div>
 
 			<Divider style={{ margin: "12px 0" }} />
@@ -68,7 +70,7 @@ export function UserInfo() {
 	const { token } = useToken();
 	const { sessionInfo } = useSessionStore();
 
-	const userName = sessionInfo?.user?.name ?? t("user");
+	const userName = sessionInfo?.user?.name ?? t("common:label.user");
 
 	return (
 		<Popover content={<UserInfoContent />} title={userName} trigger="click" placement="bottomRight">

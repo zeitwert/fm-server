@@ -52,8 +52,8 @@ describe("AppSidebar", () => {
 			expect(screen.getByTestId("app-switcher-segmented")).toBeInTheDocument();
 
 			// Verify both app options are available (translation keys)
-			expect(screen.getByText("app:appFm")).toBeInTheDocument();
-			expect(screen.getByText("app:appFmAdmin")).toBeInTheDocument();
+			expect(screen.getByText("app:label.appFm")).toBeInTheDocument();
+			expect(screen.getByText("app:label.appFmAdmin")).toBeInTheDocument();
 		});
 
 		it("should NOT display app switcher when only one application is available", async () => {
@@ -74,7 +74,7 @@ describe("AppSidebar", () => {
 			await waitFor(
 				() => {
 					// Navigation menu should be present
-					expect(screen.getByText("app:dashboard")).toBeInTheDocument();
+					expect(screen.getByText("app:label.dashboard")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
@@ -171,10 +171,10 @@ describe("AppSidebar", () => {
 			await waitFor(
 				() => {
 					// fm app has: home, portfolio, building, task areas
-					expect(screen.getByText("app:dashboard")).toBeInTheDocument();
-					expect(screen.getByText("app:portfolios")).toBeInTheDocument();
-					expect(screen.getByText("app:buildings")).toBeInTheDocument();
-					expect(screen.getByText("app:tasks")).toBeInTheDocument();
+					expect(screen.getByText("app:label.dashboard")).toBeInTheDocument();
+					expect(screen.getByText("app:label.portfolios")).toBeInTheDocument();
+					expect(screen.getByText("app:label.buildings")).toBeInTheDocument();
+					expect(screen.getByText("app:label.tasks")).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);

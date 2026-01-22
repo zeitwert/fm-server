@@ -1,16 +1,22 @@
 {
-	"welcome": "Willkommen",
-	"subtitle": "Anmelden um fortzufahren",
-	"email": "E-Mail",
-	"password": "Passwort",
-	"signIn": "Anmelden",
-	"emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
-	"emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
-	"passwordRequired": "Bitte geben Sie Ihr Passwort ein",
-	"selectTenant": "Mandant auswählen",
-	"selectTenantHint": "Wählen Sie den Mandanten, mit dem Sie arbeiten möchten",
-	"selectAccount": "Konto auswählen",
-	"selectAccountHint": "Wählen Sie das Konto, auf das Sie zugreifen möchten",
-	"backToTenant": "Zurück zur Mandantenauswahl",
-	"signInDifferent": "Mit anderem Konto anmelden"
+	"label": {
+		"welcome": "Willkommen",
+		"subtitle": "Anmelden um fortzufahren",
+		"email": "E-Mail",
+		"password": "Passwort",
+		"selectTenant": "Mandant auswählen",
+		"selectTenantHint": "Wählen Sie den Mandanten, mit dem Sie arbeiten möchten",
+		"selectAccount": "Konto auswählen",
+		"selectAccountHint": "Wählen Sie das Konto, auf das Sie zugreifen möchten"
+	},
+	"action": {
+		"signIn": "Anmelden",
+		"backToTenant": "Zurück zur Mandantenauswahl",
+		"signInDifferent": "Mit anderem Konto anmelden"
+	},
+	"message": {
+		"emailRequired": "Bitte geben Sie Ihre E-Mail-Adresse ein",
+		"emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+		"passwordRequired": "Bitte geben Sie Ihr Passwort ein"
+	}
 }

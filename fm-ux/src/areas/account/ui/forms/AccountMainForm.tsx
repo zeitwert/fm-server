@@ -22,7 +22,7 @@ interface AccountMainFormProps {
 }
 
 export function AccountMainForm({ disabled }: AccountMainFormProps) {
-	const { t } = useTranslation("account");
+	const { t } = useTranslation();
 	const { watch } = useFormContext<AccountFormInput>();
 	const { sessionInfo } = useSessionStore();
 	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
@@ -38,17 +38,17 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 
 	const contactColumns: ColumnType<AccountContact>[] = [
 		{
-			title: t("contactName"),
+			title: t("account:label.contactName"),
 			dataIndex: "caption",
 			key: "caption",
 		},
 		{
-			title: t("contactEmail"),
+			title: t("account:label.contactEmail"),
 			dataIndex: "email",
 			key: "email",
 		},
 		{
-			title: t("contactPhone"),
+			title: t("account:label.contactPhone"),
 			dataIndex: "phone",
 			key: "phone",
 		},
@@ -58,14 +58,20 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 		<div>
 			<Row>
 				<Col span={12}>
-					<AfFieldGroup legend={t("basicInfo")}>
+					<AfFieldGroup legend={t("account:label.basicInfo")}>
 						<AfFieldRow>
-							<AfInput name="name" label={t("name")} required readOnly={disabled} size={24} />
+							<AfInput
+								name="name"
+								label={t("account:label.name")}
+								required
+								readOnly={disabled}
+								size={24}
+							/>
 						</AfFieldRow>
 						<AfFieldRow>
 							<AfSelect
 								name="accountType"
-								label={t("accountType")}
+								label={t("account:label.accountType")}
 								source="account/codeAccountType"
 								required
 								readOnly={disabled}
@@ -73,7 +79,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 							/>
 							<AfSelect
 								name="clientSegment"
-								label={t("clientSegment")}
+								label={t("account:label.clientSegment")}
 								source="account/codeClientSegment"
 								readOnly={disabled}
 								size={12}
@@ -85,7 +91,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 					<AfFieldGroup legend="&nbsp;">
 						<AfTextArea
 							name="description"
-							label={t("description")}
+							label={t("account:label.description")}
 							rows={4}
 							readOnly={disabled}
 							size={24}
@@ -96,12 +102,12 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 
 			<Row>
 				<Col span={12}>
-					<AfFieldGroup legend={t("organization")}>
+					<AfFieldGroup legend={t("account:label.organization")}>
 						<AfFieldRow>
 							{isKernelTenant ? (
 								<AfSelect
 									name="tenant"
-									label={t("tenant")}
+									label={t("account:label.tenant")}
 									source="oe/objTenant"
 									required
 									readOnly={disabled}
@@ -110,7 +116,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 							) : (
 								<AfSelect
 									name="tenant"
-									label={t("tenant")}
+									label={t("account:label.tenant")}
 									source="oe/objTenant"
 									required
 									readOnly
@@ -119,7 +125,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 							)}
 							<AfSelect
 								name="owner"
-								label={t("owner")}
+								label={t("account:label.owner")}
 								source="oe/objUser"
 								required
 								readOnly={disabled}
@@ -129,7 +135,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 						<AfFieldRow>
 							<AfSelect
 								name="mainContact"
-								label={t("mainContact")}
+								label={t("account:label.mainContact")}
 								options={contactOptions}
 								readOnly={disabled}
 								size={12}
@@ -138,11 +144,11 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 					</AfFieldGroup>
 				</Col>
 				<Col span={12}>
-					<AfFieldGroup legend={t("calculationParams")}>
+					<AfFieldGroup legend={t("account:label.calculationParams")}>
 						<AfFieldRow>
 							<AfNumber
 								name="inflationRate"
-								label={t("inflationRate")}
+								label={t("account:label.inflationRate")}
 								suffix="%"
 								precision={2}
 								min={0}
@@ -152,7 +158,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 							/>
 							<AfNumber
 								name="discountRate"
-								label={t("discountRate")}
+								label={t("account:label.discountRate")}
 								suffix="%"
 								precision={2}
 								min={0}
@@ -167,9 +173,9 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 
 			<Row>
 				<Col span={24}>
-					<AfFieldGroup legend={t("contacts")}>
+					<AfFieldGroup legend={t("account:label.contacts")}>
 						{(!contacts || contacts.length === 0) && (
-							<Typography.Text type="secondary">{t("noContacts")}</Typography.Text>
+							<Typography.Text type="secondary">{t("account:message.noContacts")}</Typography.Text>
 						)}
 						{contacts && contacts.length > 0 && (
 							<Table<AccountContact>

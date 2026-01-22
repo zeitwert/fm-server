@@ -9,8 +9,7 @@ import { useSessionStore } from "../../../../session/model/sessionStore";
 import { KERNEL_TENANT } from "../../../../session/model/types";
 
 export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
-	const { t } = useTranslation("account");
-	const { t: tCommon } = useTranslation("common");
+	const { t } = useTranslation();
 	const { sessionInfo } = useSessionStore();
 	const createMutation = useCreateAccount();
 	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
@@ -37,24 +36,26 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 		let hasError = false;
 
 		if (!data.name?.trim()) {
-			form.setError("name", { message: "Name ist erforderlich" });
+			form.setError("name", { message: t("account:message.validation.nameRequired") });
 			hasError = true;
 		}
 		if (!data.accountType) {
-			form.setError("accountType", { message: "Kundentyp ist erforderlich" });
+			form.setError("accountType", {
+				message: t("account:message.validation.accountTypeRequired"),
+			});
 			hasError = true;
 		}
 		if (!data.tenant) {
-			form.setError("tenant", { message: "Mandant ist erforderlich" });
+			form.setError("tenant", { message: t("account:message.validation.tenantRequired") });
 			hasError = true;
 		}
 		if (!data.owner) {
-			form.setError("owner", { message: "Verantwortlich ist erforderlich" });
+			form.setError("owner", { message: t("account:message.validation.ownerRequired") });
 			hasError = true;
 		}
 
 		if (hasError) {
-			message.error("Bitte füllen Sie alle Pflichtfelder aus");
+			message.error(t("account:message.validation.fillRequiredFields"));
 			return;
 		}
 
@@ -71,39 +72,39 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 
 	return (
 		<AfForm form={form} onSubmit={handleSubmit}>
-			<AfInput name="name" label={t("name")} required />
+			<AfInput name="name" label={t("account:label.name")} required />
 
 			{isKernelTenant && (
-				<AfSelect name="tenant" label={t("tenant")} source="oe/objTenant" required />
+				<AfSelect name="tenant" label={t("account:label.tenant")} source="oe/objTenant" required />
 			)}
 
-			<AfSelect name="owner" label={t("owner")} source="oe/objUser" required />
+			<AfSelect name="owner" label={t("account:label.owner")} source="oe/objUser" required />
 
 			<AfSelect
 				name="accountType"
-				label={t("accountType")}
+				label={t("account:label.accountType")}
 				source="account/codeAccountType"
 				required
 			/>
 
 			<AfSelect
 				name="clientSegment"
-				label={t("clientSegment")}
+				label={t("account:label.clientSegment")}
 				source="account/codeClientSegment"
 			/>
 
-			<AfTextArea name="description" label={t("description")} rows={3} />
+			<AfTextArea name="description" label={t("account:label.description")} rows={3} />
 
 			<div style={{ marginTop: 24, textAlign: "right" }}>
 				<Space>
-					<Button onClick={onCancel}>{tCommon("cancel")}</Button>
+					<Button onClick={onCancel}>{t("common:action.cancel")}</Button>
 					<Button
 						type="primary"
 						htmlType="submit"
 						loading={createMutation.isPending}
 						aria-label="account:create"
 					>
-						{tCommon("create")}
+						{t("common:action.create")}
 					</Button>
 				</Space>
 			</div>

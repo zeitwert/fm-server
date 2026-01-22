@@ -6,14 +6,14 @@ import { useHomeMapBuildings } from "../model";
 import { useSessionStore } from "../../../session/model/sessionStore";
 
 export function HomeCardMap() {
-	const { t } = useTranslation("home");
+	const { t } = useTranslation();
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const { data, isLoading } = useHomeMapBuildings(accountId);
 	const buildings = data?.buildings ?? [];
 
 	return (
 		<DashboardCard
-			title={t("mapTitle")}
+			title={t("home:label.mapTitle")}
 			bodyStyle={{ padding: 0, background: "transparent", borderRadius: 0 }}
 		>
 			<div style={{ height: "100%", position: "relative" }}>

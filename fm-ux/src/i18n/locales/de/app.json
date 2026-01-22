@@ -1,17 +1,21 @@
 {
-	"collapse": "Einklappen",
-	"expand": "Ausklappen",
-	"dashboard": "Dashboard",
-	"buildings": "Immobilien",
-	"portfolios": "Portfolios",
-	"tasks": "Aufgaben",
-	"accounts": "Kunden",
-	"contacts": "Kontakte",
-	"tenants": "Mandanten",
-	"users": "Benutzer",
-	"documents": "Dokumente",
-	"appFm": "FM",
-	"appFmAdmin": "Admin",
-	"appTenantAdmin": "Mandant",
-	"appAppAdmin": "App"
+	"label": {
+		"dashboard": "Dashboard",
+		"buildings": "Immobilien",
+		"portfolios": "Portfolios",
+		"tasks": "Aufgaben",
+		"accounts": "Kunden",
+		"contacts": "Kontakte",
+		"tenants": "Mandanten",
+		"users": "Benutzer",
+		"documents": "Dokumente",
+		"appFm": "FM",
+		"appFmAdmin": "Admin",
+		"appTenantAdmin": "Mandant",
+		"appAppAdmin": "App"
+	},
+	"action": {
+		"collapse": "Einklappen",
+		"expand": "Ausklappen"
+	}
 }

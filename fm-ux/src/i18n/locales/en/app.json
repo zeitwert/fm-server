@@ -1,17 +1,21 @@
 {
-	"collapse": "Collapse",
-	"expand": "Expand",
-	"dashboard": "Dashboard",
-	"buildings": "Buildings",
-	"portfolios": "Portfolios",
-	"tasks": "Tasks",
-	"accounts": "Accounts",
-	"contacts": "Contacts",
-	"tenants": "Tenants",
-	"users": "Users",
-	"documents": "Documents",
-	"appFm": "FM",
-	"appFmAdmin": "Admin",
-	"appTenantAdmin": "Tenant",
-	"appAppAdmin": "App"
+	"label": {
+		"dashboard": "Dashboard",
+		"buildings": "Buildings",
+		"portfolios": "Portfolios",
+		"tasks": "Tasks",
+		"accounts": "Accounts",
+		"contacts": "Contacts",
+		"tenants": "Tenants",
+		"users": "Users",
+		"documents": "Documents",
+		"appFm": "FM",
+		"appFmAdmin": "Admin",
+		"appTenantAdmin": "Tenant",
+		"appAppAdmin": "App"
+	},
+	"action": {
+		"collapse": "Collapse",
+		"expand": "Expand"
+	}
 }

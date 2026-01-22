@@ -36,7 +36,7 @@ export function ConfirmModal({
 	onConfirm,
 	onCancel,
 }: ConfirmModalProps) {
-	const { t } = useTranslation("common");
+	const { t } = useTranslation();
 	const [loading, setLoading] = useState(false);
 
 	const handleConfirm = async () => {
@@ -60,7 +60,7 @@ export function ConfirmModal({
 			onCancel={onCancel}
 			footer={[
 				<Button key="cancel" onClick={onCancel} aria-label="common:cancel">
-					{t("cancel")}
+					{t("common:action.cancel")}
 				</Button>,
 				<Button
 					key="confirm"
@@ -70,7 +70,7 @@ export function ConfirmModal({
 					onClick={handleConfirm}
 					aria-label="common:confirm"
 				>
-					{confirmText || t("confirm")}
+					{confirmText || t("common:action.confirm")}
 				</Button>,
 			]}
 			closable={!loading}

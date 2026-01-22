@@ -14,8 +14,7 @@ interface ContactCreationFormProps extends CreateFormProps {
 }
 
 export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCreationFormProps) {
-	const { t } = useTranslation("contact");
-	const { t: tCommon } = useTranslation("common");
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
 	const createMutation = useCreateContact();
@@ -47,24 +46,24 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 		let hasError = false;
 
 		if (!data.lastName?.trim()) {
-			form.setError("lastName", { message: "Nachname ist erforderlich" });
+			form.setError("lastName", { message: t("contact:message.validation.lastNameRequired") });
 			hasError = true;
 		}
 		if (!data.salutation) {
-			form.setError("salutation", { message: "Anrede ist erforderlich" });
+			form.setError("salutation", { message: t("contact:message.validation.salutationRequired") });
 			hasError = true;
 		}
 		if (!data.tenant) {
-			form.setError("tenant", { message: "Mandant ist erforderlich" });
+			form.setError("tenant", { message: t("contact:message.validation.tenantRequired") });
 			hasError = true;
 		}
 		if (!data.owner) {
-			form.setError("owner", { message: "Verantwortlich ist erforderlich" });
+			form.setError("owner", { message: t("contact:message.validation.ownerRequired") });
 			hasError = true;
 		}
 
 		if (hasError) {
-			message.error("Bitte füllen Sie alle Pflichtfelder aus");
+			message.error(t("contact:message.validation.fillRequiredFields"));
 			return;
 		}
 
@@ -92,39 +91,43 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 		<AfForm form={form} onSubmit={handleSubmit}>
 			<AfSelect
 				name="salutation"
-				label={t("salutation")}
+				label={t("contact:label.salutation")}
 				source="contact/codeSalutation"
 				required
 			/>
 
-			<AfInput name="firstName" label={t("firstName")} />
+			<AfInput name="firstName" label={t("contact:label.firstName")} />
 
-			<AfInput name="lastName" label={t("lastName")} required />
+			<AfInput name="lastName" label={t("contact:label.lastName")} required />
 
-			<AfSelect name="contactRole" label={t("contactRole")} source="contact/codeContactRole" />
+			<AfSelect
+				name="contactRole"
+				label={t("contact:label.contactRole")}
+				source="contact/codeContactRole"
+			/>
 
-			<AfInput name="email" label={t("email")} />
+			<AfInput name="email" label={t("contact:label.email")} />
 
-			<AfInput name="mobile" label={t("mobile")} />
+			<AfInput name="mobile" label={t("contact:label.mobile")} />
 
-			<AfInput name="phone" label={t("phone")} />
+			<AfInput name="phone" label={t("contact:label.phone")} />
 
 			{isKernelTenant && (
-				<AfSelect name="tenant" label={t("tenant")} source="oe/objTenant" required />
+				<AfSelect name="tenant" label={t("contact:label.tenant")} source="oe/objTenant" required />
 			)}
 
-			<AfSelect name="owner" label={t("owner")} source="oe/objUser" required />
+			<AfSelect name="owner" label={t("contact:label.owner")} source="oe/objUser" required />
 
 			<div style={{ marginTop: 24, textAlign: "right" }}>
 				<Space>
-					<Button onClick={onCancel}>{tCommon("cancel")}</Button>
+					<Button onClick={onCancel}>{t("common:action.cancel")}</Button>
 					<Button
 						type="primary"
 						htmlType="submit"
 						loading={createMutation.isPending}
 						aria-label="contact:create"
 					>
-						{tCommon("create")}
+						{t("common:action.create")}
 					</Button>
 				</Space>
 			</div>

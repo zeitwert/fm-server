@@ -41,7 +41,7 @@ function FactRow({
 }
 
 export function HomeCardOverview() {
-	const { t } = useTranslation("home");
+	const { t } = useTranslation();
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const { data, isLoading } = useHomeOverview(accountId);
 
@@ -50,7 +50,7 @@ export function HomeCardOverview() {
 		: null;
 
 	return (
-		<DashboardCard title={data?.accountName ?? t("overview")}>
+		<DashboardCard title={data?.accountName ?? t("home:label.overview")}>
 			<div style={{ height: "100%", position: "relative", padding: 12 }}>
 				{isLoading && (
 					<div
@@ -65,7 +65,7 @@ export function HomeCardOverview() {
 						<Spin />
 					</div>
 				)}
-				{!isLoading && !data && <Empty description={t("noOverview")} />}
+				{!isLoading && !data && <Empty description={t("home:message.noOverview")} />}
 				{!isLoading && data && (
 					<div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
 						{accountLogoUrl && (
@@ -81,21 +81,31 @@ export function HomeCardOverview() {
 						<div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
 							<FactRow
 								value={data.buildingCount}
-								singular={t("building")}
-								plural={t("buildings")}
+								singular={t("home:label.building")}
+								plural={t("home:label.buildings")}
 								url="/building"
 							/>
 							<FactRow
 								value={data.portfolioCount}
-								singular={t("portfolio")}
-								plural={t("portfolios")}
+								singular={t("home:label.portfolio")}
+								plural={t("home:label.portfolios")}
 								url="/portfolio"
 							/>
-							<FactRow value={data.ratingCount} singular={t("rating")} plural={t("ratings")} />
-							<FactRow value={data.insuranceValue} singular={t("insuranceValue")} />
-							<FactRow value={data.timeValue} singular={t("timeValue")} />
-							<FactRow value={data.shortTermRenovationCosts} singular={t("shortTermCosts")} />
-							<FactRow value={data.midTermRenovationCosts} singular={t("midTermCosts")} />
+							<FactRow
+								value={data.ratingCount}
+								singular={t("home:label.rating")}
+								plural={t("home:label.ratings")}
+							/>
+							<FactRow value={data.insuranceValue} singular={t("home:label.insuranceValue")} />
+							<FactRow value={data.timeValue} singular={t("home:label.timeValue")} />
+							<FactRow
+								value={data.shortTermRenovationCosts}
+								singular={t("home:label.shortTermCosts")}
+							/>
+							<FactRow
+								value={data.midTermRenovationCosts}
+								singular={t("home:label.midTermCosts")}
+							/>
 						</div>
 					</div>
 				)}

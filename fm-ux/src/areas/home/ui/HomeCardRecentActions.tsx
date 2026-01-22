@@ -107,15 +107,14 @@ function ActivityRow({
 }
 
 export function HomeCardRecentActions() {
-	const { t } = useTranslation("home");
-	const { t: tCommon } = useTranslation("common");
+	const { t } = useTranslation();
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const sessionUserId = useSessionStore((state) => state.sessionInfo?.user.id);
 	const { data, isLoading } = useHomeRecentActions(accountId);
 	const actions = data ?? [];
 
 	return (
-		<DashboardCard title={t("recentActions")}>
+		<DashboardCard title={t("home:label.recentActions")}>
 			<div style={{ height: "100%", position: "relative", padding: 12 }}>
 				{isLoading && (
 					<div
@@ -130,7 +129,9 @@ export function HomeCardRecentActions() {
 						<Spin />
 					</div>
 				)}
-				{!isLoading && actions.length === 0 && <Empty description={t("noRecentActions")} />}
+				{!isLoading && actions.length === 0 && (
+					<Empty description={t("home:message.noRecentActions")} />
+				)}
 				{!isLoading && actions.length > 0 && (
 					<Timeline
 						style={{ marginTop: 4 }}
@@ -140,10 +141,10 @@ export function HomeCardRecentActions() {
 								<ActivityRow
 									action={action}
 									sessionUserId={sessionUserId}
-									youLabel={tCommon("you")}
-									openingLabel={t("opening")}
-									modificationLabel={t("modification")}
-									statusChangeLabel={t("statusChange")}
+									youLabel={t("common:label.you")}
+									openingLabel={t("home:label.opening")}
+									modificationLabel={t("home:label.modification")}
+									statusChangeLabel={t("home:label.statusChange")}
 								/>
 							),
 						}))}

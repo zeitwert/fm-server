@@ -10,8 +10,11 @@ import {
 import { useSessionStore } from "../model/sessionStore";
 import { SessionState } from "../model/types";
 
-// Increase timeout for integration tests
-vi.setConfig({ testTimeout: 15000 });
+// Timeout for async operations - can be increased if tests become flaky
+const ASYNC_TIMEOUT = 500;
+
+// Test timeout should be higher than individual async timeouts
+vi.setConfig({ testTimeout: 5000 });
 
 describe("Login Sequence", () => {
 	beforeEach(() => {
@@ -35,7 +38,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 			expect(emailInput).toBeInTheDocument();
 
@@ -55,7 +58,7 @@ describe("Login Sequence", () => {
 					expect(state.state).toBe(SessionState.open);
 					expect(state.sessionInfo).not.toBeNull();
 				},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 		});
 	});
@@ -77,7 +80,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			// Fill and submit credentials
@@ -87,9 +90,9 @@ describe("Login Sequence", () => {
 
 			// Wait for tenant selection wizard - title uses translation key
 			const selectTenantText = await screen.findByText(
-				"login:selectTenant",
+				"login.label.selectTenant",
 				{},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 			expect(selectTenantText).toBeInTheDocument();
 
@@ -105,7 +108,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			await user.type(emailInput, "multi@example.com");
@@ -113,7 +116,7 @@ describe("Login Sequence", () => {
 			await user.click(screen.getByRole("button", { name: "login:signIn" }));
 
 			// Wait for tenant selection
-			await screen.findByText("login:selectTenant", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectTenant", {}, { timeout: ASYNC_TIMEOUT });
 
 			// Click on first tenant
 			await user.click(screen.getByText("Tenant Alpha"));
@@ -124,7 +127,7 @@ describe("Login Sequence", () => {
 					const state = useSessionStore.getState();
 					expect(state.state).toBe(SessionState.open);
 				},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 		});
 	});
@@ -149,7 +152,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			await user.type(emailInput, "test@example.com");
@@ -157,7 +160,7 @@ describe("Login Sequence", () => {
 			await user.click(screen.getByRole("button", { name: "login:signIn" }));
 
 			// Wait for account selection wizard (tenant auto-selected since only one)
-			await screen.findByText("login:selectAccount", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectAccount", {}, { timeout: ASYNC_TIMEOUT });
 
 			// Both accounts should be visible
 			expect(screen.getByText("Account One")).toBeInTheDocument();
@@ -171,7 +174,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			await user.type(emailInput, "test@example.com");
@@ -179,7 +182,7 @@ describe("Login Sequence", () => {
 			await user.click(screen.getByRole("button", { name: "login:signIn" }));
 
 			// Wait for account selection
-			await screen.findByText("login:selectAccount", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectAccount", {}, { timeout: ASYNC_TIMEOUT });
 
 			// Select first account
 			await user.click(screen.getByText("Account One"));
@@ -191,7 +194,7 @@ describe("Login Sequence", () => {
 					expect(state.state).toBe(SessionState.open);
 					expect(state.selectedAccount?.id).toBe("1000");
 				},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 		});
 	});
@@ -215,7 +218,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			await user.type(emailInput, "multi@example.com");
@@ -223,11 +226,11 @@ describe("Login Sequence", () => {
 			await user.click(screen.getByRole("button", { name: "login:signIn" }));
 
 			// Step 1: Tenant selection
-			await screen.findByText("login:selectTenant", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectTenant", {}, { timeout: ASYNC_TIMEOUT });
 			await user.click(screen.getByText("Tenant Alpha"));
 
 			// Step 2: Account selection
-			await screen.findByText("login:selectAccount", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectAccount", {}, { timeout: ASYNC_TIMEOUT });
 			await user.click(screen.getByText("Account Two"));
 
 			// Should complete login with selected account
@@ -237,7 +240,7 @@ describe("Login Sequence", () => {
 					expect(state.state).toBe(SessionState.open);
 					expect(state.selectedAccount?.id).toBe("2000");
 				},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 		});
 
@@ -248,24 +251,24 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			await user.type(emailInput, "multi@example.com");
 			await user.type(screen.getByLabelText("login:password"), "password123");
 			await user.click(screen.getByRole("button", { name: "login:signIn" }));
 
-			await screen.findByText("login:selectTenant", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectTenant", {}, { timeout: ASYNC_TIMEOUT });
 			await user.click(screen.getByText("Tenant Alpha"));
 
-			await screen.findByText("login:selectAccount", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectAccount", {}, { timeout: ASYNC_TIMEOUT });
 
 			// Click back button
 			const backButton = screen.getByRole("button", { name: "login:backToTenant" });
 			await user.click(backButton);
 
 			// Should be back at tenant selection
-			await screen.findByText("login:selectTenant", {}, { timeout: 10000 });
+			await screen.findByText("login:label.selectTenant", {}, { timeout: ASYNC_TIMEOUT });
 		});
 	});
 
@@ -276,7 +279,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			// Use password that triggers error in handler
@@ -291,7 +294,7 @@ describe("Login Sequence", () => {
 					expect(state.state).toBe(SessionState.close);
 					expect(state.error).toBeTruthy();
 				},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 		});
 
@@ -307,7 +310,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			await user.type(emailInput, "test@example.com");
@@ -320,7 +323,7 @@ describe("Login Sequence", () => {
 					const state = useSessionStore.getState();
 					expect(state.state).toBe(SessionState.close);
 				},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 		});
 	});
@@ -333,7 +336,7 @@ describe("Login Sequence", () => {
 			const emailInput = await screen.findByRole(
 				"textbox",
 				{ name: "login:email" },
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			await user.type(emailInput, "test@example.com");
@@ -346,7 +349,7 @@ describe("Login Sequence", () => {
 					const state = useSessionStore.getState();
 					expect(state.state).toBe(SessionState.open);
 				},
-				{ timeout: 10000 }
+				{ timeout: ASYNC_TIMEOUT }
 			);
 
 			// Verify session info is correct for the redirect

@@ -1,5 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import ICU from "i18next-icu";
 
 // Import translation files
 import enCommon from "./locales/en/common.json";
@@ -16,7 +17,8 @@ import deHome from "./locales/de/home.json";
 import deAccount from "./locales/de/account.json";
 import deContact from "./locales/de/contact.json";
 
-// Resources bundled inline for synchronous loading
+// Each translation file is a separate namespace
+// This allows using t("account:label.name") with namespace:key syntax
 const resources = {
 	en: {
 		common: enCommon,
@@ -36,16 +38,21 @@ const resources = {
 	},
 };
 
-i18n.use(initReactI18next).init({
-	resources,
-	lng: "de", // Default language before login
-	fallbackLng: "de",
-	ns: ["common", "login", "app", "home", "account", "contact"],
-	defaultNS: "common",
-	interpolation: {
-		escapeValue: false, // React already escapes values
-	},
-});
+const namespaces = ["common", "login", "app", "home", "account", "contact"];
+
+i18n
+	.use(ICU)
+	.use(initReactI18next)
+	.init({
+		resources,
+		lng: "de", // Default language before login
+		fallbackLng: "de",
+		ns: namespaces,
+		defaultNS: "common", // Keys without namespace prefix resolve to common
+		interpolation: {
+			escapeValue: false, // React already escapes values
+		},
+	});
 
 /**
  * Sync the i18n language with the session locale.

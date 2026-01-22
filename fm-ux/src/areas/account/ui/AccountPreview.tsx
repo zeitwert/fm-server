@@ -15,8 +15,7 @@ interface AccountPreviewProps {
 }
 
 export function AccountPreview({ id, onClose }: AccountPreviewProps) {
-	const { t } = useTranslation("account");
-	const { t: tc } = useTranslation("common");
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { token } = useToken();
 	const [logoError, setLogoError] = useState(false);
@@ -42,7 +41,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 	}
 
 	if (isError || !account) {
-		return <Result status="error" title={t("notFound")} />;
+		return <Result status="error" title={t("account:message.notFound")} />;
 	}
 
 	const logoUrl = getLogoUrl("account", id);
@@ -92,15 +91,19 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 
 			{/* Details */}
 			<Descriptions column={1} size="small">
-				<Descriptions.Item label={t("accountType")}>
+				<Descriptions.Item label={t("account:label.accountType")}>
 					{account.accountType?.name || "-"}
 				</Descriptions.Item>
-				<Descriptions.Item label={t("clientSegment")}>
+				<Descriptions.Item label={t("account:label.clientSegment")}>
 					{account.clientSegment?.name || "-"}
 				</Descriptions.Item>
-				<Descriptions.Item label={t("tenant")}>{account.tenant?.name || "-"}</Descriptions.Item>
-				<Descriptions.Item label={t("owner")}>{account.owner?.name || "-"}</Descriptions.Item>
-				<Descriptions.Item label={t("mainContact")}>
+				<Descriptions.Item label={t("account:label.tenant")}>
+					{account.tenant?.name || "-"}
+				</Descriptions.Item>
+				<Descriptions.Item label={t("account:label.owner")}>
+					{account.owner?.name || "-"}
+				</Descriptions.Item>
+				<Descriptions.Item label={t("account:label.mainContact")}>
 					{account.mainContact?.name || "-"}
 				</Descriptions.Item>
 			</Descriptions>
@@ -109,7 +112,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 			{account.description && (
 				<div>
 					<Text type="secondary" style={{ fontSize: 12 }}>
-						{t("description")}
+						{t("account:label.description")}
 					</Text>
 					<Paragraph
 						style={{ marginTop: 4, marginBottom: 0 }}
@@ -123,7 +126,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 			{/* Actions */}
 			<Space style={{ marginTop: 8 }}>
 				<Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>
-					{tc("edit")}
+					{t("common:action.edit")}
 				</Button>
 			</Space>
 		</div>

@@ -1,16 +1,22 @@
 {
-	"welcome": "Welcome",
-	"subtitle": "Sign in to continue",
-	"email": "Email",
-	"password": "Password",
-	"signIn": "Sign In",
-	"emailRequired": "Please enter your email",
-	"emailInvalid": "Please enter a valid email",
-	"passwordRequired": "Please enter your password",
-	"selectTenant": "Select Tenant",
-	"selectTenantHint": "Choose the tenant you want to work with",
-	"selectAccount": "Select Account",
-	"selectAccountHint": "Choose the account you want to access",
-	"backToTenant": "Back to Tenant Selection",
-	"signInDifferent": "Sign in with a different account"
+	"label": {
+		"welcome": "Welcome",
+		"subtitle": "Sign in to continue",
+		"email": "Email",
+		"password": "Password",
+		"selectTenant": "Select Tenant",
+		"selectTenantHint": "Choose the tenant you want to work with",
+		"selectAccount": "Select Account",
+		"selectAccountHint": "Choose the account you want to access"
+	},
+	"action": {
+		"signIn": "Sign In",
+		"backToTenant": "Back to Tenant Selection",
+		"signInDifferent": "Sign in with a different account"
+	},
+	"message": {
+		"emailRequired": "Please enter your email",
+		"emailInvalid": "Please enter a valid email",
+		"passwordRequired": "Please enter your password"
+	}
 }

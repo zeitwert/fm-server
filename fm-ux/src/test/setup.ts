@@ -4,10 +4,12 @@ import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import { server } from "./mocks/server";
 
-// Mock react-i18next to return namespaced keys for deterministic testing
+// Mock react-i18next to return keys for deterministic testing
+// With the new unified pattern, useTranslation() is called without a namespace
+// and keys already include the namespace prefix (e.g., "login.label.welcome")
 vi.mock("react-i18next", () => ({
-	useTranslation: (ns: string = "common") => ({
-		t: (key: string) => `${ns}:${key}`,
+	useTranslation: () => ({
+		t: (key: string) => key,
 		i18n: { language: "en", changeLanguage: vi.fn() },
 	}),
 	Trans: ({ children }: { children: ReactNode }) => children,

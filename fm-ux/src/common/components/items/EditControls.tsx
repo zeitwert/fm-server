@@ -36,13 +36,13 @@ export function EditControls({
 	onCancel,
 	onStore,
 }: EditControlsProps) {
-	const { t } = useTranslation("common");
+	const { t } = useTranslation();
 
 	if (!isEditing) {
 		return canEdit ? (
 			<Space style={{ marginBottom: 8 }}>
 				<Button icon={<EditOutlined />} onClick={onEdit} aria-label="common:edit">
-					{t("edit")}
+					{t("common:action.edit")}
 				</Button>
 			</Space>
 		) : null;
@@ -51,7 +51,7 @@ export function EditControls({
 	return (
 		<Space style={{ marginBottom: 8 }}>
 			<Button icon={<CloseOutlined />} onClick={onCancel} aria-label="common:cancel">
-				{t("cancel")}
+				{t("common:action.cancel")}
 			</Button>
 			<Button
 				type="primary"
@@ -61,7 +61,7 @@ export function EditControls({
 				disabled={!isDirty}
 				aria-label="common:save"
 			>
-				{t("save")}
+				{t("common:action.save")}
 			</Button>
 		</Space>
 	);

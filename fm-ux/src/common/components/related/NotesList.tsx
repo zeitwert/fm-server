@@ -53,7 +53,7 @@ export interface NotesListProps {
 /**
  * Format a date as a relative time string.
  */
-function formatRelativeTime(dateString?: string): string {
+function formatRelativeTime(dateString: string | undefined, justNowLabel: string): string {
 	if (!dateString) return "";
 
 	const date = new Date(dateString);
@@ -63,7 +63,7 @@ function formatRelativeTime(dateString?: string): string {
 	const diffHours = Math.floor(diffMs / 3600000);
 	const diffDays = Math.floor(diffMs / 86400000);
 
-	if (diffMins < 1) return "gerade eben";
+	if (diffMins < 1) return justNowLabel;
 	if (diffMins < 60) return `vor ${diffMins} Min.`;
 	if (diffHours < 24) return `vor ${diffHours} Std.`;
 	if (diffDays < 7) return `vor ${diffDays} Tagen`;
@@ -87,7 +87,7 @@ export function NotesList({
 	onEditNote,
 	getAvatarUrl,
 }: NotesListProps) {
-	const { t } = useTranslation("common");
+	const { t } = useTranslation();
 	const [newNoteContent, setNewNoteContent] = useState("");
 
 	const handleSubmit = () => {
@@ -114,7 +114,7 @@ export function NotesList({
 							value={newNoteContent}
 							onChange={(e) => setNewNoteContent(e.target.value)}
 							onKeyDown={handleKeyDown}
-							placeholder={t("addNote") || "Notiz hinzufügen..."}
+							placeholder={t("common:action.addNote")}
 							autoSize={{ minRows: 2, maxRows: 6 }}
 							style={{ flex: 1 }}
 						/>
@@ -135,7 +135,7 @@ export function NotesList({
 			{isLoading ? (
 				<Skeleton active paragraph={{ rows: 3 }} />
 			) : notes.length === 0 ? (
-				<Empty description={t("noNotes") || "Keine Notizen"} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+				<Empty description={t("common:message.noNotes")} image={Empty.PRESENTED_IMAGE_SIMPLE} />
 			) : (
 				<List
 					itemLayout="vertical"
@@ -145,10 +145,10 @@ export function NotesList({
 							actions={
 								onEditNote
 									? [
-											<Button key="edit" type="link" size="small" onClick={() => onEditNote(note)}>
-												{t("edit")}
-											</Button>,
-										]
+										<Button key="edit" type="link" size="small" onClick={() => onEditNote(note)}>
+											{t("common:action.edit")}
+										</Button>,
+									]
 									: undefined
 							}
 							style={{ padding: "12px 0" }}
@@ -167,12 +167,15 @@ export function NotesList({
 									<Space size="small">
 										<span>{note.meta?.createdByUser?.name}</span>
 										<Text type="secondary" style={{ fontSize: 12 }}>
-											{formatRelativeTime(note.meta?.modifiedAt || note.meta?.createdAt)}
+											{formatRelativeTime(
+												note.meta?.modifiedAt || note.meta?.createdAt,
+												t("common:label.justNow")
+											)}
 										</Text>
 										{note.isPrivate && (
 											<LockOutlined
 												style={{ color: "#999", fontSize: 12 }}
-												title={t("private") || "Privat"}
+												title={t("common:label.private")}
 											/>
 										)}
 									</Space>
@@ -184,7 +187,7 @@ export function NotesList({
 								</Text>
 							)}
 							<Paragraph
-								ellipsis={{ rows: 3, expandable: true, symbol: "mehr" }}
+								ellipsis={{ rows: 3, expandable: true, symbol: t("common:label.more") }}
 								style={{ marginBottom: 0 }}
 							>
 								{note.content}

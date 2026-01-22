@@ -11,7 +11,7 @@ interface AppSwitcherProps {
 }
 
 export function AppSwitcher({ collapsed = false }: AppSwitcherProps) {
-	const { t } = useTranslation("app");
+	const { t } = useTranslation();
 	const { token } = useToken();
 	const { sessionInfo, switchApplication } = useSessionStore();
 

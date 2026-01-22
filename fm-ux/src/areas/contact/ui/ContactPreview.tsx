@@ -13,8 +13,7 @@ interface ContactPreviewProps {
 }
 
 export function ContactPreview({ id, onClose }: ContactPreviewProps) {
-	const { t } = useTranslation("contact");
-	const { t: tc } = useTranslation("common");
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { token } = useToken();
 
@@ -34,7 +33,7 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 	}
 
 	if (isError || !contact) {
-		return <Result status="error" title={t("notFound")} />;
+		return <Result status="error" title={t("contact:message.notFound")} />;
 	}
 
 	const displayName =
@@ -66,19 +65,27 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 			</div>
 
 			<Descriptions column={1} size="small">
-				<Descriptions.Item label={t("account")}>
+				<Descriptions.Item label={t("contact:label.account")}>
 					{contact.account?.caption || "-"}
 				</Descriptions.Item>
-				<Descriptions.Item label={t("email")}>{contact.email || "-"}</Descriptions.Item>
-				<Descriptions.Item label={t("mobile")}>{contact.mobile || "-"}</Descriptions.Item>
-				<Descriptions.Item label={t("phone")}>{contact.phone || "-"}</Descriptions.Item>
-				<Descriptions.Item label={t("owner")}>{contact.owner?.name || "-"}</Descriptions.Item>
+				<Descriptions.Item label={t("contact:label.email")}>
+					{contact.email || "-"}
+				</Descriptions.Item>
+				<Descriptions.Item label={t("contact:label.mobile")}>
+					{contact.mobile || "-"}
+				</Descriptions.Item>
+				<Descriptions.Item label={t("contact:label.phone")}>
+					{contact.phone || "-"}
+				</Descriptions.Item>
+				<Descriptions.Item label={t("contact:label.owner")}>
+					{contact.owner?.name || "-"}
+				</Descriptions.Item>
 			</Descriptions>
 
 			{contact.description && (
 				<div>
 					<Text type="secondary" style={{ fontSize: 12 }}>
-						{t("description")}
+						{t("contact:label.description")}
 					</Text>
 					<Paragraph
 						style={{ marginTop: 4, marginBottom: 0 }}
@@ -91,7 +98,7 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 
 			<Space style={{ marginTop: 8 }}>
 				<Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>
-					{tc("edit")}
+					{t("common:action.edit")}
 				</Button>
 			</Space>
 		</div>

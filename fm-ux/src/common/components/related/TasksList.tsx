@@ -65,7 +65,11 @@ function isCompleted(task: Task): boolean {
 /**
  * Format a date for display.
  */
-function formatDate(dateString?: string): string {
+function formatDate(
+	dateString: string | undefined,
+	todayLabel: string,
+	tomorrowLabel: string
+): string {
 	if (!dateString) return "";
 
 	const date = new Date(dateString);
@@ -75,10 +79,10 @@ function formatDate(dateString?: string): string {
 
 	// Check for today/tomorrow
 	if (date.toDateString() === now.toDateString()) {
-		return "Heute";
+		return todayLabel;
 	}
 	if (date.toDateString() === tomorrow.toDateString()) {
-		return "Morgen";
+		return tomorrowLabel;
 	}
 
 	return date.toLocaleDateString("de-CH", {
@@ -96,9 +100,19 @@ interface TaskGroupProps {
 	tasks: Task[];
 	onComplete?: (task: Task) => void;
 	getAvatarUrl?: (userId: string) => string;
+	todayLabel: string;
+	tomorrowLabel: string;
+	completeTaskLabel: string;
 }
 
-function TaskGroup({ tasks, onComplete, getAvatarUrl }: TaskGroupProps) {
+function TaskGroup({
+	tasks,
+	onComplete,
+	getAvatarUrl,
+	todayLabel,
+	tomorrowLabel,
+	completeTaskLabel,
+}: TaskGroupProps) {
 	return (
 		<List
 			size="small"
@@ -108,16 +122,16 @@ function TaskGroup({ tasks, onComplete, getAvatarUrl }: TaskGroupProps) {
 					actions={
 						onComplete && !isCompleted(task)
 							? [
-									<Button
-										key="complete"
-										type="text"
-										size="small"
-										icon={<CheckOutlined />}
-										onClick={() => onComplete(task)}
-										title="Als erledigt markieren"
-										aria-label="common:completeTask"
-									/>,
-								]
+								<Button
+									key="complete"
+									type="text"
+									size="small"
+									icon={<CheckOutlined />}
+									onClick={() => onComplete(task)}
+									title={completeTaskLabel}
+									aria-label="common:completeTask"
+								/>,
+							]
 							: undefined
 					}
 					style={{ padding: "8px 0" }}
@@ -150,7 +164,7 @@ function TaskGroup({ tasks, onComplete, getAvatarUrl }: TaskGroupProps) {
 										type={isOverdue(task) && !isCompleted(task) ? "danger" : "secondary"}
 										style={{ fontSize: 12 }}
 									>
-										{formatDate(task.dueAt)}
+										{formatDate(task.dueAt, todayLabel, tomorrowLabel)}
 									</Text>
 								)}
 								{task.meta?.assignee?.name && (
@@ -178,7 +192,7 @@ export function TasksList({
 	onCreateTask,
 	getAvatarUrl,
 }: TasksListProps) {
-	const { t } = useTranslation("common");
+	const { t } = useTranslation();
 
 	// Categorize tasks
 	const activeTasks = tasks.filter((t) => !isCompleted(t) && !isOverdue(t));
@@ -201,21 +215,25 @@ export function TasksList({
 					style={{ marginBottom: 12 }}
 					aria-label="common:addTask"
 				>
-					{t("addTask") || "Aufgabe hinzufügen"}
+					{t("common:action.addTask")}
 				</Button>
 			)}
 
 			{/* No tasks message */}
 			{tasks.length === 0 && (
-				<Empty
-					description={t("noTasks") || "Keine Aufgaben"}
-					image={Empty.PRESENTED_IMAGE_SIMPLE}
-				/>
+				<Empty description={t("common:message.noTasks")} image={Empty.PRESENTED_IMAGE_SIMPLE} />
 			)}
 
 			{/* Active tasks */}
 			{activeTasks.length > 0 && (
-				<TaskGroup tasks={activeTasks} onComplete={onCompleteTask} getAvatarUrl={getAvatarUrl} />
+				<TaskGroup
+					tasks={activeTasks}
+					onComplete={onCompleteTask}
+					getAvatarUrl={getAvatarUrl}
+					todayLabel={t("common:label.today")}
+					tomorrowLabel={t("common:label.tomorrow")}
+					completeTaskLabel={t("common:action.completeTask")}
+				/>
 			)}
 
 			{/* Overdue tasks - expandable, open by default if has items */}
@@ -229,7 +247,7 @@ export function TasksList({
 							key: "overdue",
 							label: (
 								<Text type="danger">
-									{t("overdue") || "Überfällig"} ({overdueTasks.length})
+									{t("common:label.overdue")} ({overdueTasks.length})
 								</Text>
 							),
 							children: (
@@ -237,6 +255,9 @@ export function TasksList({
 									tasks={overdueTasks}
 									onComplete={onCompleteTask}
 									getAvatarUrl={getAvatarUrl}
+									todayLabel={t("common:label.today")}
+									tomorrowLabel={t("common:label.tomorrow")}
+									completeTaskLabel={t("common:action.completeTask")}
 								/>
 							),
 						},
@@ -254,10 +275,18 @@ export function TasksList({
 							key: "completed",
 							label: (
 								<Text type="secondary">
-									{t("completed") || "Erledigt"} ({completedTasks.length})
+									{t("common:label.completed")} ({completedTasks.length})
 								</Text>
 							),
-							children: <TaskGroup tasks={completedTasks} getAvatarUrl={getAvatarUrl} />,
+							children: (
+								<TaskGroup
+									tasks={completedTasks}
+									getAvatarUrl={getAvatarUrl}
+									todayLabel={t("common:label.today")}
+									tomorrowLabel={t("common:label.tomorrow")}
+									completeTaskLabel={t("common:action.completeTask")}
+								/>
+							),
 						},
 					]}
 				/>

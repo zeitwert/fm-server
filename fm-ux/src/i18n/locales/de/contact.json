@@ -1,27 +1,42 @@
 {
-	"contact": "Kontakt",
-	"contacts": "Kontakte",
-	"entitySingular": "Kontakt",
-	"newContact": "Neuer Kontakt",
-	"name": "Name",
-	"firstName": "Vorname",
-	"lastName": "Nachname",
-	"email": "E-Mail",
-	"phone": "Festnetz",
-	"mobile": "Mobile",
-	"description": "Beschreibung",
-	"birthDate": "Geburtsdatum",
-	"salutation": "Anrede",
-	"title": "Titel",
-	"contactRole": "Rolle",
-	"account": "Kunde",
-	"tenant": "Mandant",
-	"owner": "Verantwortlich",
-	"basicInfo": "Grunddaten",
-	"personal": "Personell",
-	"organization": "Organisation",
-	"tabMain": "Stammdaten",
-	"notFound": "Kontakt nicht gefunden",
-	"notFoundDescription": "Der angeforderte Kontakt konnte nicht gefunden werden.",
-	"backToList": "Zurück zur Kontaktliste"
+	"label": {
+		"entity": "Kontakt",
+		"entityCount": "{count, plural, =0 {Keine Kontakte} one {# Kontakt} other {# Kontakte}}",
+		"name": "Name",
+		"firstName": "Vorname",
+		"lastName": "Nachname",
+		"email": "E-Mail",
+		"phone": "Festnetz",
+		"mobile": "Mobile",
+		"description": "Beschreibung",
+		"birthDate": "Geburtsdatum",
+		"salutation": "Anrede",
+		"title": "Titel",
+		"contactRole": "Rolle",
+		"account": "Kunde",
+		"tenant": "Mandant",
+		"owner": "Verantwortlich",
+		"basicInfo": "Grunddaten",
+		"personal": "Personell",
+		"organization": "Organisation",
+		"tabMain": "Stammdaten",
+		"notes": "Notizen",
+		"tasks": "Aufgaben",
+		"activity": "Aktivität"
+	},
+	"action": {
+		"newContact": "Neuer Kontakt",
+		"backToList": "Zurück zur Kontaktliste"
+	},
+	"message": {
+		"notFound": "Kontakt nicht gefunden",
+		"notFoundDescription": "Der angeforderte Kontakt konnte nicht gefunden werden.",
+		"validation": {
+			"lastNameRequired": "Nachname ist erforderlich",
+			"salutationRequired": "Anrede ist erforderlich",
+			"tenantRequired": "Mandant ist erforderlich",
+			"ownerRequired": "Verantwortlich ist erforderlich",
+			"fillRequiredFields": "Bitte füllen Sie alle Pflichtfelder aus"
+		}
+	}
 }

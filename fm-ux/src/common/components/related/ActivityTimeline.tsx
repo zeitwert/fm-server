@@ -38,7 +38,7 @@ export interface ActivityTimelineProps {
 /**
  * Format a timestamp for display.
  */
-function formatTimestamp(dateString: string): string {
+function formatTimestamp(dateString: string, justNowLabel: string): string {
 	const date = new Date(dateString);
 	const now = new Date();
 	const diffMs = now.getTime() - date.getTime();
@@ -46,7 +46,7 @@ function formatTimestamp(dateString: string): string {
 	const diffHours = Math.floor(diffMs / 3600000);
 	const diffDays = Math.floor(diffMs / 86400000);
 
-	if (diffMins < 1) return "gerade eben";
+	if (diffMins < 1) return justNowLabel;
 	if (diffMins < 60) return `vor ${diffMins} Min.`;
 	if (diffHours < 24) return `vor ${diffHours} Std.`;
 	if (diffDays < 7) return `vor ${diffDays} Tagen`;
@@ -65,7 +65,7 @@ function formatTimestamp(dateString: string): string {
 // ============================================================================
 
 export function ActivityTimeline({ activities, isLoading = false }: ActivityTimelineProps) {
-	const { t } = useTranslation("common");
+	const { t } = useTranslation();
 
 	if (isLoading) {
 		return <Skeleton active paragraph={{ rows: 4 }} />;
@@ -73,12 +73,11 @@ export function ActivityTimeline({ activities, isLoading = false }: ActivityTime
 
 	if (activities.length === 0) {
 		return (
-			<Empty
-				description={t("noActivity") || "Keine Aktivität"}
-				image={Empty.PRESENTED_IMAGE_SIMPLE}
-			/>
+			<Empty description={t("common:message.noActivity")} image={Empty.PRESENTED_IMAGE_SIMPLE} />
 		);
 	}
+
+	const justNowLabel = t("common:label.justNow");
 
 	return (
 		<Timeline
@@ -90,7 +89,7 @@ export function ActivityTimeline({ activities, isLoading = false }: ActivityTime
 						<br />
 						<Text type="secondary" style={{ fontSize: 12 }}>
 							{activity.user?.name && `${activity.user.name} • `}
-							{formatTimestamp(activity.timestamp)}
+							{formatTimestamp(activity.timestamp, justNowLabel)}
 						</Text>
 						{activity.details && (
 							<Paragraph type="secondary" style={{ marginTop: 4, marginBottom: 0, fontSize: 13 }}>

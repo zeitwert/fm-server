@@ -12,7 +12,7 @@ interface LoginFormValues {
 }
 
 export function LoginPage() {
-	const { t } = useTranslation("login");
+	const { t } = useTranslation();
 	const [form] = Form.useForm<LoginFormValues>();
 	const { state, error, login, clearError } = useSessionStore();
 	const isLoading = state === SessionState.pendingAuth;
@@ -42,9 +42,9 @@ export function LoginPage() {
 			>
 				<div style={{ textAlign: "center", marginBottom: 32 }}>
 					<Title level={2} style={{ marginBottom: 8 }}>
-						{t("welcome")}
+						{t("login:label.welcome")}
 					</Title>
-					<Typography.Text type="secondary">{t("subtitle")}</Typography.Text>
+					<Typography.Text type="secondary">{t("login:label.subtitle")}</Typography.Text>
 				</div>
 
 				{error && (
@@ -62,23 +62,26 @@ export function LoginPage() {
 					<Form.Item
 						name="email"
 						rules={[
-							{ required: true, message: t("emailRequired") },
-							{ type: "email", message: t("emailInvalid") },
+							{ required: true, message: t("login:message.emailRequired") },
+							{ type: "email", message: t("login:message.emailInvalid") },
 						]}
 					>
 						<Input
 							prefix={<UserOutlined />}
-							placeholder={t("email")}
+							placeholder={t("login:label.email")}
 							size="large"
 							autoFocus
 							aria-label="login:email"
 						/>
 					</Form.Item>
 
-					<Form.Item name="password" rules={[{ required: true, message: t("passwordRequired") }]}>
+					<Form.Item
+						name="password"
+						rules={[{ required: true, message: t("login:message.passwordRequired") }]}
+					>
 						<Input.Password
 							prefix={<LockOutlined />}
-							placeholder={t("password")}
+							placeholder={t("login:label.password")}
 							size="large"
 							aria-label="login:password"
 						/>
@@ -93,7 +96,7 @@ export function LoginPage() {
 							loading={isLoading}
 							aria-label="login:signIn"
 						>
-							{t("signIn")}
+							{t("login:action.signIn")}
 						</Button>
 					</Form.Item>
 				</Form>

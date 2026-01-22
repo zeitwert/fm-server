@@ -332,16 +332,98 @@ Create translation files for both German and English.
 
 **Location:** `fm-ux/src/i18n/locales/de/{entity}.json` and `.../en/{entity}.json`
 
-**Required keys:**
-- `{entity}`: Entity singular name (e.g., "Kontakt")
-- `{entities}`: Entity plural name (e.g., "Kontakte")
-- `entitySingular`: Alternate singular for UI labels (e.g., "Kontakt")
-- `new{Entity}`: Create button/modal title (e.g., "Neuer Kontakt")
-- All field labels
-- Tab labels (e.g., "tabMain": "Stammdaten")
-- Error messages: `notFound`, `notFoundDescription`, `backToList`
+**Semantic Namespace Structure:**
 
-**Update `i18n/index.ts`:** Add imports, add to resources, add `"{entity}"` to the `ns` array.
+All translation files follow this consistent pattern:
+
+```json
+{
+  "label": {
+    "entity": "Contact",
+    "entityCount": "{count, plural, =0 {No contacts} one {# contact} other {# contacts}}",
+    "name": "Name",
+    "tabMain": "Main",
+    "basicInfo": "Basic Information"
+  },
+  "action": {
+    "newContact": "New Contact",
+    "backToList": "Back to contact list"
+  },
+  "message": {
+    "notFound": "Contact not found",
+    "notFoundDescription": "The requested contact could not be found.",
+    "validation": {
+      "nameRequired": "Name is required",
+      "fillRequiredFields": "Please fill in all required fields"
+    }
+  }
+}
+```
+
+**Structure guidelines:**
+- `label`: Nouns for field labels, entity names, tab names, section headings
+- `action`: Verbs for buttons, links, user actions
+- `message`: Notifications, errors, validation messages, descriptions
+
+**ICU Plural Format:**
+
+Use ICU MessageFormat for entity counts (requires `i18next-icu` plugin):
+
+```json
+"entityCount": "{count, plural, =0 {No contacts} one {# contact} other {# contacts}}"
+```
+
+Usage in code: `t("contact.label.entityCount", { count: items.length })`
+
+**Accessing Translations:**
+
+Use the unified namespace with dot-notation:
+
+```typescript
+import { useTranslation } from "react-i18next";
+
+const { t } = useTranslation();
+
+// Access translations with dot-notation
+t("contact.label.name")           // Field label
+t("contact.action.backToList")    // Action button
+t("contact.message.notFound")     // Error message
+t("common.action.save")           // Shared common translations
+```
+
+**Required keys per entity:**
+- `label.entity`: Entity singular name (e.g., "Kontakt")
+- `label.entityCount`: ICU plural format for counts
+- `label.*`: All field labels, tab names, section headings
+- `action.backToList`: Navigation back to list
+- `message.notFound`, `message.notFoundDescription`: Error states
+- `message.validation.*`: Form validation messages
+
+**Update `i18n/index.ts`:**
+
+1. Add imports for both languages:
+```typescript
+import enEntity from "./locales/en/{entity}.json";
+import deEntity from "./locales/de/{entity}.json";
+```
+
+2. Add to the resources object:
+```typescript
+const resources = {
+  en: {
+    translation: {
+      // ... existing entries
+      {entity}: enEntity,
+    },
+  },
+  de: {
+    translation: {
+      // ... existing entries
+      {entity}: deEntity,
+    },
+  },
+};
+```
 
 ### 12. Index Export (`index.ts`)
 

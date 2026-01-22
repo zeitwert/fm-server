@@ -155,8 +155,7 @@ function ActivityList({
 }
 
 export function HomeCardOpenActivities() {
-	const { t } = useTranslation("home");
-	const { t: tCommon } = useTranslation("common");
+	const { t } = useTranslation();
 	const accountId = useSessionStore((state) => state.sessionInfo?.account?.id);
 	const sessionUserId = useSessionStore((state) => state.sessionInfo?.user.id);
 	const { data, isLoading } = useHomeOpenActivities(accountId);
@@ -171,7 +170,7 @@ export function HomeCardOpenActivities() {
 	);
 
 	return (
-		<DashboardCard title={`${t("openActivities")} (${data?.totalCount ?? 0})`}>
+		<DashboardCard title={`${t("home:label.openActivities")} (${data?.totalCount ?? 0})`}>
 			<div style={{ height: "100%", position: "relative" }}>
 				{isLoading && (
 					<div
@@ -186,16 +185,18 @@ export function HomeCardOpenActivities() {
 						<Spin />
 					</div>
 				)}
-				{!isLoading && activities.length === 0 && <Empty description={t("noActivities")} />}
+				{!isLoading && activities.length === 0 && (
+					<Empty description={t("home:message.noActivities")} />
+				)}
 				{!isLoading && activities.length > 0 && (
 					<div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
 						{futureActivities.length > 0 && (
 							<ActivityList
 								activities={futureActivities}
 								sessionUserId={sessionUserId}
-								unknownLabel={tCommon("unknown")}
-								youLabel={tCommon("you")}
-								noTitleLabel={tCommon("noTitle")}
+								unknownLabel={t("common:label.unknown")}
+								youLabel={t("common:label.you")}
+								noTitleLabel={t("common:label.noTitle")}
 							/>
 						)}
 						{overdueActivities.length > 0 && (
@@ -205,14 +206,14 @@ export function HomeCardOpenActivities() {
 								items={[
 									{
 										key: "overdue",
-										label: `${t("overdue")} (${overdueActivities.length})`,
+										label: `${t("home:label.overdue")} (${overdueActivities.length})`,
 										children: (
 											<ActivityList
 												activities={overdueActivities}
 												sessionUserId={sessionUserId}
-												unknownLabel={tCommon("unknown")}
-												youLabel={tCommon("you")}
-												noTitleLabel={tCommon("noTitle")}
+												unknownLabel={t("common:label.unknown")}
+												youLabel={t("common:label.you")}
+												noTitleLabel={t("common:label.noTitle")}
 											/>
 										),
 									},

@@ -30,8 +30,7 @@ function canEditAccount(role?: string): boolean {
 }
 
 export function AccountPage({ accountId }: AccountPageProps) {
-	const { t } = useTranslation("account");
-	const { t: tContact } = useTranslation("contact");
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id;
@@ -68,9 +67,9 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		return (
 			<Result
 				status="404"
-				title={t("notFound")}
-				subTitle={t("notFoundDescription")}
-				extra={<a onClick={() => navigate({ to: "/account" })}>{t("backToList")}</a>}
+				title={t("account:message.notFound")}
+				subTitle={t("account:message.notFoundDescription")}
+				extra={<a onClick={() => navigate({ to: "/account" })}>{t("account:action.backToList")}</a>}
 			/>
 		);
 	}
@@ -84,21 +83,21 @@ export function AccountPage({ accountId }: AccountPageProps) {
 				title={account.name}
 				details={[
 					{
-						label: t("tenant"),
+						label: t("account:label.tenant"),
 						content: account.tenant?.name,
 					},
 					{
-						label: t("owner"),
+						label: t("account:label.owner"),
 						content: account.owner?.name,
 					},
 					{
-						label: t("mainContact"),
+						label: t("account:label.mainContact"),
 						content: account.mainContact?.name || "-",
 					},
 				]}
 				actions={
 					<Button onClick={() => setIsContactCreateOpen(true)}>
-						{tContact("newContact")}
+						{t("contact:action.newContact")}
 					</Button>
 				}
 			/>
@@ -109,17 +108,17 @@ export function AccountPage({ accountId }: AccountPageProps) {
 						sections={[
 							{
 								key: "notes",
-								label: "Notizen",
+								label: t("account:label.notes"),
 								children: <NotesList notes={[] as Note[]} />,
 							},
 							{
 								key: "tasks",
-								label: "Aufgaben",
+								label: t("account:label.tasks"),
 								children: <TasksList tasks={[] as Task[]} />,
 							},
 							{
 								key: "activity",
-								label: "Aktivität",
+								label: t("account:label.activity"),
 								children: <ActivityTimeline activities={[] as Activity[]} />,
 							},
 						]}
@@ -143,7 +142,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 							items={[
 								{
 									key: "main",
-									label: t("tabMain"),
+									label: t("account:label.tabMain"),
 									children: <AccountMainForm disabled={!isEditing} />,
 								},
 							]}
@@ -154,7 +153,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 
 			<Modal
 				open={isContactCreateOpen}
-				title={`${tContact("entitySingular")} erstellen`}
+				title={t("common:action.createEntity", { entity: t("contact:label.entity") })}
 				onCancel={() => setIsContactCreateOpen(false)}
 				footer={null}
 				destroyOnHidden

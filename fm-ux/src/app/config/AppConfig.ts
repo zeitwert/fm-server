@@ -48,37 +48,62 @@ function createArea(id: string, labelKey: string, icon: ReactNode, path: string)
 }
 
 // Application Areas
-const homeArea = createArea("home", "dashboard", React.createElement(DashboardOutlined), "home");
-const tenantArea = createArea("tenant", "tenants", React.createElement(FileTextOutlined), "tenant");
-const userArea = createArea("user", "users", React.createElement(UserOutlined), "user");
-const accountArea = createArea("account", "accounts", React.createElement(BankOutlined), "account");
-const contactArea = createArea("contact", "contacts", React.createElement(TeamOutlined), "contact");
+const homeArea = createArea(
+	"home",
+	"app:label.dashboard",
+	React.createElement(DashboardOutlined),
+	"home"
+);
+const tenantArea = createArea(
+	"tenant",
+	"app:label.tenants",
+	React.createElement(FileTextOutlined),
+	"tenant"
+);
+const userArea = createArea("user", "app:label.users", React.createElement(UserOutlined), "user");
+const accountArea = createArea(
+	"account",
+	"app:label.accounts",
+	React.createElement(BankOutlined),
+	"account"
+);
+const contactArea = createArea(
+	"contact",
+	"app:label.contacts",
+	React.createElement(TeamOutlined),
+	"contact"
+);
 const portfolioArea = createArea(
 	"portfolio",
-	"portfolios",
+	"app:label.portfolios",
 	React.createElement(AppstoreOutlined),
 	"portfolio"
 );
 const buildingArea = createArea(
 	"building",
-	"buildings",
+	"app:label.buildings",
 	React.createElement(HomeOutlined),
 	"building"
 );
 const documentArea = createArea(
 	"document",
-	"documents",
+	"app:label.documents",
 	React.createElement(FileTextOutlined),
 	"document"
 );
-const taskArea = createArea("task", "tasks", React.createElement(CheckSquareOutlined), "task");
+const taskArea = createArea(
+	"task",
+	"app:label.tasks",
+	React.createElement(CheckSquareOutlined),
+	"task"
+);
 
 // Applications
 const fmApp: Application = {
 	id: "fm",
 	name: "ZEitWERT: fm",
 	appKey: "FM",
-	shortName: "appFm",
+	shortName: "app:label.appFm",
 	description: "Strategische Unterhaltsplanung",
 };
 
@@ -86,7 +111,7 @@ const fmAdminApp: Application = {
 	id: "fmAdmin",
 	name: "ZEitWERT: fmAdmin",
 	appKey: "AD",
-	shortName: "appFmAdmin",
+	shortName: "app:label.appFmAdmin",
 	description: "Kunden Administration",
 };
 
@@ -94,7 +119,7 @@ const tenantAdminApp: Application = {
 	id: "tenantAdmin",
 	name: "ZEitWERT: admin",
 	appKey: "MA",
-	shortName: "appTenantAdmin",
+	shortName: "app:label.appTenantAdmin",
 	description: "Mandantenadministration",
 };
 
@@ -102,7 +127,7 @@ const appAdminApp: Application = {
 	id: "appAdmin",
 	name: "ZEitWERT: appAdmin",
 	appKey: "AP",
-	shortName: "appAppAdmin",
+	shortName: "app:label.appAppAdmin",
 	description: "Applikationsadministration",
 };
 

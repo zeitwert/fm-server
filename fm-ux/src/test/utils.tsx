@@ -53,7 +53,7 @@ function customRender(ui: ReactElement, options: CustomRenderOptions = {}) {
 	}
 
 	return {
-		user: userEvent.setup(),
+		user: userEvent.setup({ delay: null }),
 		queryClient,
 		router: testRouter,
 		...render(ui, { wrapper: Wrapper, ...renderOptions }),
@@ -73,7 +73,7 @@ function renderApp(
 	const testRouter = createTestRouter(initialPath);
 
 	return {
-		user: userEvent.setup(),
+		user: userEvent.setup({ delay: null }),
 		queryClient,
 		router: testRouter,
 		...render(
