@@ -7,6 +7,7 @@ import {
 	CheckSquareOutlined,
 	DashboardOutlined,
 	FileTextOutlined,
+	FormOutlined,
 	HomeOutlined,
 	TeamOutlined,
 	UserOutlined,
@@ -97,6 +98,12 @@ const taskArea = createArea(
 	React.createElement(CheckSquareOutlined),
 	"task"
 );
+const noteArea = createArea(
+	"note",
+	"app:label.notes",
+	React.createElement(FormOutlined),
+	"note"
+);
 
 // Applications
 const fmApp: Application = {
@@ -135,7 +142,7 @@ const appAdminApp: Application = {
 const fmAppInfo: ApplicationInfo = {
 	id: "fmMenu",
 	name: "ZEitWERT: fm",
-	areas: [homeArea, portfolioArea, buildingArea, taskArea],
+	areas: [homeArea, portfolioArea, buildingArea, taskArea, noteArea],
 	defaultArea: "home",
 };
 
@@ -185,6 +192,7 @@ export const AreaMap: { [id: string]: ApplicationArea } = {
 	[buildingArea.id]: buildingArea,
 	[documentArea.id]: documentArea,
 	[taskArea.id]: taskArea,
+	[noteArea.id]: noteArea,
 };
 
 // Helper functions

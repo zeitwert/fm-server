@@ -185,8 +185,8 @@ Table view using `ItemsPage` component with create modal.
 **Adaptation notes:**
 - Define columns based on `header` array from layout config (`fm-domain/.../layouts/default.json`)
 - For `Enumerated` fields, use `dataIndex: ["{field}", "name"]` to access the nested `name` property
-- Choose appropriate icon from `@ant-design/icons`
-- Use `canCreate()` permission check with appropriate roles
+- **Icon**: Use the same icon from the fm-ux area definition in `AppConfig.ts` (e.g., `BankOutlined` for accounts). The icon appears in the Area, Page, and Preview components - keep it consistent.
+- Use `canCreate()` permission check with appropriate roles (see Gotcha #9)
 - Pass `PreviewComponent` if you want a preview drawer (optional)
 - Use `[...{entity}Keys.lists()]` spread for queryKey (readonly array conversion)
 
@@ -257,77 +257,16 @@ Modal form for creating new entities.
 - Call `onSuccess()` after successful creation
 - **Navigate to the created entity's detail page after success with try/catch**
 
-**Parent context pattern:** If the entity can be created from a parent entity's page (e.g., creating a Contact from an Account), extend `CreateFormProps` to accept the parent:
-
-```typescript
-interface {Entity}CreationFormProps extends CreateFormProps {
-	parentEntity?: { id: string; name: string };
-}
-```
-
-**Submission pattern with navigation:**
-
-```typescript
-const handleSubmit = async (data: {Entity}CreationFormInput) => {
-	// ... validation ...
-	try {
-		const created = await createMutation.mutateAsync({...});
-		onSuccess();
-		navigate({ to: "/{entity}/${{entity}Id}", params: { {entity}Id: created.id } });
-	} catch {
-		// Error handling done in useCreate{Entity}'s onError callback
-	}
-};
-```
+**Parent context pattern:** If the entity can be created from a parent entity's page (e.g., creating a Contact from an Account), extend `CreateFormProps` to accept the parent entity as an optional prop. See `ContactCreationForm` for an example.
 
 ### 10. Routes
 
-TanStack Router file-based routes. These are boilerplate with minimal variation.
+TanStack Router file-based routes. These are pure boilerplate - copy from the account routes and replace entity names.
 
 **Reference files:**
-- `fm-ux/src/routes/account.tsx` (layout)
-- `fm-ux/src/routes/account.index.tsx` (list)
-- `fm-ux/src/routes/account.$accountId.tsx` (detail)
-
-**Route structure:**
-
-```typescript
-// {entity}.tsx - Layout route
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-
-export const Route = createFileRoute("/{entity}")({
-  component: {Entity}Layout,
-});
-
-function {Entity}Layout() {
-  return <Outlet />;
-}
-```
-
-```typescript
-// {entity}.index.tsx - List route
-import { createFileRoute } from "@tanstack/react-router";
-import { {Entity}Area } from "../areas/{entity}/ui/{Entity}Area";
-
-export const Route = createFileRoute("/{entity}/")({
-  component: {Entity}Area,
-});
-```
-
-```typescript
-// {entity}.${entity}Id.tsx - Detail route
-import { createFileRoute } from "@tanstack/react-router";
-import { {Entity}Page } from "../areas/{entity}/ui/{Entity}Page";
-
-export const Route = createFileRoute("/{entity}/${{entity}Id}")({
-  component: {Entity}PageRoute,
-});
-
-function {Entity}PageRoute() {
-  const { {entity}Id } = Route.useParams();
-  return <{Entity}Page {entity}Id={{entity}Id} />;
-}
-```
+- `fm-ux/src/routes/account.tsx` (layout - just renders `<Outlet />`)
+- `fm-ux/src/routes/account.index.tsx` (list - renders `{Entity}Area`)
+- `fm-ux/src/routes/account.$accountId.tsx` (detail - extracts ID param and renders `{Entity}Page`)
 
 ### 11. Translations
 
@@ -335,33 +274,7 @@ Create translation files for both German and English.
 
 **Location:** `fm-ux/src/i18n/locales/de/{entity}.json` and `.../en/{entity}.json`
 
-**Semantic Namespace Structure:**
-
-All translation files follow this consistent pattern:
-
-```json
-{
-  "label": {
-    "entity": "Contact",
-    "entityCount": "{count, plural, =0 {No contacts} one {# contact} other {# contacts}}",
-    "name": "Name",
-    "tabMain": "Main",
-    "basicInfo": "Basic Information"
-  },
-  "action": {
-    "newContact": "New Contact",
-    "backToList": "Back to contact list"
-  },
-  "message": {
-    "notFound": "Contact not found",
-    "notFoundDescription": "The requested contact could not be found.",
-    "validation": {
-      "nameRequired": "Name is required",
-      "fillRequiredFields": "Please fill in all required fields"
-    }
-  }
-}
-```
+**Reference:** `fm-ux/src/i18n/locales/de/account.json` and `.../en/account.json`
 
 **Structure guidelines:**
 - `label`: Nouns for field labels, entity names, tab names, section headings
@@ -410,33 +323,32 @@ import enEntity from "./locales/en/{entity}.json";
 import deEntity from "./locales/de/{entity}.json";
 ```
 
-2. Add to the resources object:
+2. Add to the resources object (namespaces are at root level, not nested under `translation`):
 ```typescript
 const resources = {
   en: {
-    translation: {
-      // ... existing entries
-      {entity}: enEntity,
-    },
+    // ... existing namespaces
+    {entity}: enEntity,
   },
   de: {
-    translation: {
-      // ... existing entries
-      {entity}: deEntity,
-    },
+    // ... existing namespaces
+    {entity}: deEntity,
   },
 };
 ```
 
+3. Add the namespace to the `namespaces` array:
+```typescript
+const namespaces = ["common", "login", "app", "home", "account", "{entity}"];
+```
+
 ### 12. Index Export (`index.ts`)
 
-Re-export public API from the area module.
+Re-export public API from the area module. Use explicit named exports (not `export *`) for better tree-shaking and clarity.
 
-```typescript
-export * from "./types";
-export * from "./api";
-export * from "./queries";
-```
+**Reference:** `fm-ux/src/areas/account/index.ts`
+
+Export types, schemas, API, queries, and UI components that other areas might need.
 
 ## Common Patterns & Gotchas
 
@@ -549,14 +461,14 @@ Use the shared permission utilities from `common/utils/permissions`:
 ```typescript
 import { canModifyEntity, canCreateEntity } from "../../../common/utils";
 
-// In Area component
-const canCreate = canCreateEntity("account", userRole);
+// In Area component (needs userRole and tenantType from sessionStore)
+const canCreate = canCreateEntity("account", userRole, tenantType);
 
 // In Page component
 const canEdit = canModifyEntity("account", userRole);
 ```
 
-This centralizes permission logic and allows entity-specific rules to be added later.
+**When migrating a new entity:** Add the entity's permission logic to `common/utils/permissions.ts`. Check the fm-ui area's `canCreate` condition (e.g., in `{Entity}Area.tsx`) and translate it to the new permission functions. For example, Account in fm-ui uses `session.isAdmin && (session.isKernelTenant || session.isAdvisorTenant)` which maps to the `canCreateEntity("account", ...)` case.
 
 ### 10. Tenant Handling
 
