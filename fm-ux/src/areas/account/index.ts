@@ -1,4 +1,4 @@
-export type { Account, AccountListItem, AccountContact, AccountFormData } from "./types";
+export type { Account, AccountListItem, AccountContact } from "./types";
 export { accountCreationSchema, accountFormSchema } from "./schemas";
 export type { AccountCreationData } from "./schemas";
 export { accountApi, accountListApi } from "./api";

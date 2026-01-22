@@ -26,8 +26,7 @@
 		"activity": "Activity"
 	},
 	"action": {
-		"backToList": "Back to account list",
-		"create": "Create"
+		"backToList": "Back to account list"
 	},
 	"message": {
 		"noContacts": "No contacts available",

@@ -7,7 +7,6 @@ import { useCreateContact } from "../../queries";
 import type { ContactCreationFormInput } from "../../schemas";
 import type { CreateFormProps } from "../../../../common/components/items";
 import { useSessionStore } from "../../../../session/model/sessionStore";
-import { KERNEL_TENANT } from "../../../../session/model/types";
 
 interface ContactCreationFormProps extends CreateFormProps {
 	account?: { id: string; name: string };
@@ -18,11 +17,6 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
 	const createMutation = useCreateContact();
-	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
-	const defaultTenant =
-		!isKernelTenant && sessionInfo?.tenant
-			? { id: sessionInfo.tenant.id, name: sessionInfo.tenant.name }
-			: null;
 	const defaultOwner = sessionInfo?.user
 		? { id: sessionInfo.user.id, name: sessionInfo.user.name }
 		: null;
@@ -37,7 +31,6 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 			salutation: null,
 			contactRole: null,
 			account: account ?? null,
-			tenant: defaultTenant,
 			owner: defaultOwner,
 		},
 	});
@@ -51,10 +44,6 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 		}
 		if (!data.salutation) {
 			form.setError("salutation", { message: t("contact:message.validation.salutationRequired") });
-			hasError = true;
-		}
-		if (!data.tenant) {
-			form.setError("tenant", { message: t("contact:message.validation.tenantRequired") });
 			hasError = true;
 		}
 		if (!data.owner) {
@@ -77,7 +66,6 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 				salutation: data.salutation!,
 				contactRole: data.contactRole ?? undefined,
 				account: data.account ? { id: data.account.id, caption: data.account.name } : undefined,
-				tenant: data.tenant!,
 				owner: data.owner!,
 			});
 			onSuccess();
@@ -111,10 +99,6 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 			<AfInput name="mobile" label={t("contact:label.mobile")} />
 
 			<AfInput name="phone" label={t("contact:label.phone")} />
-
-			{isKernelTenant && (
-				<AfSelect name="tenant" label={t("contact:label.tenant")} source="oe/objTenant" required />
-			)}
 
 			<AfSelect name="owner" label={t("contact:label.owner")} source="oe/objUser" required />
 

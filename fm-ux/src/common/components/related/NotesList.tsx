@@ -145,10 +145,10 @@ export function NotesList({
 							actions={
 								onEditNote
 									? [
-										<Button key="edit" type="link" size="small" onClick={() => onEditNote(note)}>
-											{t("common:action.edit")}
-										</Button>,
-									]
+											<Button key="edit" type="link" size="small" onClick={() => onEditNote(note)}>
+												{t("common:action.edit")}
+											</Button>,
+										]
 									: undefined
 							}
 							style={{ padding: "12px 0" }}

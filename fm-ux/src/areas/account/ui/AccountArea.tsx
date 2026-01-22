@@ -2,22 +2,19 @@ import { BankOutlined } from "@ant-design/icons";
 import type { ColumnType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
 import { ItemsPage } from "../../../common/components/items";
+import { canCreateEntity } from "../../../common/utils";
 import { accountListApi } from "../api";
 import { accountKeys } from "../queries";
 import { AccountCreationForm } from "./forms/AccountCreationForm";
 import { AccountPreview } from "./AccountPreview";
 import type { AccountListItem } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
-import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
-
-function canCreateAccount(role?: string): boolean {
-	return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
-}
 
 export function AccountArea() {
 	const { t } = useTranslation();
 	const { sessionInfo } = useSessionStore();
-	const userRole = sessionInfo?.user?.role?.id;
+	const userRole = sessionInfo?.user?.role?.id ?? "";
+	const tenantType = sessionInfo?.tenant?.tenantType?.id ?? "";
 
 	const columns: ColumnType<AccountListItem>[] = [
 		{
@@ -72,7 +69,7 @@ export function AccountArea() {
 			queryKey={[...accountKeys.lists()]}
 			queryFn={() => accountListApi.list()}
 			columns={columns}
-			canCreate={canCreateAccount(userRole)}
+			canCreate={canCreateEntity("account", userRole, tenantType)}
 			CreateForm={AccountCreationForm}
 			PreviewComponent={AccountPreview}
 			getDetailPath={(record) => `/account/${record.id}`}

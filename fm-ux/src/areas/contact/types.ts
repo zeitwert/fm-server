@@ -37,19 +37,3 @@ export interface ContactListItem {
 	account?: ContactAccount;
 	owner: Enumerated;
 }
-
-export interface ContactFormData {
-	firstName?: string | null;
-	lastName: string;
-	email?: string | null;
-	phone?: string | null;
-	mobile?: string | null;
-	description?: string | null;
-	birthDate?: string | null;
-	contactRole?: Enumerated | null;
-	salutation: Enumerated | null;
-	title?: Enumerated | null;
-	account?: Enumerated | null;
-	tenant: Enumerated | null;
-	owner: Enumerated | null;
-}

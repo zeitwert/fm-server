@@ -39,14 +39,3 @@ export interface AccountListItem {
 	owner: Enumerated;
 	mainContact?: Contact;
 }
-
-export interface AccountFormData {
-	name: string;
-	description?: string;
-	accountType: Enumerated | null;
-	clientSegment?: Enumerated | null;
-	tenant: Enumerated | null;
-	owner: Enumerated | null;
-	inflationRate?: number | null;
-	discountRate?: number | null;
-}

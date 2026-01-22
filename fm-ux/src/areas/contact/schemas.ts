@@ -11,20 +11,18 @@ export interface ContactCreationFormInput {
 	salutation: Enumerated | null;
 	contactRole?: Enumerated | null;
 	account?: Enumerated | null;
-	tenant: Enumerated | null;
 	owner: Enumerated | null;
 }
 
 export const contactCreationSchema = z.object({
 	firstName: z.string().optional(),
-	lastName: z.string().min(1, "Nachname ist erforderlich"),
+	lastName: z.string().min(1, "contact:message.validation.lastNameRequired"),
 	email: z.string().optional(),
 	phone: z.string().optional(),
 	mobile: z.string().optional(),
 	salutation: enumeratedSchema,
 	contactRole: enumeratedSchema.optional().nullable(),
 	account: enumeratedSchema.optional().nullable(),
-	tenant: enumeratedSchema,
 	owner: enumeratedSchema,
 });
 
@@ -42,13 +40,12 @@ export interface ContactFormInput {
 	salutation: Enumerated | null;
 	title?: Enumerated | null;
 	account?: Enumerated | null;
-	tenant: Enumerated | null;
 	owner: Enumerated | null;
 }
 
 export const contactFormSchema = z.object({
 	firstName: z.string().optional().nullable(),
-	lastName: z.string().min(1, "Nachname ist erforderlich"),
+	lastName: z.string().min(1, "contact:message.validation.lastNameRequired"),
 	email: z.string().optional().nullable(),
 	phone: z.string().optional().nullable(),
 	mobile: z.string().optional().nullable(),
@@ -58,7 +55,6 @@ export const contactFormSchema = z.object({
 	salutation: enumeratedSchema,
 	title: enumeratedSchema.optional().nullable(),
 	account: enumeratedSchema.optional().nullable(),
-	tenant: enumeratedSchema,
 	owner: enumeratedSchema,
 });
 

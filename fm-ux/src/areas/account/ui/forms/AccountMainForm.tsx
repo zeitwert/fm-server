@@ -14,8 +14,6 @@ import {
 import type { Enumerated } from "../../../../common/types";
 import type { AccountContact } from "../../types";
 import type { AccountFormInput } from "../../schemas";
-import { useSessionStore } from "../../../../session/model/sessionStore";
-import { KERNEL_TENANT } from "../../../../session/model/types";
 
 interface AccountMainFormProps {
 	disabled: boolean;
@@ -24,8 +22,6 @@ interface AccountMainFormProps {
 export function AccountMainForm({ disabled }: AccountMainFormProps) {
 	const { t } = useTranslation();
 	const { watch } = useFormContext<AccountFormInput>();
-	const { sessionInfo } = useSessionStore();
-	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
 
 	// Read contacts from form context (display-only)
 	const contacts = watch("contacts");
@@ -104,25 +100,6 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 				<Col span={12}>
 					<AfFieldGroup legend={t("account:label.organization")}>
 						<AfFieldRow>
-							{isKernelTenant ? (
-								<AfSelect
-									name="tenant"
-									label={t("account:label.tenant")}
-									source="oe/objTenant"
-									required
-									readOnly={disabled}
-									size={12}
-								/>
-							) : (
-								<AfSelect
-									name="tenant"
-									label={t("account:label.tenant")}
-									source="oe/objTenant"
-									required
-									readOnly
-									size={12}
-								/>
-							)}
 							<AfSelect
 								name="owner"
 								label={t("account:label.owner")}
@@ -131,8 +108,6 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 								readOnly={disabled}
 								size={12}
 							/>
-						</AfFieldRow>
-						<AfFieldRow>
 							<AfSelect
 								name="mainContact"
 								label={t("account:label.mainContact")}

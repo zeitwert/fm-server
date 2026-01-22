@@ -131,7 +131,7 @@ The **account area** is the canonical reference implementation. For each file be
 
 ### 1. Types (`types.ts`)
 
-Defines TypeScript interfaces for the entity, list item, and form data.
+Defines TypeScript interfaces for the entity and list item.
 
 **Reference:** `fm-ux/src/areas/account/types.ts`
 
@@ -139,7 +139,8 @@ Defines TypeScript interfaces for the entity, list item, and form data.
 - Replace `Account*` with your entity name
 - Add/remove fields based on field discovery from fm-ui
 - Include `EntityMeta` for optimistic locking support
-- Define separate interfaces: full entity, list item (fewer fields), and form data
+- Define only: full entity interface, list item interface (fewer fields)
+- **Do NOT add FormData type** - use schema-derived types from `schemas.ts` instead
 
 ### 2. Schemas (`schemas.ts`)
 
@@ -201,6 +202,7 @@ Preview drawer shown when clicking the eye icon in the list.
 - Show key fields in `Descriptions` component
 - Include "Edit" button that navigates to detail page
 - Use `getLogoUrl()` if entity has a logo, with `onError` fallback
+- **Use CSS utility classes** instead of inline styles (`.af-preview-container`, `.af-preview-avatar`, etc.)
 
 ### 7. Detail View (`ui/{Entity}Page.tsx`)
 
@@ -231,11 +233,11 @@ Form fields for the main tab.
 - Use `Row`/`Col` for multi-column layout
 - Use `AfFieldRow` for inline field groups
 - Use `useFormContext` to access form state if needed
+- **Do NOT include tenant field** - shown in page header already
 
 **Adaptation notes:**
 - Match field layout to the old fm-ui form
 - Use correct `source` prop for AfSelect dropdowns
-- Handle conditional logic (e.g., `KERNEL_TENANT` for tenant field)
 
 ### 9. Creation Form (`ui/forms/{Entity}CreationForm.tsx`)
 
@@ -246,13 +248,14 @@ Modal form for creating new entities.
 **Key patterns from account (follow exactly):**
 - Use `AfForm` with `onSubmit` prop (handles form wrapper + submission)
 - Validate required fields manually in submit handler (no zodResolver)
-- Set smart defaults (e.g., current user as owner, current tenant)
+- Set smart defaults for owner (current user)
+- **Do NOT include tenant field** - server sets tenant automatically
 
 **Adaptation notes:**
 - Include only fields needed for creation (minimal set)
 - Use `useCreate{Entity}` mutation hook
 - Call `onSuccess()` after successful creation
-- Navigate to the created entity's detail page after success
+- **Navigate to the created entity's detail page after success with try/catch**
 
 **Parent context pattern:** If the entity can be created from a parent entity's page (e.g., creating a Contact from an Account), extend `CreateFormProps` to accept the parent:
 
@@ -533,33 +536,60 @@ The AF form components use a **24-column grid system** (consistent with Ant Desi
 **Available CSS utility classes:**
 
 - Layout: `.af-flex`, `.af-flex-column`, `.af-flex-center`, `.af-flex-between`, `.af-flex-end`
-- Spacing: `.af-mb-0`, `.af-mb-4`, `.af-mb-8`, `.af-mb-16`, `.af-mb-24`, `.af-ml-*`, `.af-p-*`
+- Spacing: `.af-mb-0`, `.af-mb-4`, `.af-mb-8`, `.af-mb-16`, `.af-mb-24`, `.af-ml-*`, `.af-p-*`, `.af-p-48`
 - Loading: `.af-loading-container` (full-height), `.af-loading-inline` (with padding)
 - Cards: `.af-card-header`, `.af-card-header-connected`, `.af-card-body-connected`
+- Preview: `.af-preview-container`, `.af-preview-avatar`, `.af-preview-avatar-placeholder`, `.af-preview-avatar-image`, `.af-preview-name`, `.af-preview-name-text`, `.af-preview-description-label`, `.af-preview-description-text`, `.af-preview-actions`
 - Full height: `.af-full-height`
 
 ### 9. Permission Checks
 
-Use role constants from `session/model/types`:
+Use the shared permission utilities from `common/utils/permissions`:
 
 ```typescript
-import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
+import { canModifyEntity, canCreateEntity } from "../../../common/utils";
 
-function canEdit(role?: string): boolean {
-  return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
-}
+// In Area component
+const canCreate = canCreateEntity("account", userRole);
+
+// In Page component
+const canEdit = canModifyEntity("account", userRole);
 ```
+
+This centralizes permission logic and allows entity-specific rules to be added later.
 
 ### 10. Tenant Handling
 
-For multi-tenant scenarios, check `KERNEL_TENANT` to conditionally show/hide or enable/disable the tenant field:
+**Tenant fields are NOT shown in forms.** The tenant is already displayed in the page header (readonly) and the server handles setting the tenant automatically. Do not include tenant fields in:
+- Creation forms (server sets tenant based on session)
+- Main forms (shown in header, not editable)
+
+This simplifies forms significantly by removing conditional tenant logic.
+
+### 11. Navigation Components
+
+Use TanStack Router's `<Link>` component instead of `<a onClick>` for navigation:
 
 ```typescript
-import { KERNEL_TENANT } from "../../../../session/model/types";
+// ✗ Bad - accessibility issues
+<a onClick={() => navigate({ to: "/account" })}>Back to list</a>
 
-const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
-// If kernel tenant: show tenant selector
-// If regular tenant: hide or show read-only tenant field
+// ✓ Good - proper link semantics
+import { Link } from "@tanstack/react-router";
+<Link to="/account">Back to list</Link>
+```
+
+### 12. Query Key Factory
+
+Always use the query key factory instead of literal arrays:
+
+```typescript
+// ✗ Bad - hardcoded array
+queryKey: ["account"]
+
+// ✓ Good - use factory
+import { accountKeys } from "../queries";
+queryKey: accountKeys.all
 ```
 
 ## Verification Checklist
@@ -584,6 +614,7 @@ After implementing, verify:
 **Utilities:**
 - `fm-ux/src/common/utils/zodMeta.ts` - enumeratedSchema, displayOnly helper
 - `fm-ux/src/common/utils/formTransformers.ts` - entity ↔ form conversion
+- `fm-ux/src/common/utils/permissions.ts` - canModifyEntity, canCreateEntity helpers
 - `fm-ux/src/common/api/entityApi.ts` - createEntityApi factory
 
 **Styling:**

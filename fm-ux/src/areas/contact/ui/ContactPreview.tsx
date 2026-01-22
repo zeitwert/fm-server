@@ -1,11 +1,10 @@
-import { Button, Descriptions, Spin, Result, Space, Typography, theme } from "antd";
+import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
 import { TeamOutlined, EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useContact } from "../queries";
 
 const { Text, Paragraph } = Typography;
-const { useToken } = theme;
 
 interface ContactPreviewProps {
 	id: string;
@@ -15,7 +14,6 @@ interface ContactPreviewProps {
 export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const { token } = useToken();
 
 	const { data: contact, isLoading, isError } = useContact(id);
 
@@ -26,7 +24,7 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 
 	if (isLoading) {
 		return (
-			<div style={{ display: "flex", justifyContent: "center", padding: 40 }}>
+			<div className="af-flex-center af-p-48">
 				<Spin />
 			</div>
 		);
@@ -40,28 +38,15 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 		contact.caption || `${contact.firstName ?? ""} ${contact.lastName ?? ""}`.trim();
 
 	return (
-		<div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-			<div style={{ display: "flex", justifyContent: "center", padding: 16 }}>
-				<div
-					style={{
-						width: 120,
-						height: 120,
-						borderRadius: 8,
-						border: `1px solid ${token.colorBorderSecondary}`,
-						background: token.colorBgLayout,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-					}}
-				>
-					<TeamOutlined style={{ fontSize: 48, color: token.colorTextQuaternary }} />
+		<div className="af-preview-container">
+			<div className="af-preview-avatar">
+				<div className="af-preview-avatar-placeholder">
+					<TeamOutlined />
 				</div>
 			</div>
 
-			<div style={{ textAlign: "center" }}>
-				<Text strong style={{ fontSize: 18 }}>
-					{displayName}
-				</Text>
+			<div className="af-preview-name">
+				<Text className="af-preview-name-text">{displayName}</Text>
 			</div>
 
 			<Descriptions column={1} size="small">
@@ -84,11 +69,9 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 
 			{contact.description && (
 				<div>
-					<Text type="secondary" style={{ fontSize: 12 }}>
-						{t("contact:label.description")}
-					</Text>
+					<Text className="af-preview-description-label">{t("contact:label.description")}</Text>
 					<Paragraph
-						style={{ marginTop: 4, marginBottom: 0 }}
+						className="af-preview-description-text"
 						ellipsis={{ rows: 3, expandable: true }}
 					>
 						{contact.description}
@@ -96,7 +79,7 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 				</div>
 			)}
 
-			<Space style={{ marginTop: 8 }}>
+			<Space className="af-preview-actions">
 				<Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>
 					{t("common:action.edit")}
 				</Button>

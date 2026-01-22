@@ -1,4 +1,4 @@
-export type { Contact, ContactListItem, ContactAccount, ContactFormData } from "./types";
+export type { Contact, ContactListItem, ContactAccount } from "./types";
 export { contactCreationSchema, contactFormSchema } from "./schemas";
 export type { ContactCreationData } from "./schemas";
 export { contactApi, contactListApi } from "./api";

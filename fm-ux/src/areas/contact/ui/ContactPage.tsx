@@ -1,7 +1,7 @@
 import { Card, Spin, Result, Tabs } from "antd";
 import { TeamOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
@@ -12,26 +12,22 @@ import { ActivityTimeline } from "../../../common/components/related/ActivityTim
 import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
+import { canModifyEntity } from "../../../common/utils";
 import { contactApi } from "../api";
+import { contactKeys } from "../queries";
 import { contactFormSchema, type ContactFormInput } from "../schemas";
 import { ContactMainForm } from "./forms/ContactMainForm";
 import type { Contact } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
-import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
 
 interface ContactPageProps {
 	contactId: string;
 }
 
-function canEditContact(role?: string): boolean {
-	return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
-}
-
 export function ContactPage({ contactId }: ContactPageProps) {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
-	const userRole = sessionInfo?.user?.role?.id;
+	const userRole = sessionInfo?.user?.role?.id ?? "";
 
 	const {
 		entity: contact,
@@ -46,7 +42,7 @@ export function ContactPage({ contactId }: ContactPageProps) {
 		handleStore,
 	} = useEditableEntity<Contact, ContactFormInput>({
 		id: contactId,
-		queryKey: ["contact"],
+		queryKey: [...contactKeys.all],
 		queryFn: (id) => contactApi.get(id),
 		updateFn: contactApi.update,
 		schema: contactFormSchema,
@@ -66,12 +62,12 @@ export function ContactPage({ contactId }: ContactPageProps) {
 				status="404"
 				title={t("contact:message.notFound")}
 				subTitle={t("contact:message.notFoundDescription")}
-				extra={<a onClick={() => navigate({ to: "/contact" })}>{t("contact:action.backToList")}</a>}
+				extra={<Link to="/contact">{t("contact:action.backToList")}</Link>}
 			/>
 		);
 	}
 
-	const canEdit = canEditContact(userRole);
+	const canEdit = canModifyEntity("contact", userRole);
 
 	return (
 		<div className="af-flex-column af-full-height">

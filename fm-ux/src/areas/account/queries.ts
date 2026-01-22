@@ -31,7 +31,8 @@ export function useCreateAccount() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (data: Omit<Account, "id">) => accountApi.create(data),
+		mutationFn: (data: Omit<Account, "id" | "tenant">) =>
+			accountApi.create(data as Omit<Account, "id">),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: accountKeys.lists() });
 			message.success("Kunde erstellt");

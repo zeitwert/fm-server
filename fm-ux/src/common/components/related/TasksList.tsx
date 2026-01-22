@@ -122,16 +122,16 @@ function TaskGroup({
 					actions={
 						onComplete && !isCompleted(task)
 							? [
-								<Button
-									key="complete"
-									type="text"
-									size="small"
-									icon={<CheckOutlined />}
-									onClick={() => onComplete(task)}
-									title={completeTaskLabel}
-									aria-label="common:completeTask"
-								/>,
-							]
+									<Button
+										key="complete"
+										type="text"
+										size="small"
+										icon={<CheckOutlined />}
+										onClick={() => onComplete(task)}
+										title={completeTaskLabel}
+										aria-label="common:completeTask"
+									/>,
+								]
 							: undefined
 					}
 					style={{ padding: "8px 0" }}

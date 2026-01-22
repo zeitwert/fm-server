@@ -26,8 +26,7 @@
 		"activity": "Aktivität"
 	},
 	"action": {
-		"backToList": "Zurück zur Kundenliste",
-		"create": "Neuer"
+		"backToList": "Zurück zur Kundenliste"
 	},
 	"message": {
 		"noContacts": "Keine Kontakte vorhanden",

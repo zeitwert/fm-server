@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
 import { BankOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
@@ -13,27 +13,23 @@ import { ActivityTimeline } from "../../../common/components/related/ActivityTim
 import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
+import { canModifyEntity } from "../../../common/utils";
 import { accountApi } from "../api";
+import { accountKeys } from "../queries";
 import { accountFormSchema, type AccountFormInput } from "../schemas";
 import { AccountMainForm } from "./forms/AccountMainForm";
 import { ContactCreationForm } from "../../contact/ui/forms/ContactCreationForm";
 import type { Account } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
-import { ROLE_ADMIN, ROLE_APP_ADMIN, ROLE_SUPER_USER } from "../../../session/model/types";
 
 interface AccountPageProps {
 	accountId: string;
 }
 
-function canEditAccount(role?: string): boolean {
-	return role === ROLE_ADMIN || role === ROLE_APP_ADMIN || role === ROLE_SUPER_USER;
-}
-
 export function AccountPage({ accountId }: AccountPageProps) {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
-	const userRole = sessionInfo?.user?.role?.id;
+	const userRole = sessionInfo?.user?.role?.id ?? "";
 	const [isContactCreateOpen, setIsContactCreateOpen] = useState(false);
 
 	const {
@@ -49,7 +45,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		handleStore,
 	} = useEditableEntity<Account, AccountFormInput>({
 		id: accountId,
-		queryKey: ["account"],
+		queryKey: [...accountKeys.all],
 		queryFn: (id) => accountApi.get(id),
 		updateFn: accountApi.update,
 		schema: accountFormSchema,
@@ -69,12 +65,12 @@ export function AccountPage({ accountId }: AccountPageProps) {
 				status="404"
 				title={t("account:message.notFound")}
 				subTitle={t("account:message.notFoundDescription")}
-				extra={<a onClick={() => navigate({ to: "/account" })}>{t("account:action.backToList")}</a>}
+				extra={<Link to="/account">{t("account:action.backToList")}</Link>}
 			/>
 		);
 	}
 
-	const canEdit = canEditAccount(userRole);
+	const canEdit = canModifyEntity("account", userRole);
 
 	return (
 		<div className="af-flex-column af-full-height">

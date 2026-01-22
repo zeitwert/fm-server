@@ -1,22 +1,18 @@
 import { Button, Space, message } from "antd";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "@tanstack/react-router";
 import { AfForm, AfInput, AfTextArea, AfSelect } from "../../../../common/components/form";
 import { useCreateAccount } from "../../queries";
 import type { AccountCreationFormInput } from "../../schemas";
 import type { CreateFormProps } from "../../../../common/components/items";
 import { useSessionStore } from "../../../../session/model/sessionStore";
-import { KERNEL_TENANT } from "../../../../session/model/types";
 
 export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { sessionInfo } = useSessionStore();
 	const createMutation = useCreateAccount();
-	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
-	const defaultTenant =
-		!isKernelTenant && sessionInfo?.tenant
-			? { id: sessionInfo.tenant.id, name: sessionInfo.tenant.name }
-			: null;
 	const defaultOwner = sessionInfo?.user
 		? { id: sessionInfo.user.id, name: sessionInfo.user.name }
 		: null;
@@ -27,7 +23,6 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 			description: "",
 			accountType: null,
 			clientSegment: null,
-			tenant: defaultTenant,
 			owner: defaultOwner,
 		},
 	});
@@ -45,10 +40,6 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 			});
 			hasError = true;
 		}
-		if (!data.tenant) {
-			form.setError("tenant", { message: t("account:message.validation.tenantRequired") });
-			hasError = true;
-		}
 		if (!data.owner) {
 			form.setError("owner", { message: t("account:message.validation.ownerRequired") });
 			hasError = true;
@@ -59,24 +50,24 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 			return;
 		}
 
-		await createMutation.mutateAsync({
-			name: data.name,
-			description: data.description,
-			accountType: data.accountType!,
-			clientSegment: data.clientSegment ?? undefined,
-			tenant: data.tenant!,
-			owner: data.owner!,
-		});
-		onSuccess();
+		try {
+			const createdAccount = await createMutation.mutateAsync({
+				name: data.name,
+				description: data.description,
+				accountType: data.accountType!,
+				clientSegment: data.clientSegment ?? undefined,
+				owner: data.owner!,
+			});
+			onSuccess();
+			navigate({ to: "/account/$accountId", params: { accountId: createdAccount.id } });
+		} catch {
+			// Error handling is done in useCreateAccount's onError callback
+		}
 	};
 
 	return (
 		<AfForm form={form} onSubmit={handleSubmit}>
 			<AfInput name="name" label={t("account:label.name")} required />
-
-			{isKernelTenant && (
-				<AfSelect name="tenant" label={t("account:label.tenant")} source="oe/objTenant" required />
-			)}
 
 			<AfSelect name="owner" label={t("account:label.owner")} source="oe/objUser" required />
 

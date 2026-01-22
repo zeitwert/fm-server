@@ -2,13 +2,21 @@ import { TeamOutlined } from "@ant-design/icons";
 import type { ColumnType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
 import { ItemsPage } from "../../../common/components/items";
+import { canCreateEntity } from "../../../common/utils";
 import { contactListApi } from "../api";
 import { contactKeys } from "../queries";
+import { ContactCreationForm } from "./forms/ContactCreationForm";
 import { ContactPreview } from "./ContactPreview";
 import type { ContactListItem } from "../types";
+import { useSessionStore } from "../../../session/model/sessionStore";
 
 export function ContactArea() {
 	const { t } = useTranslation();
+	const { sessionInfo } = useSessionStore();
+	const userRole = sessionInfo?.user?.role?.id ?? "";
+	const tenantType = sessionInfo?.tenant?.tenantType?.id ?? "";
+	// Can create contacts if session has an account context
+	const canCreate = canCreateEntity("contact", userRole, tenantType) && !!sessionInfo?.account;
 
 	const columns: ColumnType<ContactListItem>[] = [
 		{
@@ -51,7 +59,17 @@ export function ContactArea() {
 			queryKey={[...contactKeys.lists()]}
 			queryFn={() => contactListApi.list()}
 			columns={columns}
-			canCreate={false}
+			canCreate={canCreate}
+			CreateForm={
+				sessionInfo?.account
+					? (props) => (
+							<ContactCreationForm
+								{...props}
+								account={{ id: sessionInfo.account!.id, name: sessionInfo.account!.name }}
+							/>
+						)
+					: undefined
+			}
 			PreviewComponent={ContactPreview}
 			getDetailPath={(record) => `/contact/${record.id}`}
 		/>

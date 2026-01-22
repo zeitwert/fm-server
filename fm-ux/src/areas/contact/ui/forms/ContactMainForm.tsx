@@ -8,8 +8,6 @@ import {
 	AfFieldGroup,
 	AfDatePicker,
 } from "../../../../common/components/form";
-import { useSessionStore } from "../../../../session/model/sessionStore";
-import { KERNEL_TENANT } from "../../../../session/model/types";
 
 interface ContactMainFormProps {
 	disabled: boolean;
@@ -17,8 +15,6 @@ interface ContactMainFormProps {
 
 export function ContactMainForm({ disabled }: ContactMainFormProps) {
 	const { t } = useTranslation();
-	const { sessionInfo } = useSessionStore();
-	const isKernelTenant = sessionInfo?.tenant?.tenantType?.id === KERNEL_TENANT;
 
 	return (
 		<div>
@@ -110,25 +106,6 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 				<Col span={12}>
 					<AfFieldGroup legend={t("contact:label.organization")}>
 						<AfFieldRow>
-							{isKernelTenant ? (
-								<AfSelect
-									name="tenant"
-									label={t("contact:label.tenant")}
-									source="oe/objTenant"
-									required
-									readOnly={disabled}
-									size={12}
-								/>
-							) : (
-								<AfSelect
-									name="tenant"
-									label={t("contact:label.tenant")}
-									source="oe/objTenant"
-									required
-									readOnly
-									size={12}
-								/>
-							)}
 							<AfSelect
 								name="owner"
 								label={t("contact:label.owner")}

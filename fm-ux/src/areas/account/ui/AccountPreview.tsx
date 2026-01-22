@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Descriptions, Spin, Result, Space, Typography, theme } from "antd";
+import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
 import { BankOutlined, EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -7,7 +7,6 @@ import { useAccount } from "../queries";
 import { getLogoUrl } from "../../../common/api/client";
 
 const { Text, Paragraph } = Typography;
-const { useToken } = theme;
 
 interface AccountPreviewProps {
 	id: string;
@@ -17,7 +16,6 @@ interface AccountPreviewProps {
 export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const { token } = useToken();
 	const [logoError, setLogoError] = useState(false);
 
 	const { data: account, isLoading, isError } = useAccount(id);
@@ -34,7 +32,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 
 	if (isLoading) {
 		return (
-			<div style={{ display: "flex", justifyContent: "center", padding: 40 }}>
+			<div className="af-flex-center af-p-48">
 				<Spin />
 			</div>
 		);
@@ -47,46 +45,26 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 	const logoUrl = getLogoUrl("account", id);
 
 	return (
-		<div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+		<div className="af-preview-container">
 			{/* Logo */}
-			<div style={{ display: "flex", justifyContent: "center", padding: 16 }}>
+			<div className="af-preview-avatar">
 				{!logoError ? (
 					<img
 						src={logoUrl}
 						alt={account.name}
-						style={{
-							width: 120,
-							height: 120,
-							borderRadius: 8,
-							objectFit: "contain",
-							border: `1px solid ${token.colorBorderSecondary}`,
-							background: token.colorBgLayout,
-						}}
+						className="af-preview-avatar-image"
 						onError={() => setLogoError(true)}
 					/>
 				) : (
-					<div
-						style={{
-							width: 120,
-							height: 120,
-							borderRadius: 8,
-							border: `1px solid ${token.colorBorderSecondary}`,
-							background: token.colorBgLayout,
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-						}}
-					>
-						<BankOutlined style={{ fontSize: 48, color: token.colorTextQuaternary }} />
+					<div className="af-preview-avatar-placeholder">
+						<BankOutlined />
 					</div>
 				)}
 			</div>
 
 			{/* Name */}
-			<div style={{ textAlign: "center" }}>
-				<Text strong style={{ fontSize: 18 }}>
-					{account.name}
-				</Text>
+			<div className="af-preview-name">
+				<Text className="af-preview-name-text">{account.name}</Text>
 			</div>
 
 			{/* Details */}
@@ -111,11 +89,9 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 			{/* Description */}
 			{account.description && (
 				<div>
-					<Text type="secondary" style={{ fontSize: 12 }}>
-						{t("account:label.description")}
-					</Text>
+					<Text className="af-preview-description-label">{t("account:label.description")}</Text>
 					<Paragraph
-						style={{ marginTop: 4, marginBottom: 0 }}
+						className="af-preview-description-text"
 						ellipsis={{ rows: 3, expandable: true }}
 					>
 						{account.description}
@@ -124,7 +100,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 			)}
 
 			{/* Actions */}
-			<Space style={{ marginTop: 8 }}>
+			<Space className="af-preview-actions">
 				<Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>
 					{t("common:action.edit")}
 				</Button>

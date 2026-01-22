@@ -31,7 +31,8 @@ export function useCreateContact() {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (data: Omit<Contact, "id">) => contactApi.create(data),
+		mutationFn: (data: Omit<Contact, "id" | "tenant">) =>
+			contactApi.create(data as Omit<Contact, "id">),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: contactKeys.lists() });
 			message.success("Kontakt erstellt");

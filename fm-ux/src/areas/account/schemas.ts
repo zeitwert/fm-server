@@ -8,16 +8,14 @@ export interface AccountCreationFormInput {
 	description?: string;
 	accountType: Enumerated | null;
 	clientSegment?: Enumerated | null;
-	tenant: Enumerated | null;
 	owner: Enumerated | null;
 }
 
 export const accountCreationSchema = z.object({
-	name: z.string().min(1, "Name ist erforderlich"),
+	name: z.string().min(1, "account:message.validation.nameRequired"),
 	description: z.string().optional(),
 	accountType: enumeratedSchema,
 	clientSegment: enumeratedSchema.optional(),
-	tenant: enumeratedSchema,
 	owner: enumeratedSchema,
 });
 
@@ -29,7 +27,6 @@ export interface AccountFormInput {
 	description?: string | null;
 	accountType: Enumerated | null;
 	clientSegment?: Enumerated | null;
-	tenant: Enumerated | null;
 	owner: Enumerated | null;
 	inflationRate?: number | null;
 	discountRate?: number | null;
@@ -39,11 +36,10 @@ export interface AccountFormInput {
 }
 
 export const accountFormSchema = z.object({
-	name: z.string().min(1, "Name ist erforderlich"),
+	name: z.string().min(1, "account:message.validation.nameRequired"),
 	description: z.string().optional().nullable(),
 	accountType: enumeratedSchema,
 	clientSegment: enumeratedSchema.optional().nullable(),
-	tenant: enumeratedSchema,
 	owner: enumeratedSchema,
 	inflationRate: z.number().optional().nullable(),
 	discountRate: z.number().optional().nullable(),
