@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -12,6 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.session.HttpSessionEventPublisher
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 private val GET_PERMIT_ALL = arrayOf(
 	// enumerations
@@ -66,12 +70,24 @@ open class WebSecurityConfiguration(
 	open fun httpSessionEventPublisher(): HttpSessionEventPublisher = HttpSessionEventPublisher()
 
 	@Bean
+	open fun corsConfigurationSource(): CorsConfigurationSource {
+		val configuration = CorsConfiguration()
+		configuration.allowedOrigins = listOf("http://localhost:5173", "http://localhost:8080")
+		configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+		configuration.allowedHeaders = listOf("*")
+		configuration.allowCredentials = true
+		val source = UrlBasedCorsConfigurationSource()
+		source.registerCorsConfiguration("/**", configuration)
+		return source
+	}
+
+	@Bean
 	// TODO Revoke unnecessary permissions
 	@Throws(Exception::class)
 	open fun filterChain(http: HttpSecurity): SecurityFilterChain {
 		// Spring Security 6 lambda DSL
 		http
-			.cors { cors -> cors.configure(http) }
+			.cors(Customizer.withDefaults())
 			.csrf { csrf -> csrf.disable() }
 			.headers { headers -> headers.frameOptions { frame -> frame.disable() } }
 			.exceptionHandling { ex -> ex.authenticationEntryPoint(unauthorizedHandler) }

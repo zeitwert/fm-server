@@ -99,6 +99,7 @@ export const api = {
 		return axios.create({ withCredentials: true }).post<T>(url, data, {
 			headers: {
 				Accept: `${JSON_CONTENT_TYPE},${API_CONTENT_TYPE}`,
+				"Content-Type": JSON_CONTENT_TYPE,
 			},
 		});
 	},
