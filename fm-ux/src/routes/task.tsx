@@ -1,24 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Card, Typography } from "antd";
-import { getArea } from "../app/config/AppConfig";
-
-const { Title, Text } = Typography;
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/task")({
-	component: TaskArea,
+	component: TaskLayout,
 });
 
-function TaskArea() {
-	return (
-		<Card>
-			<Title level={3}>
-				<span style={{ marginRight: 12 }}>{getArea("task")?.icon}</span>
-				Aufgaben
-			</Title>
-			<Text type="secondary">
-				Verwalten Sie Ihre Aufgaben und Termine. Behalten Sie den Überblick über anstehende und
-				abgeschlossene Arbeiten.
-			</Text>
-		</Card>
-	);
+function TaskLayout() {
+	return <Outlet />;
 }

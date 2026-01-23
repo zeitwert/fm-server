@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { noteApi, noteListApi } from "./api";
 import type { Note } from "./types";
-import type { EntityMeta } from "../../common/api/jsonapi";
 
 export const noteKeys = {
 	all: ["note"] as const,
@@ -24,22 +23,6 @@ export function useNote(id: string) {
 		queryKey: noteKeys.detail(id),
 		queryFn: () => noteApi.get(id),
 		enabled: !!id,
-	});
-}
-
-export function useUpdateNote() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (data: Partial<Note> & { id: string; meta?: EntityMeta }) => noteApi.update(data),
-		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({ queryKey: noteKeys.detail(variables.id) });
-			queryClient.invalidateQueries({ queryKey: noteKeys.lists() });
-			message.success("Notiz gespeichert");
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Speichern: ${error.message}`);
-		},
 	});
 }
 

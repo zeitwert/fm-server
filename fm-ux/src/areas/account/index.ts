@@ -7,7 +7,6 @@ export {
 	useAccountList,
 	useAccount,
 	useCreateAccount,
-	useUpdateAccount,
 	useDeleteAccount,
 	getAccountQueryOptions,
 	getAccountListQueryOptions,

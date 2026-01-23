@@ -2,35 +2,34 @@ import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
-import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
+import { DocPageHeader } from "../../../common/components/doc";
+import { ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
 import { NotesList } from "../../../common/components/related/NotesList";
-import { TasksList } from "../../../common/components/related/TasksList";
 import { ActivityTimeline } from "../../../common/components/related/ActivityTimeline";
 import type { Note } from "../../../common/components/related/NotesList";
-import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import { contactApi } from "../api";
-import { contactKeys } from "../queries";
-import { contactFormSchema, type ContactFormInput } from "../schemas";
-import { ContactMainForm } from "./forms/ContactMainForm";
-import type { Contact } from "../types";
+import { taskApi } from "../api";
+import { taskKeys } from "../queries";
+import { taskFormSchema, type TaskFormInput } from "../schemas";
+import { TaskMainForm } from "./forms/TaskMainForm";
+import type { Task, CaseStage } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
 import { getArea } from "../../../app/config/AppConfig";
 
-interface ContactPageProps {
-	contactId: string;
+interface TaskPageProps {
+	taskId: string;
 }
 
-export function ContactPage({ contactId }: ContactPageProps) {
+export function TaskPage({ taskId }: TaskPageProps) {
 	const { t } = useTranslation();
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id ?? "";
 
 	const {
-		entity: contact,
+		entity: task,
 		form,
 		isLoading,
 		isError,
@@ -40,14 +39,19 @@ export function ContactPage({ contactId }: ContactPageProps) {
 		handleEdit,
 		handleCancel,
 		handleStore,
-	} = useEditableEntity<Contact, ContactFormInput>({
-		id: contactId,
-		queryKey: contactKeys.details(),
-		queryFn: (id) => contactApi.get(id),
-		updateFn: contactApi.update,
-		schema: contactFormSchema,
-		listQueryKey: contactKeys.lists(),
+		directMutation,
+	} = useEditableEntity<Task, TaskFormInput>({
+		id: taskId,
+		queryKey: taskKeys.details(),
+		queryFn: (id) => taskApi.get(id),
+		updateFn: taskApi.update,
+		schema: taskFormSchema,
+		listQueryKey: taskKeys.lists(),
 	});
+
+	const handleStageTransition = async (stage: CaseStage) => {
+		await directMutation({ caseStage: stage });
+	};
 
 	if (isLoading) {
 		return (
@@ -57,43 +61,52 @@ export function ContactPage({ contactId }: ContactPageProps) {
 		);
 	}
 
-	if (isError || !contact) {
+	if (isError || !task) {
 		return (
 			<Result
 				status="404"
-				title={t("contact:message.notFound")}
-				subTitle={t("contact:message.notFoundDescription")}
-				extra={<Link to="/contact">{t("contact:action.backToList")}</Link>}
+				title={t("task:message.notFound")}
+				subTitle={t("task:message.notFoundDescription")}
+				extra={<Link to="/task">{t("task:action.backToList")}</Link>}
 			/>
 		);
 	}
 
-	const canEdit = canModifyEntity("contact", userRole);
+	const canEdit = canModifyEntity("task", userRole);
 
 	return (
 		<div className="af-flex-column af-full-height">
-			<ItemPageHeader
-				icon={getArea("contact")?.icon}
-				title={contact.caption || `${contact.firstName ?? ""} ${contact.lastName ?? ""}`.trim()}
+			<DocPageHeader
+				icon={getArea("task")?.icon}
+				title={task.subject || t("common:label.noTitle")}
 				details={[
 					{
-						label: t("contact:label.account"),
-						content: contact.account?.caption,
-						link: contact.account ? `/account/${contact.account.id}` : undefined,
+						label: t("task:label.assignee"),
+						content: task.meta?.assignee?.name,
 					},
 					{
-						label: t("contact:label.email"),
-						content: contact.email,
+						label: t("task:label.owner"),
+						content: task.owner?.name,
 					},
 					{
-						label: t("contact:label.mobile"),
-						content: contact.mobile,
+						label: t("task:label.dueAt"),
+						content: task.dueAt
+							? new Date(task.dueAt).toLocaleDateString("de-CH", {
+									day: "2-digit",
+									month: "2-digit",
+									year: "numeric",
+								})
+							: undefined,
 					},
 					{
-						label: t("contact:label.owner"),
-						content: contact.owner?.name,
+						label: t("task:label.priority"),
+						content: task.priority?.name,
 					},
 				]}
+				currentStage={task.meta?.caseStage}
+				stages={task.meta?.caseStages}
+				onTransition={handleStageTransition}
+				isEditing={isEditing}
 			/>
 
 			<ItemPageLayout
@@ -102,17 +115,12 @@ export function ContactPage({ contactId }: ContactPageProps) {
 						sections={[
 							{
 								key: "notes",
-								label: t("contact:label.notes"),
+								label: t("task:label.notes"),
 								children: <NotesList notes={[] as Note[]} />,
 							},
 							{
-								key: "tasks",
-								label: t("contact:label.tasks"),
-								children: <TasksList tasks={[] as Task[]} />,
-							},
-							{
 								key: "activity",
-								label: t("contact:label.activity"),
+								label: t("task:label.activity"),
 								children: <ActivityTimeline activities={[] as Activity[]} />,
 							},
 						]}
@@ -136,8 +144,8 @@ export function ContactPage({ contactId }: ContactPageProps) {
 							items={[
 								{
 									key: "main",
-									label: t("contact:label.tabMain"),
-									children: <ContactMainForm disabled={!isEditing} />,
+									label: t("task:label.tabMain"),
+									children: <TaskMainForm disabled={!isEditing} />,
 								},
 							]}
 						/>

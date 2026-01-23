@@ -53,8 +53,6 @@ export function ContactArea() {
 	return (
 		<ItemsPage<ContactListItem>
 			entityType="contact"
-			entityLabelKey="contact.label.entityCount"
-			entityLabelSingular={t("contact:label.entity")}
 			icon={getArea("contact")?.icon}
 			queryKey={[...contactKeys.lists()]}
 			queryFn={() => contactListApi.list()}

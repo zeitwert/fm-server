@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { contactApi, contactListApi } from "./api";
 import type { Contact } from "./types";
-import type { EntityMeta } from "../../common/api/jsonapi";
 
 export const contactKeys = {
 	all: ["contact"] as const,
@@ -39,23 +38,6 @@ export function useCreateContact() {
 		},
 		onError: (error: Error & { detail?: string }) => {
 			message.error(error.detail || `Fehler beim Erstellen: ${error.message}`);
-		},
-	});
-}
-
-export function useUpdateContact() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (data: Partial<Contact> & { id: string; meta?: EntityMeta }) =>
-			contactApi.update(data),
-		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({ queryKey: contactKeys.detail(variables.id) });
-			queryClient.invalidateQueries({ queryKey: contactKeys.lists() });
-			message.success("Kontakt gespeichert");
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Speichern: ${error.message}`);
 		},
 	});
 }

@@ -1,0 +1,32 @@
+{
+	"label": {
+		"entity": "Task",
+		"entityCount": "{count, plural, =0 {No tasks} one {# task} other {# tasks}}",
+		"subject": "Subject",
+		"content": "Details",
+		"isPrivate": "Private?",
+		"priority": "Priority",
+		"dueAt": "Due at",
+		"remindAt": "Reminder at",
+		"relatedTo": "Related to",
+		"assignee": "Assigned to",
+		"owner": "Owner",
+		"tenant": "Tenant",
+		"stage": "Stage",
+		"basicInfo": "Basic Information",
+		"organization": "Organization",
+		"tabMain": "Main",
+		"notes": "Notes",
+		"activity": "Activity"
+	},
+	"action": {
+		"backToList": "Back to task list"
+	},
+	"message": {
+		"notFound": "Task not found",
+		"notFoundDescription": "The requested task could not be found.",
+		"validation": {
+			"subjectRequired": "Subject is required"
+		}
+	}
+}

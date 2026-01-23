@@ -7,7 +7,6 @@ export {
 	useContactList,
 	useContact,
 	useCreateContact,
-	useUpdateContact,
 	useDeleteContact,
 	getContactQueryOptions,
 	getContactListQueryOptions,

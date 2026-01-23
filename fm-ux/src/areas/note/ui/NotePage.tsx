@@ -38,10 +38,11 @@ export function NotePage({ noteId }: NotePageProps) {
 		handleStore,
 	} = useEditableEntity<Note, NoteFormInput>({
 		id: noteId,
-		queryKey: [...noteKeys.all],
+		queryKey: noteKeys.details(),
 		queryFn: (id) => noteApi.get(id),
 		updateFn: noteApi.update,
 		schema: noteFormSchema,
+		listQueryKey: noteKeys.lists(),
 	});
 
 	if (isLoading) {

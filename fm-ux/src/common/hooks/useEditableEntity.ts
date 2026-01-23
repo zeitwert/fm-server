@@ -54,6 +54,9 @@ export interface UseEditableEntityOptions<T extends BaseEntity, TFormData extend
 
 	/** Error message prefix (optional, defaults to "Fehler beim Speichern") */
 	errorMessagePrefix?: string;
+
+	/** Query key for the list view (optional, will be invalidated on mutation success) */
+	listQueryKey?: readonly unknown[];
 }
 
 export interface UseEditableEntityResult<T extends BaseEntity, TFormData extends FieldValues> {
@@ -84,6 +87,8 @@ export interface UseEditableEntityResult<T extends BaseEntity, TFormData extends
 	handleCancel: () => void;
 	/** Save changes to the server (only dirty fields are sent) */
 	handleStore: () => Promise<void>;
+	/** Update entity directly without going through the form (e.g., for stage transitions) */
+	directMutation: (changes: Partial<T>) => Promise<void>;
 
 	// Mutation state
 	/** Whether the form is currently being saved */
@@ -109,6 +114,7 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 		updateFn,
 		successMessage = "Gespeichert",
 		errorMessagePrefix = "Fehler beim Speichern",
+		listQueryKey,
 	} = options;
 
 	const queryClient = useQueryClient();
@@ -155,9 +161,13 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 
 	const mutation = useMutation({
 		mutationFn: updateFn,
-		onSuccess: () => {
-			// Invalidate the query to refetch fresh data
-			queryClient.invalidateQueries({ queryKey: [...queryKey, id] });
+		onSuccess: (updatedEntity) => {
+			// Use the response data directly instead of refetching
+			queryClient.setQueryData([...queryKey, id], updatedEntity);
+			// Invalidate list to ensure consistency
+			if (listQueryKey) {
+				queryClient.invalidateQueries({ queryKey: listQueryKey as unknown[] });
+			}
 			setIsEditing(false);
 			message.success(successMessage);
 		},
@@ -215,6 +225,31 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 		}
 	);
 
+	/**
+	 * Update entity directly without going through the form.
+	 * Useful for actions like stage transitions that bypass form validation.
+	 * Does not affect edit mode state.
+	 */
+	const directMutation = async (changes: Partial<T>): Promise<void> => {
+		try {
+			const updatedEntity = await updateFn({
+				id,
+				...changes,
+				meta: { clientVersion: query.data?.meta?.version },
+			});
+			// Update cache with response
+			queryClient.setQueryData([...queryKey, id], updatedEntity);
+			// Invalidate list to ensure consistency
+			if (listQueryKey) {
+				queryClient.invalidateQueries({ queryKey: listQueryKey as unknown[] });
+			}
+		} catch (error) {
+			const err = error as Error & { detail?: string };
+			message.error(err.detail || `${errorMessagePrefix}: ${err.message}`);
+			throw error;
+		}
+	};
+
 	// -------------------------------------------------------------------------
 	// Return value
 	// -------------------------------------------------------------------------
@@ -237,6 +272,7 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 		handleEdit,
 		handleCancel,
 		handleStore,
+		directMutation,
 
 		// Mutation state
 		isStoring: mutation.isPending,

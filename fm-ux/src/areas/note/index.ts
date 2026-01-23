@@ -6,7 +6,6 @@ export {
 	noteKeys,
 	useNoteList,
 	useNote,
-	useUpdateNote,
 	useDeleteNote,
 	getNoteQueryOptions,
 	getNoteListQueryOptions,

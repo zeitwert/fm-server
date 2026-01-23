@@ -45,10 +45,11 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		handleStore,
 	} = useEditableEntity<Account, AccountFormInput>({
 		id: accountId,
-		queryKey: [...accountKeys.all],
+		queryKey: accountKeys.details(),
 		queryFn: (id) => accountApi.get(id),
 		updateFn: accountApi.update,
 		schema: accountFormSchema,
+		listQueryKey: accountKeys.lists(),
 	});
 
 	if (isLoading) {

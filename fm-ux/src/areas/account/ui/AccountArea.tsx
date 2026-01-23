@@ -63,8 +63,6 @@ export function AccountArea() {
 	return (
 		<ItemsPage<AccountListItem>
 			entityType="account"
-			entityLabelKey="account.label.entityCount"
-			entityLabelSingular={t("account:label.entity")}
 			icon={getArea("account")?.icon}
 			queryKey={[...accountKeys.lists()]}
 			queryFn={() => accountListApi.list()}

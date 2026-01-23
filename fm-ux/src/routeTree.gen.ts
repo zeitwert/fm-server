@@ -21,9 +21,11 @@ import { Route as ContactRouteImport } from "./routes/contact"
 import { Route as BuildingRouteImport } from "./routes/building"
 import { Route as AccountRouteImport } from "./routes/account"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as TaskIndexRouteImport } from "./routes/task.index"
 import { Route as NoteIndexRouteImport } from "./routes/note.index"
 import { Route as ContactIndexRouteImport } from "./routes/contact.index"
 import { Route as AccountIndexRouteImport } from "./routes/account.index"
+import { Route as TaskTaskIdRouteImport } from "./routes/task.$taskId"
 import { Route as NoteNoteIdRouteImport } from "./routes/note.$noteId"
 import { Route as ContactContactIdRouteImport } from "./routes/contact.$contactId"
 import { Route as AccountAccountIdRouteImport } from "./routes/account.$accountId"
@@ -88,6 +90,11 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
+const TaskIndexRoute = TaskIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => TaskRoute,
+} as any)
 const NoteIndexRoute = NoteIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -102,6 +109,11 @@ const AccountIndexRoute = AccountIndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => AccountRoute,
+} as any)
+const TaskTaskIdRoute = TaskTaskIdRouteImport.update({
+  id: "/$taskId",
+  path: "/$taskId",
+  getParentRoute: () => TaskRoute,
 } as any)
 const NoteNoteIdRoute = NoteNoteIdRouteImport.update({
   id: "/$noteId",
@@ -129,15 +141,17 @@ export interface FileRoutesByFullPath {
   "/login": typeof LoginRoute
   "/note": typeof NoteRouteWithChildren
   "/portfolio": typeof PortfolioRoute
-  "/task": typeof TaskRoute
+  "/task": typeof TaskRouteWithChildren
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
+  "/task/$taskId": typeof TaskTaskIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
+  "/task/": typeof TaskIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -146,15 +160,16 @@ export interface FileRoutesByTo {
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
   "/portfolio": typeof PortfolioRoute
-  "/task": typeof TaskRoute
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
+  "/task/$taskId": typeof TaskTaskIdRoute
   "/account": typeof AccountIndexRoute
   "/contact": typeof ContactIndexRoute
   "/note": typeof NoteIndexRoute
+  "/task": typeof TaskIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -167,15 +182,17 @@ export interface FileRoutesById {
   "/login": typeof LoginRoute
   "/note": typeof NoteRouteWithChildren
   "/portfolio": typeof PortfolioRoute
-  "/task": typeof TaskRoute
+  "/task": typeof TaskRouteWithChildren
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
+  "/task/$taskId": typeof TaskTaskIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
+  "/task/": typeof TaskIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -195,9 +212,11 @@ export interface FileRouteTypes {
     | "/account/$accountId"
     | "/contact/$contactId"
     | "/note/$noteId"
+    | "/task/$taskId"
     | "/account/"
     | "/contact/"
     | "/note/"
+    | "/task/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -206,15 +225,16 @@ export interface FileRouteTypes {
     | "/home"
     | "/login"
     | "/portfolio"
-    | "/task"
     | "/tenant"
     | "/user"
     | "/account/$accountId"
     | "/contact/$contactId"
     | "/note/$noteId"
+    | "/task/$taskId"
     | "/account"
     | "/contact"
     | "/note"
+    | "/task"
   id:
     | "__root__"
     | "/"
@@ -232,9 +252,11 @@ export interface FileRouteTypes {
     | "/account/$accountId"
     | "/contact/$contactId"
     | "/note/$noteId"
+    | "/task/$taskId"
     | "/account/"
     | "/contact/"
     | "/note/"
+    | "/task/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -247,7 +269,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   NoteRoute: typeof NoteRouteWithChildren
   PortfolioRoute: typeof PortfolioRoute
-  TaskRoute: typeof TaskRoute
+  TaskRoute: typeof TaskRouteWithChildren
   TenantRoute: typeof TenantRoute
   UserRoute: typeof UserRoute
 }
@@ -338,6 +360,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/task/": {
+      id: "/task/"
+      path: "/"
+      fullPath: "/task/"
+      preLoaderRoute: typeof TaskIndexRouteImport
+      parentRoute: typeof TaskRoute
+    }
     "/note/": {
       id: "/note/"
       path: "/"
@@ -358,6 +387,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/account/"
       preLoaderRoute: typeof AccountIndexRouteImport
       parentRoute: typeof AccountRoute
+    }
+    "/task/$taskId": {
+      id: "/task/$taskId"
+      path: "/$taskId"
+      fullPath: "/task/$taskId"
+      preLoaderRoute: typeof TaskTaskIdRouteImport
+      parentRoute: typeof TaskRoute
     }
     "/note/$noteId": {
       id: "/note/$noteId"
@@ -421,6 +457,18 @@ const NoteRouteChildren: NoteRouteChildren = {
 
 const NoteRouteWithChildren = NoteRoute._addFileChildren(NoteRouteChildren)
 
+interface TaskRouteChildren {
+  TaskTaskIdRoute: typeof TaskTaskIdRoute
+  TaskIndexRoute: typeof TaskIndexRoute
+}
+
+const TaskRouteChildren: TaskRouteChildren = {
+  TaskTaskIdRoute: TaskTaskIdRoute,
+  TaskIndexRoute: TaskIndexRoute,
+}
+
+const TaskRouteWithChildren = TaskRoute._addFileChildren(TaskRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
@@ -431,7 +479,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   NoteRoute: NoteRouteWithChildren,
   PortfolioRoute: PortfolioRoute,
-  TaskRoute: TaskRoute,
+  TaskRoute: TaskRouteWithChildren,
   TenantRoute: TenantRoute,
   UserRoute: UserRoute,
 }

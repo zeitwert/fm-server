@@ -61,8 +61,6 @@ export function NoteArea() {
 	return (
 		<ItemsPage<NoteListItem>
 			entityType="note"
-			entityLabelKey="note.label.entityCount"
-			entityLabelSingular={t("note:label.entity")}
 			icon={getArea("note")?.icon}
 			queryKey={[...noteKeys.lists()]}
 			queryFn={() => noteListApi.list()}

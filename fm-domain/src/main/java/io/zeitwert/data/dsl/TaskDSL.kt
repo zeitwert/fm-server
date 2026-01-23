@@ -59,8 +59,8 @@ object Task {
 		userId: Any,
 		timestamp: OffsetDateTime,
 	) {
-		// Set case stage to "new"
-		task.meta.setCaseStage(getCaseStage("task.new"), userId, timestamp)
+		// Set random case stage
+		task.meta.setCaseStage(getCaseStage(randomStage()), userId, timestamp)
 
 		// Set random task data
 		val (subject, content) = randomTaskContent()
@@ -70,6 +70,9 @@ object Task {
 		task.priority = randomPriority()
 		task.dueAt = randomDueDate(timestamp)
 	}
+
+	private fun randomStage(): String =
+		listOf("task.new", "task.open", "task.progress", "task.done").random()
 
 	private fun randomPriority(): CodeTaskPriority =
 		listOf(CodeTaskPriority.LOW, CodeTaskPriority.NORMAL, CodeTaskPriority.HIGH).random()

@@ -51,10 +51,6 @@ export interface ItemsPageProps<T extends { id: string }> {
 	// Entity configuration
 	/** Entity type identifier (e.g., "building", "contact") */
 	entityType: string;
-	/** Translation key for entity count with ICU plural (e.g., "account.label.entityCount") */
-	entityLabelKey: string;
-	/** Display name for the entity type (singular, e.g., "Immobilie") */
-	entityLabelSingular: string;
 	/** Icon for the entity type */
 	icon?: ReactNode;
 
@@ -115,8 +111,7 @@ export interface ItemsPageProps<T extends { id: string }> {
 
 export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 	const {
-		entityLabelKey,
-		entityLabelSingular,
+		entityType,
 		icon,
 		queryKey,
 		queryFn,
@@ -135,6 +130,12 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { styles, token } = useStyles();
+
+	// -------------------------------------------------------------------------
+	// Derived values
+	// -------------------------------------------------------------------------
+
+	const entityLabelSingular = t(`${entityType}:label.entity`);
 
 	// -------------------------------------------------------------------------
 	// State
@@ -326,7 +327,7 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 				</div>
 				{/* Count row */}
 				<Text type="secondary" style={{ marginLeft: 32 }}>
-					{t(entityLabelKey, { count: items.length })}
+					{t(`${entityType}:label.entityCount`, { count: items.length })}
 				</Text>
 			</Card>
 

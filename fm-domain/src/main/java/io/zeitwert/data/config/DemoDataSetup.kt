@@ -381,13 +381,6 @@ class DemoDataSetup(
 			val account = Account.accountRepository.get(accountId)
 			Task.attachRandomTasks(account, userId, timestamp)
 
-			// Attach tasks to all contacts in this account
-			val contactIds = Account.contactRepository.find(null)
-			for (contactId in contactIds) {
-				val contact = Account.contactRepository.get(contactId)
-				Task.attachRandomTasks(contact, userId, timestamp)
-			}
-
 			// Attach tasks to all buildings in this account
 			val buildingIds = Building.buildingRepository.find(null)
 			for (buildingId in buildingIds) {
