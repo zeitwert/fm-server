@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
+import { useQuery } from "@tanstack/react-query";
 import { contactApi, contactListApi } from "./api";
 import type { Contact } from "./types";
+import { useCreateEntity, useDeleteEntity } from "../../common/hooks";
 
 export const contactKeys = {
 	all: ["contact"] as const,
@@ -27,33 +27,18 @@ export function useContact(id: string) {
 }
 
 export function useCreateContact() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (data: Omit<Contact, "id" | "tenant">) =>
-			contactApi.create(data as Omit<Contact, "id">),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: contactKeys.lists() });
-			message.success("Kontakt erstellt");
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Erstellen: ${error.message}`);
-		},
+	return useCreateEntity<Contact>({
+		createFn: (data) => contactApi.create(data),
+		listQueryKey: contactKeys.lists(),
+		successMessage: "Kontakt erstellt",
 	});
 }
 
 export function useDeleteContact() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (id: string) => contactApi.delete(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: contactKeys.lists() });
-			message.success("Kontakt gelöscht");
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Löschen: ${error.message}`);
-		},
+	return useDeleteEntity({
+		deleteFn: contactApi.delete,
+		listQueryKey: contactKeys.lists(),
+		successMessage: "Kontakt gelöscht",
 	});
 }
 

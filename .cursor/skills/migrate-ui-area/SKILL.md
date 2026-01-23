@@ -11,7 +11,7 @@ This cookbook describes how to migrate or create a new entity area in the fm-ux 
 
 An entity area consists of:
 - **List View** (`{Entity}Area`) - Table with create modal using `ItemsPage`
-- **Detail View** (`{Entity}Page`) - Edit form with `useEditableEntity` hook
+- **Detail View** (`{Entity}Page`) - Edit form with `useEntityQueries` hook
 - **API Layer** - CRUD operations using `createEntityApi`
 - **Query Hooks** - TanStack Query hooks for data fetching
 - **Routes** - TanStack Router file-based routes
@@ -229,11 +229,10 @@ export const {entity}ListApi = createEntityApi<{Entity}ListItem>({
 ### Template: `queries.ts`
 
 ```typescript
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
+import { useQuery } from "@tanstack/react-query";
 import { {entity}Api, {entity}ListApi } from "./api";
 import type { {Entity} } from "./types";
-import type { EntityMeta } from "../../common/api/jsonapi";
+import { useCreateEntity, useDeleteEntity } from "../../common/hooks";
 
 export const {entity}Keys = {
 	all: ["{entity}"] as const,
@@ -259,50 +258,18 @@ export function use{Entity}(id: string) {
 }
 
 export function useCreate{Entity}() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (data: Omit<{Entity}, "id" | "tenant">) =>
-			{entity}Api.create(data as Omit<{Entity}, "id">),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
-			message.success("{Entity} erstellt");  // Update German message
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Erstellen: ${error.message}`);
-		},
-	});
-}
-
-export function useUpdate{Entity}() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (data: Partial<{Entity}> & { id: string; meta?: EntityMeta }) =>
-			{entity}Api.update(data),
-		onSuccess: (_, variables) => {
-			queryClient.invalidateQueries({ queryKey: {entity}Keys.detail(variables.id) });
-			queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
-			message.success("{Entity} gespeichert");  // Update German message
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Speichern: ${error.message}`);
-		},
+	return useCreateEntity<{Entity}>({
+		createFn: (data) => {entity}Api.create(data),
+		listQueryKey: {entity}Keys.lists(),
+		successMessage: "{Entity} erstellt",  // Update German message
 	});
 }
 
 export function useDelete{Entity}() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (id: string) => {entity}Api.delete(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
-			message.success("{Entity} gelöscht");  // Update German message
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Löschen: ${error.message}`);
-		},
+	return useDeleteEntity({
+		deleteFn: {entity}Api.delete,
+		listQueryKey: {entity}Keys.lists(),
+		successMessage: "{Entity} gelöscht",  // Update German message
 	});
 }
 
@@ -333,7 +300,6 @@ export {
 	use{Entity}List,
 	use{Entity},
 	useCreate{Entity},
-	useUpdate{Entity},
 	useDelete{Entity},
 	get{Entity}QueryOptions,
 	get{Entity}ListQueryOptions,
@@ -553,7 +519,7 @@ import { useState } from "react";
 import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
+import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -592,7 +558,7 @@ export function {Entity}Page({ {ENTITY_ID_PARAM} }: {Entity}PageProps) {
 		handleEdit,
 		handleCancel,
 		handleStore,
-	} = useEditableEntity<{Entity}, {Entity}FormInput>({
+	} = useEntityQueries<{Entity}, {Entity}FormInput>({
 		id: {ENTITY_ID_PARAM},
 		queryKey: [...{entity}Keys.all],
 		queryFn: (id) => {entity}Api.get(id),
@@ -1094,7 +1060,38 @@ After implementing, verify:
 
 **How to identify:** Check the DTO adapter (`{Entity}DtoAdapter.kt`) - fields with `config.relationship()` are relationships, fields with `config.field()` are attributes. The base class `AggregateDtoAdapterBase` configures `owner` and `tenant` as fields (attributes), not relationships. Alternatively, check the JSONAPI response: `relationships` section = relationships, `attributes` = attributes/code tables/base fields.
 
-## 2. Display-Only Fields (Schema Metadata)
+## 2. Generic Mutation Hooks
+
+Use `useCreateEntity` and `useDeleteEntity` from `common/hooks` instead of writing custom mutation hooks:
+
+```typescript
+import { useCreateEntity, useDeleteEntity } from "../../common/hooks";
+
+export function useCreate{Entity}() {
+	return useCreateEntity<{Entity}>({
+		createFn: (data) => {entity}Api.create(data),
+		listQueryKey: {entity}Keys.lists(),
+		successMessage: "{Entity} erstellt",
+	});
+}
+
+export function useDelete{Entity}() {
+	return useDeleteEntity({
+		deleteFn: {entity}Api.delete,
+		listQueryKey: {entity}Keys.lists(),
+		successMessage: "{Entity} gelöscht",
+	});
+}
+```
+
+**Benefits:**
+- Centralized cache invalidation and user feedback
+- Consistent error handling across all entities
+- Less boilerplate in entity query files
+
+**Note:** Update mutations are handled by `useEntityQueries` hook, not as separate hooks.
+
+## 3. Display-Only Fields (Schema Metadata)
 
 Use the `displayOnly()` helper to mark form fields that should be displayed but not submitted:
 
@@ -1112,9 +1109,9 @@ export const {entity}FormSchema = z.object({
 **How it works:**
 - `displayOnly()` wraps a Zod schema and adds metadata via `.describe()`
 - `transformFromForm()` automatically detects and excludes these fields
-- No need to pass `displayOnlyFields` to `useEditableEntity` - it's detected from schema metadata
+- No need to pass `displayOnlyFields` to `useEntityQueries` - it's detected from schema metadata
 
-## 3. Readonly Array in queryKey
+## 4. Readonly Array in queryKey
 
 `ItemsPage` expects `string[]` but query keys are `readonly`. Spread to convert:
 
@@ -1123,7 +1120,7 @@ queryKey={[...{entity}Keys.lists()]}  // ✓ Correct
 queryKey={{entity}Keys.lists()}       // ✗ Type error
 ```
 
-## 4. Related Panel Components
+## 5. Related Panel Components
 
 `NotesList`, `TasksList`, and `ActivityTimeline` are presentational components. They expect data arrays, not entity IDs. Pass empty arrays for stubs:
 
@@ -1133,11 +1130,11 @@ queryKey={{entity}Keys.lists()}       // ✗ Type error
 <ActivityTimeline activities={[] as Activity[]} />
 ```
 
-## 5. Relative Imports
+## 6. Relative Imports
 
 The project uses relative imports, not path aliases. Import paths are relative to the file location.
 
-## 6. Form Components
+## 7. Form Components
 
 Use `Af*` components from `common/components/form`:
 - `AfForm` - Form wrapper (combines FormProvider + Ant Form + optional HTML form)
@@ -1150,7 +1147,7 @@ Use `Af*` components from `common/components/form`:
 - `AfFieldRow` - Horizontal field container
 - `AfFieldGroup` - Fieldset with legend
 
-## 7. Grid System (24-Column)
+## 8. Grid System (24-Column)
 
 The AF form components use a **24-column grid system** (consistent with Ant Design's `Col` component). The `size` prop determines field width:
 
@@ -1169,7 +1166,7 @@ The AF form components use a **24-column grid system** (consistent with Ant Desi
 </AfFieldRow>
 ```
 
-## 8. Styling with Design Tokens and CSS Classes
+## 9. Styling with Design Tokens and CSS Classes
 
 **Prefer CSS utility classes over inline styles.** The application uses a design system with:
 
@@ -1185,7 +1182,7 @@ The AF form components use a **24-column grid system** (consistent with Ant Desi
 - Preview: `.af-preview-container`, `.af-preview-avatar`, `.af-preview-avatar-placeholder`, `.af-preview-avatar-image`, `.af-preview-name`, `.af-preview-name-text`, `.af-preview-description-label`, `.af-preview-description-text`, `.af-preview-actions`
 - Full height: `.af-full-height`
 
-## 9. Permission Checks
+## 10. Permission Checks
 
 Use the shared permission utilities from `common/utils/permissions`:
 
@@ -1201,7 +1198,7 @@ const canEdit = canModifyEntity("{entity}", userRole);
 
 **When migrating a new entity:** Add the entity's permission logic to `common/utils/permissions.ts`. Check the fm-ui area's `canCreate` condition (e.g., in `{Entity}Area.tsx`) and translate it to the new permission functions.
 
-## 10. Tenant Handling
+## 11. Tenant Handling
 
 **Tenant fields are NOT shown in forms.** The tenant is already displayed in the page header (readonly) and the server handles setting the tenant automatically. Do not include tenant fields in:
 - Creation forms (server sets tenant based on session)
@@ -1209,7 +1206,7 @@ const canEdit = canModifyEntity("{entity}", userRole);
 
 This simplifies forms significantly by removing conditional tenant logic.
 
-## 11. Navigation Components
+## 12. Navigation Components
 
 Use TanStack Router's `<Link>` component instead of `<a onClick>` for navigation:
 
@@ -1222,7 +1219,7 @@ import { Link } from "@tanstack/react-router";
 <Link to="/{entity}">Back to list</Link>
 ```
 
-## 12. Query Key Factory
+## 13. Query Key Factory
 
 Always use the query key factory instead of literal arrays:
 
@@ -1235,7 +1232,7 @@ import { {entity}Keys } from "../queries";
 queryKey: {entity}Keys.all
 ```
 
-## 13. Parent Context Pattern
+## 14. Parent Context Pattern
 
 If the entity can be created from a parent entity's page (e.g., creating a Contact from an Account), extend `CreateFormProps` to accept the parent entity as an optional prop. See `ContactCreationForm` for an example.
 
@@ -1248,6 +1245,10 @@ If the entity can be created from a parent entity's page (e.g., creating a Conta
 - `fm-ux/src/common/components/form/` - Form components (AfForm, AfInput, etc.)
 - `fm-ux/src/common/components/items/` - ItemsPage, ItemPageHeader, EditControls
 - `fm-ux/src/common/components/related/` - RelatedPanel, NotesList, TasksList
+
+**Hooks:**
+- `fm-ux/src/common/hooks/useEntityQueries.ts` - Detail page edit/cancel/store pattern
+- `fm-ux/src/common/hooks/useEntityMutations.ts` - Generic useCreateEntity, useDeleteEntity hooks
 
 **Utilities:**
 - `fm-ux/src/common/utils/zodMeta.ts` - enumeratedSchema, displayOnly helper

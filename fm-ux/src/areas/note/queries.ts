@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
+import { useQuery } from "@tanstack/react-query";
 import { noteApi, noteListApi } from "./api";
 import type { Note } from "./types";
+import { useDeleteEntity } from "../../common/hooks";
 
 export const noteKeys = {
 	all: ["note"] as const,
@@ -27,17 +27,10 @@ export function useNote(id: string) {
 }
 
 export function useDeleteNote() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (id: string) => noteApi.delete(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: noteKeys.lists() });
-			message.success("Notiz gelöscht");
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Löschen: ${error.message}`);
-		},
+	return useDeleteEntity({
+		deleteFn: noteApi.delete,
+		listQueryKey: noteKeys.lists(),
+		successMessage: "Notiz gelöscht",
 	});
 }
 

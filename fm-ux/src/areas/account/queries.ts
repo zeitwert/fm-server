@@ -1,7 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { message } from "antd";
+import { useQuery } from "@tanstack/react-query";
 import { accountApi, accountListApi } from "./api";
 import type { Account } from "./types";
+import { useCreateEntity, useDeleteEntity } from "../../common/hooks";
 
 export const accountKeys = {
 	all: ["account"] as const,
@@ -27,33 +27,18 @@ export function useAccount(id: string) {
 }
 
 export function useCreateAccount() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (data: Omit<Account, "id" | "tenant">) =>
-			accountApi.create(data as Omit<Account, "id">),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: accountKeys.lists() });
-			message.success("Kunde erstellt");
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Erstellen: ${error.message}`);
-		},
+	return useCreateEntity<Account>({
+		createFn: (data) => accountApi.create(data),
+		listQueryKey: accountKeys.lists(),
+		successMessage: "Kunde erstellt",
 	});
 }
 
 export function useDeleteAccount() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: (id: string) => accountApi.delete(id),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: accountKeys.lists() });
-			message.success("Kunde gelöscht");
-		},
-		onError: (error: Error & { detail?: string }) => {
-			message.error(error.detail || `Fehler beim Löschen: ${error.message}`);
-		},
+	return useDeleteEntity({
+		deleteFn: accountApi.delete,
+		listQueryKey: accountKeys.lists(),
+		successMessage: "Kunde gelöscht",
 	});
 }
 

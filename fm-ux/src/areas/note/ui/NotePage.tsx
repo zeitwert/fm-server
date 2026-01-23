@@ -1,7 +1,7 @@
 import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
+import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -36,7 +36,7 @@ export function NotePage({ noteId }: NotePageProps) {
 		handleEdit,
 		handleCancel,
 		handleStore,
-	} = useEditableEntity<Note, NoteFormInput>({
+	} = useEntityQueries<Note, NoteFormInput>({
 		id: noteId,
 		queryKey: noteKeys.details(),
 		queryFn: (id) => noteApi.get(id),

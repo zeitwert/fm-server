@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
+import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -43,7 +43,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		handleEdit,
 		handleCancel,
 		handleStore,
-	} = useEditableEntity<Account, AccountFormInput>({
+	} = useEntityQueries<Account, AccountFormInput>({
 		id: accountId,
 		queryKey: accountKeys.details(),
 		queryFn: (id) => accountApi.get(id),

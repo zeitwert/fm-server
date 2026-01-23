@@ -1,7 +1,7 @@
 import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
+import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
 import { DocPageHeader } from "../../../common/components/doc";
 import { ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
@@ -40,7 +40,7 @@ export function TaskPage({ taskId }: TaskPageProps) {
 		handleCancel,
 		handleStore,
 		directMutation,
-	} = useEditableEntity<Task, TaskFormInput>({
+	} = useEntityQueries<Task, TaskFormInput>({
 		id: taskId,
 		queryKey: taskKeys.details(),
 		queryFn: (id) => taskApi.get(id),

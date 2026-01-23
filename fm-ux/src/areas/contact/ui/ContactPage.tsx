@@ -1,7 +1,7 @@
 import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
+import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -40,7 +40,7 @@ export function ContactPage({ contactId }: ContactPageProps) {
 		handleEdit,
 		handleCancel,
 		handleStore,
-	} = useEditableEntity<Contact, ContactFormInput>({
+	} = useEntityQueries<Contact, ContactFormInput>({
 		id: contactId,
 		queryKey: contactKeys.details(),
 		queryFn: (id) => contactApi.get(id),

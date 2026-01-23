@@ -20,7 +20,7 @@ import type { EntityMeta } from "../api/jsonapi";
 // Types
 // ============================================================================
 
-export interface UseEditableEntityOptions<T extends BaseEntity, TFormData extends FieldValues> {
+export interface UseEntityQueriesOptions<T extends BaseEntity, TFormData extends FieldValues> {
 	/** Entity ID to fetch */
 	id: string;
 
@@ -59,7 +59,7 @@ export interface UseEditableEntityOptions<T extends BaseEntity, TFormData extend
 	listQueryKey?: readonly unknown[];
 }
 
-export interface UseEditableEntityResult<T extends BaseEntity, TFormData extends FieldValues> {
+export interface UseEntityQueriesResult<T extends BaseEntity, TFormData extends FieldValues> {
 	// Data
 	/** The fetched entity data */
 	entity: T | undefined;
@@ -101,9 +101,9 @@ export interface UseEditableEntityResult<T extends BaseEntity, TFormData extends
 // Hook Implementation
 // ============================================================================
 
-export function useEditableEntity<T extends BaseEntity, TFormData extends FieldValues>(
-	options: UseEditableEntityOptions<T, TFormData>
-): UseEditableEntityResult<T, TFormData> {
+export function useEntityQueries<T extends BaseEntity, TFormData extends FieldValues>(
+	options: UseEntityQueriesOptions<T, TFormData>
+): UseEntityQueriesResult<T, TFormData> {
 	const {
 		id,
 		queryKey,
@@ -218,7 +218,7 @@ export function useEditableEntity<T extends BaseEntity, TFormData extends FieldV
 			});
 		},
 		(errors: FieldErrors<TFormData>) => {
-			console.error("[useEditableEntity] Validation failed; aborting save.", {
+			console.error("[useEntityQueries] Validation failed; aborting save.", {
 				entityId: id,
 				errors,
 			});
