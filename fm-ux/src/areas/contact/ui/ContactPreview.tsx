@@ -41,9 +41,7 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 	return (
 		<div className="af-preview-container">
 			<div className="af-preview-avatar">
-				<div className="af-preview-avatar-placeholder">
-					{getArea("contact")?.icon}
-				</div>
+				<div className="af-preview-avatar-placeholder">{getArea("contact")?.icon}</div>
 			</div>
 
 			<div className="af-preview-name">

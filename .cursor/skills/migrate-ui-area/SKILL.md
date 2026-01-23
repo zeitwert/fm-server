@@ -16,343 +16,1074 @@ An entity area consists of:
 - **Query Hooks** - TanStack Query hooks for data fetching
 - **Routes** - TanStack Router file-based routes
 
-## Code Style
+## Pre-Flight Questions
+
+Before starting implementation, gather this context:
+
+1. **Is the area already registered in `AppConfig.ts`?**
+   - Check `fm-ux/src/app/config/AppConfig.ts` for existing entry
+   - Note: icon, label, permissions if present
+
+2. **Does this area have any special characteristics?**
+   - Is entity creation done from this area, or only from parent context?
+   - Are there any unique permissions or workflow requirements?
+   - Any unusual field types or relationships?
+
+3. **What is the domain module name?**
+   - Check the entity's location in `fm-domain/src/main/java/io/zeitwert/fm/{module}/`
+   - This determines the `module` value in the API configuration
+
+## Quick Discovery Checklist
+
+Gather entity information from these sources (in order):
+
+### 1. Check AppConfig.ts
+**Location:** `fm-ux/src/app/config/AppConfig.ts`
+
+Check if area is already registered. Note icon and permissions.
+
+### 2. Find API Configuration
+**Location:** `fm-ui/src/@zeitwert/ui-model/fm/{entity}/service/impl/{Entity}ApiImpl.ts`
+
+Extract these values (copy exactly):
+- `MODULE` → will be `module` in new `api.ts`
+- `PATH` → will be `path`
+- `TYPE` → will be `type`
+- `INCLUDES` → will be `includes`
+- `RELATIONS` → will be `relations`
+
+**CRITICAL:** Only true relationships go in `includes` and `relations`. Code tables (like `accountType`) and base fields (like `owner`, `tenant`) are attributes, NOT relationships.
+
+### 3. Find Entity Properties
+**Location:** `fm-domain/src/main/java/io/zeitwert/fm/{module}/model/impl/{Entity}Impl.kt`
+
+List all properties with their types:
+- `baseProperty<String>` → `string`
+- `baseProperty<Int>` → `number`
+- `enumProperty<T>` → `Enumerated` (code table)
+- `referenceProperty<T>` → `Enumerated` (relationship)
+
+### 4. Find Form Fields and Validation
+**Location:** `fm-ui/src/areas/{entity}/ui/forms/{Entity}Form.ts`
+
+Map field types to TypeScript and UI components:
+
+| Field Type | TypeScript Type | UI Component |
+|------------|-----------------|--------------|
+| `TextField` | `string` | `AfInput` / `AfTextArea` |
+| `EnumeratedField` | `Enumerated` | `AfSelect` (code table or relationship) |
+| `NumberField` | `number` | `AfNumber` |
+| `DateField` | `string` (ISO) | `AfDatePicker` |
+| `IdField` | `string` | (display only) |
+
+**CRITICAL:** Note which fields are required, default values, and validation rules. These MUST be replicated exactly in your Zod schemas. The schema validation is the single source of truth - do not add manual validation in form submit handlers.
+
+### 5. Find List Columns
+**Location:** `fm-domain/src/main/resources/config/t0/{module}/datamarts/{entities}/layouts/default.json`
+
+Extract the `header` array for list view columns. Note: nested values like `accountType` (which maps to `accountType.name` in data) should use `dataIndex: ["accountType", "name"]` in the column definition.
+
+## File Checklist
+
+Create these files for a full area migration:
+
+### Area Files (`fm-ux/src/areas/{entity}/`)
+- [ ] `types.ts` - Entity and list item type definitions
+- [ ] `schemas.ts` - Zod validation schemas (creation + form)
+- [ ] `api.ts` - Entity API configuration
+- [ ] `queries.ts` - TanStack Query hooks
+- [ ] `index.ts` - Module exports
+- [ ] `ui/{Entity}Area.tsx` - List view with ItemsPage
+- [ ] `ui/{Entity}Page.tsx` - Detail view with edit form
+- [ ] `ui/{Entity}Preview.tsx` - Preview drawer (optional)
+- [ ] `ui/forms/{Entity}MainForm.tsx` - Main form tab
+- [ ] `ui/forms/{Entity}CreationForm.tsx` - Creation modal form
+
+### Routes (`fm-ux/src/routes/`)
+- [ ] `{entity}.tsx` - Layout route (renders `<Outlet />`)
+- [ ] `{entity}.index.tsx` - List view route
+- [ ] `{entity}.${entity}Id.tsx` - Detail view route
+
+### i18n (`fm-ux/src/i18n/locales/`)
+- [ ] `de/{entity}.json` - German translations
+- [ ] `en/{entity}.json` - English translations
+
+### Updates
+- [ ] `AppConfig.ts` - Add area configuration (if not present)
+- [ ] `i18n/index.ts` - Register namespace
+
+## Templates
+
+Copy-paste these templates and replace placeholders:
+- `{Entity}` - PascalCase (e.g., `Contact`)
+- `{entity}` - camelCase (e.g., `contact`)
+- `{module}` - Domain module name (e.g., `crm`)
+- `{ENTITY_ID_PARAM}` - camelCase with "Id" suffix (e.g., `contactId`)
+
+### Template: `types.ts`
+
+```typescript
+import type { Enumerated } from "../../common/types";
+import type { EntityMeta } from "../../common/api/jsonapi";
+
+export interface {Entity} {
+	id: string;
+	meta?: EntityMeta;
+	// Add all entity fields here based on discovery
+	name: string;
+	// example: accountType: Enumerated;
+	// example: owner: Enumerated;
+	// example: tenant: Enumerated;
+}
+
+export interface {Entity}ListItem {
+	id: string;
+	// Add subset of fields for list view
+	name: string;
+	// example: accountType: Enumerated;
+}
+```
+
+### Template: `schemas.ts`
+
+**CRITICAL:** Copy form structure, field requirements, and default values from `fm-ui/src/areas/{entity}/ui/forms/{Entity}Form.ts`. The Zod schemas must match the old form's validation rules exactly. Use Zod validation as the single source of truth - do NOT add manual validation in submit handlers.
+
+```typescript
+import { z } from "zod";
+import type { Enumerated } from "../../common/types";
+import { displayOnly, enumeratedSchema } from "../../common/utils/zodMeta";
+
+export interface {Entity}CreationFormInput {
+	// Add fields needed for creation (minimal set)
+	// Copy from fm-ui {Entity}Form.ts - check which fields are in the creation dialog
+	name: string;
+	// example: accountType: Enumerated | null;
+	// example: owner: Enumerated | null;
+}
+
+export const {entity}CreationSchema = z.object({
+	// Copy required/optional flags from fm-ui {Entity}Form.ts
+	name: z.string().min(1, "{entity}:message.validation.nameRequired"),
+	// For required Enumerated fields, use enumeratedSchema (validates non-null)
+	// example: accountType: enumeratedSchema,
+	// example: owner: enumeratedSchema,
+	// For optional Enumerated fields, use .optional().nullable()
+	// example: clientSegment: enumeratedSchema.optional().nullable(),
+});
+
+export type {Entity}CreationData = z.infer<typeof {entity}CreationSchema>;
+
+export interface {Entity}FormInput {
+	// All editable fields
+	// Copy from fm-ui {Entity}Form.ts - check all fields in the form
+	name: string;
+	// example: description?: string | null;
+	// example: accountType: Enumerated | null;
+	// Display-only fields (excluded from submission)
+	// example: contacts?: any[];
+}
+
+export const {entity}FormSchema = z.object({
+	// Copy required/optional flags from fm-ui {Entity}Form.ts
+	name: z.string().min(1, "{entity}:message.validation.nameRequired"),
+	// Add validation for other editable fields
+	// example: description: z.string().optional().nullable(),
+	// example: accountType: enumeratedSchema,
+	// Display-only fields (wrapped with displayOnly helper)
+	// example: contacts: displayOnly(z.array(z.any()).optional()),
+});
+
+export type {Entity}FormData = z.infer<typeof {entity}FormSchema>;
+```
+
+### Template: `api.ts`
+
+```typescript
+import { createEntityApi } from "../../common/api/entityApi";
+import type { {Entity}, {Entity}ListItem } from "./types";
+
+export const {entity}Api = createEntityApi<{Entity}>({
+	module: "{module}",
+	path: "{entity}s",  // or appropriate plural
+	type: "{entity}",
+	includes: "include[{entity}]=mainContact,logo",  // Copy from {Entity}ApiImpl.ts INCLUDES
+	relations: {
+		// Copy from {Entity}ApiImpl.ts RELATIONS
+		// example: mainContact: "contact",
+		// example: logo: "document",
+	},
+});
+
+export const {entity}ListApi = createEntityApi<{Entity}ListItem>({
+	module: "{module}",
+	path: "{entity}s",
+	type: "{entity}",
+	includes: "include[{entity}]=mainContact",  // Fewer includes for list
+	relations: {
+		// Subset of full relations
+		// example: mainContact: "contact",
+	},
+});
+```
+
+### Template: `queries.ts`
+
+```typescript
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { message } from "antd";
+import { {entity}Api, {entity}ListApi } from "./api";
+import type { {Entity} } from "./types";
+import type { EntityMeta } from "../../common/api/jsonapi";
+
+export const {entity}Keys = {
+	all: ["{entity}"] as const,
+	lists: () => [...{entity}Keys.all, "list"] as const,
+	list: (params?: string) => [...{entity}Keys.lists(), params] as const,
+	details: () => [...{entity}Keys.all, "detail"] as const,
+	detail: (id: string) => [...{entity}Keys.details(), id] as const,
+};
+
+export function use{Entity}List() {
+	return useQuery({
+		queryKey: {entity}Keys.lists(),
+		queryFn: () => {entity}ListApi.list(),
+	});
+}
+
+export function use{Entity}(id: string) {
+	return useQuery({
+		queryKey: {entity}Keys.detail(id),
+		queryFn: () => {entity}Api.get(id),
+		enabled: !!id,
+	});
+}
+
+export function useCreate{Entity}() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: Omit<{Entity}, "id" | "tenant">) =>
+			{entity}Api.create(data as Omit<{Entity}, "id">),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
+			message.success("{Entity} erstellt");  // Update German message
+		},
+		onError: (error: Error & { detail?: string }) => {
+			message.error(error.detail || `Fehler beim Erstellen: ${error.message}`);
+		},
+	});
+}
+
+export function useUpdate{Entity}() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: Partial<{Entity}> & { id: string; meta?: EntityMeta }) =>
+			{entity}Api.update(data),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({ queryKey: {entity}Keys.detail(variables.id) });
+			queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
+			message.success("{Entity} gespeichert");  // Update German message
+		},
+		onError: (error: Error & { detail?: string }) => {
+			message.error(error.detail || `Fehler beim Speichern: ${error.message}`);
+		},
+	});
+}
+
+export function useDelete{Entity}() {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id: string) => {entity}Api.delete(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: {entity}Keys.lists() });
+			message.success("{Entity} gelöscht");  // Update German message
+		},
+		onError: (error: Error & { detail?: string }) => {
+			message.error(error.detail || `Fehler beim Löschen: ${error.message}`);
+		},
+	});
+}
+
+export function get{Entity}QueryOptions(id: string) {
+	return {
+		queryKey: {entity}Keys.detail(id),
+		queryFn: () => {entity}Api.get(id),
+	};
+}
+
+export function get{Entity}ListQueryOptions() {
+	return {
+		queryKey: {entity}Keys.lists(),
+		queryFn: () => {entity}ListApi.list(),
+	};
+}
+```
+
+### Template: `index.ts`
+
+```typescript
+export type { {Entity}, {Entity}ListItem } from "./types";
+export { {entity}CreationSchema, {entity}FormSchema } from "./schemas";
+export type { {Entity}CreationData } from "./schemas";
+export { {entity}Api, {entity}ListApi } from "./api";
+export {
+	{entity}Keys,
+	use{Entity}List,
+	use{Entity},
+	useCreate{Entity},
+	useUpdate{Entity},
+	useDelete{Entity},
+	get{Entity}QueryOptions,
+	get{Entity}ListQueryOptions,
+} from "./queries";
+export { {Entity}Area } from "./ui/{Entity}Area";
+export { {Entity}Page } from "./ui/{Entity}Page";
+```
+
+### Template: Route `{entity}.tsx`
+
+```typescript
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/{entity}")({
+	component: {Entity}Layout,
+});
+
+function {Entity}Layout() {
+	return <Outlet />;
+}
+```
+
+### Template: Route `{entity}.index.tsx`
+
+```typescript
+import { createFileRoute } from "@tanstack/react-router";
+import { {Entity}Area } from "../areas/{entity}/ui/{Entity}Area";
+
+export const Route = createFileRoute("/{entity}/")({
+	component: {Entity}Area,
+});
+```
+
+### Template: Route `{entity}.${entity}Id.tsx`
+
+```typescript
+import { createFileRoute } from "@tanstack/react-router";
+import { {Entity}Page } from "../areas/{entity}/ui/{Entity}Page";
+
+export const Route = createFileRoute("/{entity}/${ENTITY_ID_PARAM}")({
+	component: {Entity}PageRoute,
+});
+
+function {Entity}PageRoute() {
+	const { {ENTITY_ID_PARAM} } = Route.useParams();
+	return <{Entity}Page {ENTITY_ID_PARAM}={{ENTITY_ID_PARAM}} />;
+}
+```
+
+### Template: Translation Structure
+
+**`de/{entity}.json`:**
+
+```json
+{
+	"label": {
+		"entity": "{Entity German Name}",
+		"entityCount": "{count, plural, =0 {Keine {entities}} one {# {entity}} other {# {entities}}}",
+		"name": "Name",
+		"description": "Beschreibung",
+		"tabMain": "Stammdaten",
+		"tabDocuments": "Dokumente",
+		"notes": "Notizen",
+		"tasks": "Aufgaben",
+		"activity": "Aktivität"
+	},
+	"action": {
+		"backToList": "Zurück zur {Entity}-Liste"
+	},
+	"message": {
+		"notFound": "{Entity} nicht gefunden",
+		"notFoundDescription": "Der angeforderte {Entity} konnte nicht gefunden werden.",
+		"validation": {
+			"nameRequired": "Name ist erforderlich"
+		}
+	}
+}
+```
+
+**`en/{entity}.json`:**
+
+```json
+{
+	"label": {
+		"entity": "{Entity}",
+		"entityCount": "{count, plural, =0 {No {entities}} one {# {entity}} other {# {entities}}}",
+		"name": "Name",
+		"description": "Description",
+		"tabMain": "Main",
+		"tabDocuments": "Documents",
+		"notes": "Notes",
+		"tasks": "Tasks",
+		"activity": "Activity"
+	},
+	"action": {
+		"backToList": "Back to {entity} list"
+	},
+	"message": {
+		"notFound": "{Entity} not found",
+		"notFoundDescription": "The requested {entity} could not be found.",
+		"validation": {
+			"nameRequired": "Name is required"
+		}
+	}
+}
+```
+
+## Integration Steps
+
+### 1. Register Area in AppConfig.ts
+
+Add to the `areas` array in `fm-ux/src/app/config/AppConfig.ts`:
+
+```typescript
+{
+	name: "{entity}",
+	icon: <Icon />,  // Choose appropriate icon
+	label: "{entity}:label.entity",
+	enabled: true,
+},
+```
+
+### 2. Register i18n Namespace
+
+In `fm-ux/src/i18n/index.ts`:
+
+1. Add imports:
+```typescript
+import en{Entity} from "./locales/en/{entity}.json";
+import de{Entity} from "./locales/de/{entity}.json";
+```
+
+2. Add to resources:
+```typescript
+const resources = {
+	en: {
+		// ... existing
+		{entity}: en{Entity},
+	},
+	de: {
+		// ... existing
+		{entity}: de{Entity},
+	},
+};
+```
+
+3. Add to namespaces array:
+```typescript
+const namespaces = ["common", "login", "app", "home", "account", "{entity}"];
+```
+
+## UI Component Templates
+
+### Template: `ui/{Entity}Area.tsx` (List View)
+
+```typescript
+import type { ColumnType } from "antd/es/table";
+import { useTranslation } from "react-i18next";
+import { ItemsPage } from "../../../common/components/items";
+import { canCreateEntity } from "../../../common/utils";
+import { {entity}ListApi } from "../api";
+import { {entity}Keys } from "../queries";
+import { {Entity}CreationForm } from "./forms/{Entity}CreationForm";
+import { {Entity}Preview } from "./{Entity}Preview";
+import type { {Entity}ListItem } from "../types";
+import { useSessionStore } from "../../../session/model/sessionStore";
+import { getArea } from "../../../app/config/AppConfig";
+
+export function {Entity}Area() {
+	const { t } = useTranslation();
+	const { sessionInfo } = useSessionStore();
+	const userRole = sessionInfo?.user?.role?.id ?? "";
+	const tenantType = sessionInfo?.tenant?.tenantType?.id ?? "";
+
+	const columns: ColumnType<{Entity}ListItem>[] = [
+		{
+			title: t("{entity}:label.name"),
+			dataIndex: "name",
+			key: "name",
+			sorter: (a, b) => a.name.localeCompare(b.name),
+			defaultSortOrder: "ascend",
+		},
+		// Add more columns based on layout config
+		// For Enumerated fields, use: dataIndex: ["fieldName", "name"]
+		// For relationships, use: dataIndex: ["relationship", "caption"] or ["relationship", "name"]
+		// Example:
+		// {
+		//   title: t("{entity}:label.accountType"),
+		//   dataIndex: ["accountType", "name"],
+		//   key: "accountType",
+		//   sorter: (a, b) => (a.accountType?.name ?? "").localeCompare(b.accountType?.name ?? ""),
+		// },
+	];
+
+	return (
+		<ItemsPage<{Entity}ListItem>
+			entityType="{entity}"
+			entityLabelKey="{entity}.label.entityCount"
+			entityLabelSingular={t("{entity}:label.entity")}
+			icon={getArea("{entity}")?.icon}
+			queryKey={[...{entity}Keys.lists()]}
+			queryFn={() => {entity}ListApi.list()}
+			columns={columns}
+			canCreate={canCreateEntity("{entity}", userRole, tenantType)}
+			CreateForm={{Entity}CreationForm}
+			PreviewComponent={{Entity}Preview}
+			getDetailPath={(record) => `/{entity}/${record.id}`}
+		/>
+	);
+}
+```
+
+### Template: `ui/{Entity}Page.tsx` (Detail View)
+
+```typescript
+import { useState } from "react";
+import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
+import { useTranslation } from "react-i18next";
+import { Link } from "@tanstack/react-router";
+import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
+import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
+import { AfForm } from "../../../common/components/form";
+import { RelatedPanel } from "../../../common/components/related";
+import { NotesList } from "../../../common/components/related/NotesList";
+import { TasksList } from "../../../common/components/related/TasksList";
+import { ActivityTimeline } from "../../../common/components/related/ActivityTimeline";
+import type { Note } from "../../../common/components/related/NotesList";
+import type { Task } from "../../../common/components/related/TasksList";
+import type { Activity } from "../../../common/components/related/ActivityTimeline";
+import { canModifyEntity } from "../../../common/utils";
+import { {entity}Api } from "../api";
+import { {entity}Keys } from "../queries";
+import { {entity}FormSchema, type {Entity}FormInput } from "../schemas";
+import { {Entity}MainForm } from "./forms/{Entity}MainForm";
+import type { {Entity} } from "../types";
+import { useSessionStore } from "../../../session/model/sessionStore";
+import { getArea } from "../../../app/config/AppConfig";
+
+interface {Entity}PageProps {
+	{ENTITY_ID_PARAM}: string;
+}
+
+export function {Entity}Page({ {ENTITY_ID_PARAM} }: {Entity}PageProps) {
+	const { t } = useTranslation();
+	const { sessionInfo } = useSessionStore();
+	const userRole = sessionInfo?.user?.role?.id ?? "";
+
+	const {
+		entity: {entity},
+		form,
+		isLoading,
+		isError,
+		isEditing,
+		isDirty,
+		isStoring,
+		handleEdit,
+		handleCancel,
+		handleStore,
+	} = useEditableEntity<{Entity}, {Entity}FormInput>({
+		id: {ENTITY_ID_PARAM},
+		queryKey: [...{entity}Keys.all],
+		queryFn: (id) => {entity}Api.get(id),
+		updateFn: {entity}Api.update,
+		schema: {entity}FormSchema,
+	});
+
+	if (isLoading) {
+		return (
+			<div className="af-loading-inline">
+				<Spin size="large" />
+			</div>
+		);
+	}
+
+	if (isError || !{entity}) {
+		return (
+			<Result
+				status="404"
+				title={t("{entity}:message.notFound")}
+				subTitle={t("{entity}:message.notFoundDescription")}
+				extra={<Link to="/{entity}">{t("{entity}:action.backToList")}</Link>}
+			/>
+		);
+	}
+
+	const canEdit = canModifyEntity("{entity}", userRole);
+
+	return (
+		<div className="af-flex-column af-full-height">
+			<ItemPageHeader
+				icon={getArea("{entity}")?.icon}
+				title={{entity}.name}
+				details={[
+					{
+						label: t("{entity}:label.tenant"),
+						content: {entity}.tenant?.name,
+					},
+					{
+						label: t("{entity}:label.owner"),
+						content: {entity}.owner?.name,
+					},
+					// Add more detail fields as needed
+				]}
+			/>
+
+			<ItemPageLayout
+				rightPanel={
+					<RelatedPanel
+						sections={[
+							{
+								key: "notes",
+								label: t("{entity}:label.notes"),
+								children: <NotesList notes={[] as Note[]} />,
+							},
+							{
+								key: "tasks",
+								label: t("{entity}:label.tasks"),
+								children: <TasksList tasks={[] as Task[]} />,
+							},
+							{
+								key: "activity",
+								label: t("{entity}:label.activity"),
+								children: <ActivityTimeline activities={[] as Activity[]} />,
+							},
+						]}
+					/>
+				}
+			>
+				<Card className="af-full-height">
+					<AfForm form={form}>
+						<Tabs
+							tabBarExtraContent={
+								<EditControls
+									isEditing={isEditing}
+									isDirty={isDirty}
+									isStoring={isStoring}
+									canEdit={canEdit}
+									onEdit={handleEdit}
+									onCancel={handleCancel}
+									onStore={handleStore}
+								/>
+							}
+							items={[
+								{
+									key: "main",
+									label: t("{entity}:label.tabMain"),
+									children: <{Entity}MainForm disabled={!isEditing} />,
+								},
+								// Add more tabs as needed
+							]}
+						/>
+					</AfForm>
+				</Card>
+			</ItemPageLayout>
+		</div>
+	);
+}
+```
+
+### Template: `ui/{Entity}Preview.tsx` (Preview Drawer)
+
+```typescript
+import { useEffect, useState } from "react";
+import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
+import { use{Entity} } from "../queries";
+import { getLogoUrl } from "../../../common/api/client";
+import { getArea } from "../../../app/config/AppConfig";
+
+const { Text, Paragraph } = Typography;
+
+interface {Entity}PreviewProps {
+	id: string;
+	onClose: () => void;
+}
+
+export function {Entity}Preview({ id, onClose }: {Entity}PreviewProps) {
+	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const [logoError, setLogoError] = useState(false);
+
+	const { data: {entity}, isLoading, isError } = use{Entity}(id);
+
+	useEffect(() => {
+		setLogoError(false);
+	}, [id]);
+
+	const handleEdit = () => {
+		onClose();
+		navigate({ to: `/{entity}/${id}` });
+	};
+
+	if (isLoading) {
+		return (
+			<div className="af-flex-center af-p-48">
+				<Spin />
+			</div>
+		);
+	}
+
+	if (isError || !{entity}) {
+		return <Result status="error" title={t("{entity}:message.notFound")} />;
+	}
+
+	// Only if entity has logo support
+	const logoUrl = getLogoUrl("{entity}", id);
+
+	return (
+		<div className="af-preview-container">
+			{/* Logo - Optional, only if entity supports logos */}
+			<div className="af-preview-avatar">
+				{!logoError ? (
+					<img
+						src={logoUrl}
+						alt={{entity}.name}
+						className="af-preview-avatar-image"
+						onError={() => setLogoError(true)}
+					/>
+				) : (
+					<div className="af-preview-avatar-placeholder">{getArea("{entity}")?.icon}</div>
+				)}
+			</div>
+
+			{/* Name */}
+			<div className="af-preview-name">
+				<Text className="af-preview-name-text">{{entity}.name}</Text>
+			</div>
+
+			{/* Details */}
+			<Descriptions column={1} size="small">
+				<Descriptions.Item label={t("{entity}:label.name")}>
+					{{entity}.name || "-"}
+				</Descriptions.Item>
+				{/* Add more fields based on discovery */}
+				{/* Example for Enumerated field:
+				<Descriptions.Item label={t("{entity}:label.accountType")}>
+					{{entity}.accountType?.name || "-"}
+				</Descriptions.Item>
+				*/}
+			</Descriptions>
+
+			{/* Description - if entity has description field */}
+			{{entity}.description && (
+				<div>
+					<Text className="af-preview-description-label">{t("{entity}:label.description")}</Text>
+					<Paragraph
+						className="af-preview-description-text"
+						ellipsis={{ rows: 3, expandable: true }}
+					>
+						{{entity}.description}
+					</Paragraph>
+				</div>
+			)}
+
+			{/* Actions */}
+			<Space className="af-preview-actions">
+				<Button type="primary" icon={<EditOutlined />} onClick={handleEdit}>
+					{t("common:action.edit")}
+				</Button>
+			</Space>
+		</div>
+	);
+}
+```
+
+### Template: `ui/forms/{Entity}MainForm.tsx` (Main Form)
+
+**CRITICAL:** Copy the form layout exactly from `fm-ui/src/areas/{entity}/ui/forms/{Entity}Form.ts`. Match the field grouping, ordering, and sizing. Use the same field groups and legends.
+
+```typescript
+import { Col, Row } from "antd";
+import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import {
+	AfInput,
+	AfTextArea,
+	AfSelect,
+	AfNumber,
+	AfDatePicker,
+	AfFieldRow,
+	AfFieldGroup,
+} from "../../../../common/components/form";
+import type { {Entity}FormInput } from "../../schemas";
+
+interface {Entity}MainFormProps {
+	disabled: boolean;
+}
+
+export function {Entity}MainForm({ disabled }: {Entity}MainFormProps) {
+	const { t } = useTranslation();
+	const { watch } = useFormContext<{Entity}FormInput>();
+
+	return (
+		<div>
+			{/* Copy the exact layout from fm-ui {Entity}Form.ts */}
+			<Row>
+				<Col span={12}>
+					<AfFieldGroup legend={t("{entity}:label.basicInfo")}>
+						<AfFieldRow>
+							<AfInput
+								name="name"
+								label={t("{entity}:label.name")}
+								required
+								readOnly={disabled}
+								size={24}
+							/>
+						</AfFieldRow>
+						{/* Add more fields matching fm-ui form layout */}
+						{/* Example for code table select:
+						<AfFieldRow>
+							<AfSelect
+								name="accountType"
+								label={t("{entity}:label.accountType")}
+								source="{module}/codeAccountType"
+								required
+								readOnly={disabled}
+								size={12}
+							/>
+						</AfFieldRow>
+						*/}
+						{/* Example for number field:
+						<AfFieldRow>
+							<AfNumber
+								name="amount"
+								label={t("{entity}:label.amount")}
+								suffix="%"
+								precision={2}
+								min={0}
+								max={100}
+								readOnly={disabled}
+								size={12}
+							/>
+						</AfFieldRow>
+						*/}
+					</AfFieldGroup>
+				</Col>
+				<Col span={12}>
+					<AfFieldGroup legend="&nbsp;">
+						<AfTextArea
+							name="description"
+							label={t("{entity}:label.description")}
+							rows={4}
+							readOnly={disabled}
+							size={24}
+						/>
+					</AfFieldGroup>
+				</Col>
+			</Row>
+
+			<Row>
+				<Col span={12}>
+					<AfFieldGroup legend={t("{entity}:label.organization")}>
+						<AfFieldRow>
+							<AfSelect
+								name="owner"
+								label={t("{entity}:label.owner")}
+								source="oe/objUser"
+								required
+								readOnly={disabled}
+								size={12}
+							/>
+						</AfFieldRow>
+					</AfFieldGroup>
+				</Col>
+			</Row>
+		</div>
+	);
+}
+```
+
+### Template: `ui/forms/{Entity}CreationForm.tsx` (Creation Form)
+
+**CRITICAL:** 
+1. Copy the form layout and field order from `fm-ui/src/areas/{entity}/ui/forms/{Entity}Form.ts`
+2. Copy default values from the fm-ui form (check `initDefault()` or `buildInitial()` methods)
+3. Rely on Zod schema validation from `{entity}CreationSchema` - do NOT add manual validation in the submit handler
+4. Use `zodResolver` to connect the schema to React Hook Form
+
+```typescript
+import { Button, Space } from "antd";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "@tanstack/react-router";
+import { AfForm, AfInput, AfTextArea, AfSelect } from "../../../../common/components/form";
+import { useCreate{Entity} } from "../../queries";
+import { {entity}CreationSchema, type {Entity}CreationFormInput } from "../../schemas";
+import type { CreateFormProps } from "../../../../common/components/items";
+import { useSessionStore } from "../../../../session/model/sessionStore";
+
+export function {Entity}CreationForm({ onSuccess, onCancel }: CreateFormProps) {
+	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const { sessionInfo } = useSessionStore();
+	const createMutation = useCreate{Entity}();
+	
+	// Copy default values from fm-ui {Entity}Form.ts
+	const defaultOwner = sessionInfo?.user
+		? { id: sessionInfo.user.id, name: sessionInfo.user.name }
+		: null;
+
+	const form = useForm<{Entity}CreationFormInput>({
+		resolver: zodResolver({entity}CreationSchema),
+		defaultValues: {
+			name: "",
+			description: "",
+			owner: defaultOwner,
+			// Add other default values matching fm-ui form
+		},
+	});
+
+	const handleSubmit = async (data: {Entity}CreationFormInput) => {
+		// No manual validation needed - Zod schema handles it
+		try {
+			const created{Entity} = await createMutation.mutateAsync({
+				name: data.name,
+				description: data.description,
+				owner: data.owner!,
+				// Add other fields
+			});
+			onSuccess();
+			navigate({ to: "/{entity}/${ENTITY_ID_PARAM}", params: { {ENTITY_ID_PARAM}: created{Entity}.id } });
+		} catch {
+			// Error handling is done in useCreate{Entity}'s onError callback
+		}
+	};
+
+	return (
+		<AfForm form={form} onSubmit={handleSubmit}>
+			{/* Copy field order and layout from fm-ui {Entity}Form.ts */}
+			<AfInput name="name" label={t("{entity}:label.name")} required />
+
+			<AfSelect name="owner" label={t("{entity}:label.owner")} source="oe/objUser" required />
+
+			{/* Add more creation fields matching fm-ui form */}
+			{/* Example:
+			<AfSelect
+				name="accountType"
+				label={t("{entity}:label.accountType")}
+				source="{module}/codeAccountType"
+				required
+			/>
+			*/}
+
+			<AfTextArea name="description" label={t("{entity}:label.description")} rows={3} />
+
+			<div style={{ marginTop: 24, textAlign: "right" }}>
+				<Space>
+					<Button onClick={onCancel}>{t("common:action.cancel")}</Button>
+					<Button
+						type="primary"
+						htmlType="submit"
+						loading={createMutation.isPending}
+						aria-label="{entity}:create"
+					>
+						{t("common:action.create")}
+					</Button>
+				</Space>
+			</div>
+		</AfForm>
+	);
+}
+```
+
+### Key Adaptation Points
+
+1. **List View (`{Entity}Area.tsx`)**
+   - Define `columns` based on layout config `header` array
+   - Use `dataIndex: ["{field}", "name"]` for Enumerated fields
+   - Get icon via `getArea("{entity}")?.icon` from AppConfig
+   - Use `canCreateEntity()` permission check
+   - Spread queryKey: `[...{entity}Keys.lists()]`
+
+2. **Detail View (`{Entity}Page.tsx`)**
+   - Use `AfForm` wrapper (not `FormProvider` directly)
+   - Place `EditControls` in `Tabs tabBarExtraContent`
+   - Wrap page in `<div className="af-flex-column af-full-height">`
+   - Use `ItemPageHeader` with `details` array
+   - Use `ItemPageLayout` with `RelatedPanel` in `rightPanel`
+
+3. **Preview Panel (`{Entity}Preview.tsx`)**
+   - Fetch full entity using `use{Entity}(id)`
+   - Use CSS utility classes (`.af-preview-*`)
+   - Include "Edit" button navigating to detail page
+   - Logo section is optional (only if entity supports logos)
+
+4. **Main Form (`{Entity}MainForm.tsx`)**
+   - **Copy form layout exactly from fm-ui** `{Entity}Form.ts`
+   - Use `AfFieldGroup` with `legend` for grouping
+   - Use `Row`/`Col` for multi-column layout (24-column grid)
+   - Use `AfFieldRow` for inline field groups
+   - Do NOT include tenant field (shown in page header)
+   - Match field order, grouping, and sizes to the old form
+
+5. **Creation Form (`{Entity}CreationForm.tsx`)**
+   - **Copy field order and defaults from fm-ui** `{Entity}Form.ts`
+   - Use `AfForm` with `onSubmit` prop
+   - Use `zodResolver` with creation schema - let Zod handle validation
+   - Do NOT add manual validation in submit handler
+   - Set default values matching fm-ui form (check `initDefault()` or `buildInitial()`)
+   - Navigate to created entity's detail page after success with try/catch
+   - Do NOT include tenant field (server sets automatically)
+
+## Code Style Guidelines
+
+### Validation Philosophy
+
+**Rely on Zod schemas for all validation.** Do NOT add manual validation in form submit handlers:
+- ✓ Define validation rules in Zod schemas (`{entity}CreationSchema`, `{entity}FormSchema`)
+- ✓ Use `zodResolver` to connect schemas to React Hook Form
+- ✗ Do NOT check `!data.name?.trim()` or similar in submit handlers
+- ✗ Do NOT manually call `form.setError()` for validation (only for server errors)
+
+The schema is the single source of truth for validation rules.
+
+### Preserve Existing Patterns
+
+**Copy from fm-ui, don't invent:**
+- Form layouts must match the old fm-ui form exactly (field order, grouping, sizes)
+- Default values must match the old form's `initDefault()` or `buildInitial()` methods
+- Required/optional flags must match the old form's validation
+- Field types and data sources must match the old form's field definitions
+
+### Comments
 
 **Avoid superfluous comments.** The code should be self-documenting. Do not add:
 - File header JSDoc comments that just restate the file name
 - Interface/type comments that repeat what's obvious from the code
-- Inline comments explaining obvious code (e.g., `// Basic fields`, `// Relations`)
+- Inline comments explaining obvious code
 - Function comments that just repeat the function name
 - Section comments in JSX that label obvious sections
 
 Only add comments when they explain *why* something is done a certain way, not *what* the code does.
 
-## Discovering Entity Fields
+## Verification Checklist
 
-Before implementing the UI, gather field definitions from these sources:
+After implementing, verify:
 
-### 1. List Columns (`fm-domain`)
+1. **TypeScript**: `pnpm tsc --noEmit`
+2. **Linting**: `pnpm lint` (fix with `pnpm lint:fix`)
+3. **Build**: `pnpm build`
+4. **Tests**: `pnpm test:run`
 
-**Location:** `fm-domain/src/main/resources/config/t0/{module}/datamarts/{entities}/layouts/default.json`
+---
 
-Primary source for list view columns. The `header` array defines which columns to show:
+# Appendix: Patterns & Gotchas
 
-```json
-{
-  "header": [
-    { "id": "name", "label": "Name", "value": "name" },
-    { "id": "accountType", "label": "Type", "value": "accountType" },
-    { "id": "owner", "label": "Owner", "value": "owner" }
-  ]
-}
-```
-
-Map these to `columns` in `{Entity}Area.tsx`. Note: nested values like `accountType` (which maps to `accountType.name` in the data section) should use `dataIndex: ["accountType", "name"]` in the column definition.
-
-### 2. Form Definitions (`fm-ui`)
-
-**Location:** `fm-ui/src/areas/{entity}/ui/forms/{Entity}Form.ts`
-
-Primary source for form field list, types, required flags, and data sources:
-
-| Field Type | TypeScript Type | UI Component |
-|------------|-----------------|--------------|
-| `TextField` | `string` | `AfInput` / `AfTextArea` |
-| `EnumeratedField` | `Enumerated` | `AfSelect` (code table) |
-| `AggregateField` | `Enumerated` | `AfSelect` (relationship) |
-| `NumberField` | `number` | `AfNumber` |
-| `DateField` | `string` (ISO) | `AfDatePicker` |
-| `IdField` | `string` | (display only) |
-
-### 3. API Implementation (`fm-ui`)
-
-**Location:** `fm-ui/src/@zeitwert/ui-model/fm/{entity}/service/impl/{Entity}ApiImpl.ts`
-
-Primary source for JSON:API configuration (module, path, includes, relations).
-
-Copy these values directly to your new `api.ts`:
-- `MODULE` → `module`
-- `PATH` → `path`
-- `TYPE` → `type`
-- `INCLUDES` → `includes`
-- `RELATIONS` → `relations`
-
-### Workflow
-
-1. **Check layout config** (`fm-domain/.../layouts/default.json`) - Columns for list view
-2. **Check `{Entity}Form.ts`** - Form fields, types, required flags, and dropdown sources
-3. **Check `{Entity}ApiImpl.ts`** - Copy module, path, includes, and relations for the API
-
-### Troubleshooting: Server Sources
-
-If tests fail or you need to verify field definitions, check these server files:
-
-**`{Entity}Impl.kt`** (`fm-domain/src/main/java/io/zeitwert/fm/{module}/model/impl/`)
-- Authoritative field definitions using property delegates
-- `baseProperty<T>` for primitives, `enumProperty<T>` for code tables, `referenceProperty<T>` for relationships
-
-**`{Entity}DtoAdapter.kt`** (`fm-domain/src/main/java/io/zeitwert/fm/{module}/adapter/jsonapi/impl/`)
-- `config.relationship()` defines JSON:API relationships
-- `config.field()` defines field name mappings or custom getters/setters
-- `config.exclude()` hides fields from the DTO
-
-## Directory Structure
-
-Create the following structure under `fm-ux/src/areas/{entity}/`:
-
-```
-fm-ux/src/areas/{entity}/
-├── types.ts           # Entity type definitions
-├── schemas.ts         # Zod validation schemas
-├── api.ts             # Entity API using createEntityApi
-├── queries.ts         # TanStack Query hooks
-├── index.ts           # Module exports
-└── ui/
-    ├── {Entity}Area.tsx           # List view (ItemsPage)
-    ├── {Entity}Page.tsx           # Detail view
-    ├── {Entity}Preview.tsx        # Preview drawer (optional)
-    └── forms/
-        ├── {Entity}MainForm.tsx       # Main form tab
-        └── {Entity}CreationForm.tsx   # Creation modal form
-```
-
-Also create route files under `fm-ux/src/routes/`:
-
-```
-fm-ux/src/routes/
-├── {entity}.tsx               # Layout route (renders <Outlet />)
-├── {entity}.index.tsx         # List view at /{entity}
-└── {entity}.${entity}Id.tsx   # Detail view at /{entity}/:id
-```
-
-## Step-by-Step Implementation
-
-The **account area** is the canonical reference implementation. For each file below, read the corresponding account file and adapt it to your entity.
-
-### 1. Types (`types.ts`)
-
-Defines TypeScript interfaces for the entity and list item.
-
-**Reference:** `fm-ux/src/areas/account/types.ts`
-
-**Adaptation notes:**
-- Replace `Account*` with your entity name
-- Add/remove fields based on field discovery from fm-ui
-- Include `EntityMeta` for optimistic locking support
-- Define only: full entity interface, list item interface (fewer fields)
-- **Do NOT add FormData type** - use schema-derived types from `schemas.ts` instead
-
-### 2. Schemas (`schemas.ts`)
-
-Zod validation schemas for form validation.
-
-**Reference:** `fm-ux/src/areas/account/schemas.ts`
-
-**Adaptation notes:**
-- Create both `{entity}CreationSchema` and `{entity}FormSchema` (separate schemas for creation vs editing)
-- Import `enumeratedSchema` and `displayOnly` from `common/utils/zodMeta`
-- Match required flags from fm-ui field definitions
-
-### 3. API (`api.ts`)
-
-Entity API using `createEntityApi` factory for CRUD operations.
-
-**Reference:** `fm-ux/src/areas/account/api.ts`
-
-**Adaptation notes:**
-- Copy module, path, type, includes, and relations from `{Entity}ApiImpl.ts` in fm-ui
-- Create both `{entity}Api` (full entity) and `{entity}ListApi` (list with fewer includes)
-- Only true relationships go in `includes` and `relations` (see "Code Tables vs Relationships" gotcha)
-
-### 4. Query Hooks (`queries.ts`)
-
-TanStack Query hooks for data fetching and mutations.
-
-**Reference:** `fm-ux/src/areas/account/queries.ts`
-
-**Adaptation notes:**
-- Replace entity name in query keys, function names, and success messages
-- Include `useCreate{Entity}`, `useUpdate{Entity}`, optionally `useDelete{Entity}`
-- Add `get{Entity}QueryOptions` for prefetching if needed
-- Use German messages for success/error notifications
-
-### 5. List View (`ui/{Entity}Area.tsx`)
-
-Table view using `ItemsPage` component with create modal.
-
-**Reference:** `fm-ux/src/areas/account/ui/AccountArea.tsx`
-
-**Adaptation notes:**
-- Define columns based on `header` array from layout config (`fm-domain/.../layouts/default.json`)
-- For `Enumerated` fields, use `dataIndex: ["{field}", "name"]` to access the nested `name` property
-- **Icon**: Use `getArea("{entity}")?.icon` from `AppConfig.ts` instead of hardcoding. This ensures consistency across Area, Page, and Preview components.
-- Use `canCreate()` permission check with appropriate roles (see Gotcha #9)
-- Pass `PreviewComponent` if you want a preview drawer (optional)
-- Use `[...{entity}Keys.lists()]` spread for queryKey (readonly array conversion)
-
-### 6. Preview Panel (`ui/{Entity}Preview.tsx`) - Optional
-
-Preview drawer shown when clicking the eye icon in the list.
-
-**Reference:** `fm-ux/src/areas/account/ui/AccountPreview.tsx`
-
-**Adaptation notes:**
-- Receives `id` and `onClose` props
-- Fetch full entity using query hook
-- Show key fields in `Descriptions` component
-- Include "Edit" button that navigates to detail page
-- Use `getLogoUrl()` if entity has a logo, with `onError` fallback
-- **Use CSS utility classes** instead of inline styles (`.af-preview-container`, `.af-preview-avatar`, etc.)
-
-### 7. Detail View (`ui/{Entity}Page.tsx`)
-
-Edit form using `useEditableEntity` hook with tabs.
-
-**Reference:** `fm-ux/src/areas/account/ui/AccountPage.tsx`
-
-**Key patterns from account (follow exactly):**
-- Use `AfForm` wrapper (not `FormProvider` directly)
-- Place `EditControls` in `Tabs tabBarExtraContent` (not in header)
-- Wrap page in `<div className="af-flex-column af-full-height">`
-- Use `ItemPageHeader` with `details` array for metadata display
-- Use `ItemPageLayout` with `RelatedPanel` in `rightPanel`
-
-**Adaptation notes:**
-- Pass schema to `useEditableEntity` - display-only fields are auto-detected
-- Update field references in header details
-- Add additional tabs for related data if needed
-
-### 8. Main Form (`ui/forms/{Entity}MainForm.tsx`)
-
-Form fields for the main tab.
-
-**Reference:** `fm-ux/src/areas/account/ui/forms/AccountMainForm.tsx`
-
-**Key patterns from account (follow exactly):**
-- Use `AfFieldGroup` with `legend` for grouping (not `Card`)
-- Use `Row`/`Col` for multi-column layout
-- Use `AfFieldRow` for inline field groups
-- Use `useFormContext` to access form state if needed
-- **Do NOT include tenant field** - shown in page header already
-
-**Adaptation notes:**
-- Match field layout to the old fm-ui form
-- Use correct `source` prop for AfSelect dropdowns
-
-### 9. Creation Form (`ui/forms/{Entity}CreationForm.tsx`)
-
-Modal form for creating new entities.
-
-**Reference:** `fm-ux/src/areas/account/ui/forms/AccountCreationForm.tsx`
-
-**Key patterns from account (follow exactly):**
-- Use `AfForm` with `onSubmit` prop (handles form wrapper + submission)
-- Validate required fields manually in submit handler (no zodResolver)
-- Set smart defaults for owner (current user)
-- **Do NOT include tenant field** - server sets tenant automatically
-
-**Adaptation notes:**
-- Include only fields needed for creation (minimal set)
-- Use `useCreate{Entity}` mutation hook
-- Call `onSuccess()` after successful creation
-- **Navigate to the created entity's detail page after success with try/catch**
-
-**Parent context pattern:** If the entity can be created from a parent entity's page (e.g., creating a Contact from an Account), extend `CreateFormProps` to accept the parent entity as an optional prop. See `ContactCreationForm` for an example.
-
-### 10. Routes
-
-TanStack Router file-based routes. These are pure boilerplate - copy from the account routes and replace entity names.
-
-**Reference files:**
-- `fm-ux/src/routes/account.tsx` (layout - just renders `<Outlet />`)
-- `fm-ux/src/routes/account.index.tsx` (list - renders `{Entity}Area`)
-- `fm-ux/src/routes/account.$accountId.tsx` (detail - extracts ID param and renders `{Entity}Page`)
-
-### 11. Translations
-
-Create translation files for both German and English.
-
-**Location:** `fm-ux/src/i18n/locales/de/{entity}.json` and `.../en/{entity}.json`
-
-**Reference:** `fm-ux/src/i18n/locales/de/account.json` and `.../en/account.json`
-
-**Structure guidelines:**
-- `label`: Nouns for field labels, entity names, tab names, section headings
-- `action`: Verbs for buttons, links, user actions
-- `message`: Notifications, errors, validation messages, descriptions
-
-**ICU Plural Format:**
-
-Use ICU MessageFormat for entity counts (requires `i18next-icu` plugin):
-
-```json
-"entityCount": "{count, plural, =0 {No contacts} one {# contact} other {# contacts}}"
-```
-
-Usage in code: `t("contact.label.entityCount", { count: items.length })`
-
-**Accessing Translations:**
-
-Use the unified namespace with dot-notation:
-
-```typescript
-import { useTranslation } from "react-i18next";
-
-const { t } = useTranslation();
-
-// Access translations with dot-notation
-t("contact.label.name")           // Field label
-t("contact.action.backToList")    // Action button
-t("contact.message.notFound")     // Error message
-t("common.action.save")           // Shared common translations
-```
-
-**Required keys per entity:**
-- `label.entity`: Entity singular name (e.g., "Kontakt")
-- `label.entityCount`: ICU plural format for counts
-- `label.*`: All field labels, tab names, section headings
-- `action.backToList`: Navigation back to list
-- `message.notFound`, `message.notFoundDescription`: Error states
-- `message.validation.*`: Form validation messages
-
-**Update `i18n/index.ts`:**
-
-1. Add imports for both languages:
-```typescript
-import enEntity from "./locales/en/{entity}.json";
-import deEntity from "./locales/de/{entity}.json";
-```
-
-2. Add to the resources object (namespaces are at root level, not nested under `translation`):
-```typescript
-const resources = {
-  en: {
-    // ... existing namespaces
-    {entity}: enEntity,
-  },
-  de: {
-    // ... existing namespaces
-    {entity}: deEntity,
-  },
-};
-```
-
-3. Add the namespace to the `namespaces` array:
-```typescript
-const namespaces = ["common", "login", "app", "home", "account", "{entity}"];
-```
-
-### 12. Index Export (`index.ts`)
-
-Re-export public API from the area module. Use explicit named exports (not `export *`) for better tree-shaking and clarity.
-
-**Reference:** `fm-ux/src/areas/account/index.ts`
-
-Export types, schemas, API, queries, and UI components that other areas might need.
-
-## Common Patterns & Gotchas
-
-### 1. Code Tables vs Relationships (CRITICAL)
+## 1. Code Tables vs Relationships (CRITICAL)
 
 **Common mistake**: Adding code tables or base fields to `relations` causes errors like `"Invalid relationship name: owner for account"`.
 
@@ -363,7 +1094,7 @@ Export types, schemas, API, queries, and UI components that other areas might ne
 
 **How to identify:** Check the DTO adapter (`{Entity}DtoAdapter.kt`) - fields with `config.relationship()` are relationships, fields with `config.field()` are attributes. The base class `AggregateDtoAdapterBase` configures `owner` and `tenant` as fields (attributes), not relationships. Alternatively, check the JSONAPI response: `relationships` section = relationships, `attributes` = attributes/code tables/base fields.
 
-### 2. Display-Only Fields (Schema Metadata)
+## 2. Display-Only Fields (Schema Metadata)
 
 Use the `displayOnly()` helper to mark form fields that should be displayed but not submitted:
 
@@ -371,10 +1102,10 @@ Use the `displayOnly()` helper to mark form fields that should be displayed but 
 import { displayOnly, enumeratedSchema } from "../../common/utils/zodMeta";
 
 export const {entity}FormSchema = z.object({
-  name: z.string().min(1, "Name ist erforderlich"),
-  status: enumeratedSchema,  // shared schema for Enumerated fields
-  // Display-only: automatically excluded from submission
-  contacts: displayOnly(z.array(z.any()).optional()),
+	name: z.string().min(1, "Name ist erforderlich"),
+	status: enumeratedSchema,
+	// Display-only: automatically excluded from submission
+	contacts: displayOnly(z.array(z.any()).optional()),
 });
 ```
 
@@ -383,7 +1114,7 @@ export const {entity}FormSchema = z.object({
 - `transformFromForm()` automatically detects and excludes these fields
 - No need to pass `displayOnlyFields` to `useEditableEntity` - it's detected from schema metadata
 
-### 3. Readonly Array in queryKey
+## 3. Readonly Array in queryKey
 
 `ItemsPage` expects `string[]` but query keys are `readonly`. Spread to convert:
 
@@ -392,7 +1123,7 @@ queryKey={[...{entity}Keys.lists()]}  // ✓ Correct
 queryKey={{entity}Keys.lists()}       // ✗ Type error
 ```
 
-### 4. Related Panel Components
+## 4. Related Panel Components
 
 `NotesList`, `TasksList`, and `ActivityTimeline` are presentational components. They expect data arrays, not entity IDs. Pass empty arrays for stubs:
 
@@ -402,11 +1133,11 @@ queryKey={{entity}Keys.lists()}       // ✗ Type error
 <ActivityTimeline activities={[] as Activity[]} />
 ```
 
-### 5. Relative Imports
+## 5. Relative Imports
 
 The project uses relative imports, not path aliases. Import paths are relative to the file location.
 
-### 6. Form Components
+## 6. Form Components
 
 Use `Af*` components from `common/components/form`:
 - `AfForm` - Form wrapper (combines FormProvider + Ant Form + optional HTML form)
@@ -419,7 +1150,7 @@ Use `Af*` components from `common/components/form`:
 - `AfFieldRow` - Horizontal field container
 - `AfFieldGroup` - Fieldset with legend
 
-### 7. Grid System (24-Column)
+## 7. Grid System (24-Column)
 
 The AF form components use a **24-column grid system** (consistent with Ant Design's `Col` component). The `size` prop determines field width:
 
@@ -433,12 +1164,12 @@ The AF form components use a **24-column grid system** (consistent with Ant Desi
 
 ```typescript
 <AfFieldRow>
-  <AfInput name="code" label="Code" size={6} />      {/* 25% */}
-  <AfInput name="name" label="Name" size={18} />     {/* 75% */}
+	<AfInput name="code" label="Code" size={6} />      {/* 25% */}
+	<AfInput name="name" label="Name" size={18} />     {/* 75% */}
 </AfFieldRow>
 ```
 
-### 8. Styling with Design Tokens and CSS Classes
+## 8. Styling with Design Tokens and CSS Classes
 
 **Prefer CSS utility classes over inline styles.** The application uses a design system with:
 
@@ -454,7 +1185,7 @@ The AF form components use a **24-column grid system** (consistent with Ant Desi
 - Preview: `.af-preview-container`, `.af-preview-avatar`, `.af-preview-avatar-placeholder`, `.af-preview-avatar-image`, `.af-preview-name`, `.af-preview-name-text`, `.af-preview-description-label`, `.af-preview-description-text`, `.af-preview-actions`
 - Full height: `.af-full-height`
 
-### 9. Permission Checks
+## 9. Permission Checks
 
 Use the shared permission utilities from `common/utils/permissions`:
 
@@ -462,15 +1193,15 @@ Use the shared permission utilities from `common/utils/permissions`:
 import { canModifyEntity, canCreateEntity } from "../../../common/utils";
 
 // In Area component (needs userRole and tenantType from sessionStore)
-const canCreate = canCreateEntity("account", userRole, tenantType);
+const canCreate = canCreateEntity("{entity}", userRole, tenantType);
 
 // In Page component
-const canEdit = canModifyEntity("account", userRole);
+const canEdit = canModifyEntity("{entity}", userRole);
 ```
 
-**When migrating a new entity:** Add the entity's permission logic to `common/utils/permissions.ts`. Check the fm-ui area's `canCreate` condition (e.g., in `{Entity}Area.tsx`) and translate it to the new permission functions. For example, Account in fm-ui uses `session.isAdmin && (session.isKernelTenant || session.isAdvisorTenant)` which maps to the `canCreateEntity("account", ...)` case.
+**When migrating a new entity:** Add the entity's permission logic to `common/utils/permissions.ts`. Check the fm-ui area's `canCreate` condition (e.g., in `{Entity}Area.tsx`) and translate it to the new permission functions.
 
-### 10. Tenant Handling
+## 10. Tenant Handling
 
 **Tenant fields are NOT shown in forms.** The tenant is already displayed in the page header (readonly) and the server handles setting the tenant automatically. Do not include tenant fields in:
 - Creation forms (server sets tenant based on session)
@@ -478,40 +1209,35 @@ const canEdit = canModifyEntity("account", userRole);
 
 This simplifies forms significantly by removing conditional tenant logic.
 
-### 11. Navigation Components
+## 11. Navigation Components
 
 Use TanStack Router's `<Link>` component instead of `<a onClick>` for navigation:
 
 ```typescript
 // ✗ Bad - accessibility issues
-<a onClick={() => navigate({ to: "/account" })}>Back to list</a>
+<a onClick={() => navigate({ to: "/{entity}" })}>Back to list</a>
 
 // ✓ Good - proper link semantics
 import { Link } from "@tanstack/react-router";
-<Link to="/account">Back to list</Link>
+<Link to="/{entity}">Back to list</Link>
 ```
 
-### 12. Query Key Factory
+## 12. Query Key Factory
 
 Always use the query key factory instead of literal arrays:
 
 ```typescript
 // ✗ Bad - hardcoded array
-queryKey: ["account"]
+queryKey: ["{entity}"]
 
 // ✓ Good - use factory
-import { accountKeys } from "../queries";
-queryKey: accountKeys.all
+import { {entity}Keys } from "../queries";
+queryKey: {entity}Keys.all
 ```
 
-## Verification Checklist
+## 13. Parent Context Pattern
 
-After implementing, verify:
-
-1. **TypeScript**: `pnpm tsc --noEmit`
-2. **Linting**: `pnpm lint` (fix with `pnpm lint:fix`)
-3. **Build**: `pnpm build`
-4. **Tests**: `pnpm test:run`
+If the entity can be created from a parent entity's page (e.g., creating a Contact from an Account), extend `CreateFormProps` to accept the parent entity as an optional prop. See `ContactCreationForm` for an example.
 
 ## Reference Files
 

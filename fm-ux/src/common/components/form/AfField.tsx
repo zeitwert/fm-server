@@ -1,6 +1,7 @@
 import { Form, Tooltip } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { useFormContext } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import type { ReactNode } from "react";
 import type { AfFieldProps } from "../../types";
 import { useStyles } from "../../hooks/useStyles";
@@ -33,11 +34,15 @@ export function AfField({
 		formState: { errors },
 	} = useFormContext();
 	const { styles } = useStyles();
+	const { t } = useTranslation();
 
 	// Support nested paths like "currentRating.ratingDate"
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const error = name ? name.split(".").reduce<any>((obj, key) => obj?.[key], errors) : undefined;
-	const errorMessage = error?.message as string | undefined;
+	const rawErrorMessage = error?.message as string | undefined;
+
+	// Translate error message if it looks like an i18n key (contains ":")
+	const errorMessage = rawErrorMessage?.includes(":") ? t(rawErrorMessage) : rawErrorMessage;
 
 	return (
 		<div style={getFieldContainerStyle(size)}>

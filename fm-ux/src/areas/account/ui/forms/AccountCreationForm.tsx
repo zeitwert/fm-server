@@ -1,10 +1,11 @@
-import { Button, Space, message } from "antd";
+import { Button, Space } from "antd";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
 import { AfForm, AfInput, AfTextArea, AfSelect } from "../../../../common/components/form";
 import { useCreateAccount } from "../../queries";
-import type { AccountCreationFormInput } from "../../schemas";
+import { accountCreationSchema, type AccountCreationFormInput } from "../../schemas";
 import type { CreateFormProps } from "../../../../common/components/items";
 import { useSessionStore } from "../../../../session/model/sessionStore";
 
@@ -18,6 +19,7 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 		: null;
 
 	const form = useForm<AccountCreationFormInput>({
+		resolver: zodResolver(accountCreationSchema),
 		defaultValues: {
 			name: "",
 			description: "",
@@ -28,28 +30,6 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 	});
 
 	const handleSubmit = async (data: AccountCreationFormInput) => {
-		let hasError = false;
-
-		if (!data.name?.trim()) {
-			form.setError("name", { message: t("account:message.validation.nameRequired") });
-			hasError = true;
-		}
-		if (!data.accountType) {
-			form.setError("accountType", {
-				message: t("account:message.validation.accountTypeRequired"),
-			});
-			hasError = true;
-		}
-		if (!data.owner) {
-			form.setError("owner", { message: t("account:message.validation.ownerRequired") });
-			hasError = true;
-		}
-
-		if (hasError) {
-			message.error(t("account:message.validation.fillRequiredFields"));
-			return;
-		}
-
 		try {
 			const createdAccount = await createMutation.mutateAsync({
 				name: data.name,

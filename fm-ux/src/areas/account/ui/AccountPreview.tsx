@@ -57,9 +57,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 						onError={() => setLogoError(true)}
 					/>
 				) : (
-					<div className="af-preview-avatar-placeholder">
-						{getArea("account")?.icon}
-					</div>
+					<div className="af-preview-avatar-placeholder">{getArea("account")?.icon}</div>
 				)}
 			</div>
 

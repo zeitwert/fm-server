@@ -13,6 +13,7 @@ import { Route as UserRouteImport } from "./routes/user"
 import { Route as TenantRouteImport } from "./routes/tenant"
 import { Route as TaskRouteImport } from "./routes/task"
 import { Route as PortfolioRouteImport } from "./routes/portfolio"
+import { Route as NoteRouteImport } from "./routes/note"
 import { Route as LoginRouteImport } from "./routes/login"
 import { Route as HomeRouteImport } from "./routes/home"
 import { Route as DocumentRouteImport } from "./routes/document"
@@ -20,8 +21,10 @@ import { Route as ContactRouteImport } from "./routes/contact"
 import { Route as BuildingRouteImport } from "./routes/building"
 import { Route as AccountRouteImport } from "./routes/account"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as NoteIndexRouteImport } from "./routes/note.index"
 import { Route as ContactIndexRouteImport } from "./routes/contact.index"
 import { Route as AccountIndexRouteImport } from "./routes/account.index"
+import { Route as NoteNoteIdRouteImport } from "./routes/note.$noteId"
 import { Route as ContactContactIdRouteImport } from "./routes/contact.$contactId"
 import { Route as AccountAccountIdRouteImport } from "./routes/account.$accountId"
 
@@ -43,6 +46,11 @@ const TaskRoute = TaskRouteImport.update({
 const PortfolioRoute = PortfolioRouteImport.update({
   id: "/portfolio",
   path: "/portfolio",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoteRoute = NoteRouteImport.update({
+  id: "/note",
+  path: "/note",
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -80,6 +88,11 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
+const NoteIndexRoute = NoteIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => NoteRoute,
+} as any)
 const ContactIndexRoute = ContactIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -89,6 +102,11 @@ const AccountIndexRoute = AccountIndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => AccountRoute,
+} as any)
+const NoteNoteIdRoute = NoteNoteIdRouteImport.update({
+  id: "/$noteId",
+  path: "/$noteId",
+  getParentRoute: () => NoteRoute,
 } as any)
 const ContactContactIdRoute = ContactContactIdRouteImport.update({
   id: "/$contactId",
@@ -109,14 +127,17 @@ export interface FileRoutesByFullPath {
   "/document": typeof DocumentRoute
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
+  "/note": typeof NoteRouteWithChildren
   "/portfolio": typeof PortfolioRoute
   "/task": typeof TaskRoute
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
+  "/note/$noteId": typeof NoteNoteIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
+  "/note/": typeof NoteIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -130,8 +151,10 @@ export interface FileRoutesByTo {
   "/user": typeof UserRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
+  "/note/$noteId": typeof NoteNoteIdRoute
   "/account": typeof AccountIndexRoute
   "/contact": typeof ContactIndexRoute
+  "/note": typeof NoteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -142,14 +165,17 @@ export interface FileRoutesById {
   "/document": typeof DocumentRoute
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
+  "/note": typeof NoteRouteWithChildren
   "/portfolio": typeof PortfolioRoute
   "/task": typeof TaskRoute
   "/tenant": typeof TenantRoute
   "/user": typeof UserRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
+  "/note/$noteId": typeof NoteNoteIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
+  "/note/": typeof NoteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,14 +187,17 @@ export interface FileRouteTypes {
     | "/document"
     | "/home"
     | "/login"
+    | "/note"
     | "/portfolio"
     | "/task"
     | "/tenant"
     | "/user"
     | "/account/$accountId"
     | "/contact/$contactId"
+    | "/note/$noteId"
     | "/account/"
     | "/contact/"
+    | "/note/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -182,8 +211,10 @@ export interface FileRouteTypes {
     | "/user"
     | "/account/$accountId"
     | "/contact/$contactId"
+    | "/note/$noteId"
     | "/account"
     | "/contact"
+    | "/note"
   id:
     | "__root__"
     | "/"
@@ -193,14 +224,17 @@ export interface FileRouteTypes {
     | "/document"
     | "/home"
     | "/login"
+    | "/note"
     | "/portfolio"
     | "/task"
     | "/tenant"
     | "/user"
     | "/account/$accountId"
     | "/contact/$contactId"
+    | "/note/$noteId"
     | "/account/"
     | "/contact/"
+    | "/note/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -211,6 +245,7 @@ export interface RootRouteChildren {
   DocumentRoute: typeof DocumentRoute
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
+  NoteRoute: typeof NoteRouteWithChildren
   PortfolioRoute: typeof PortfolioRoute
   TaskRoute: typeof TaskRoute
   TenantRoute: typeof TenantRoute
@@ -245,6 +280,13 @@ declare module "@tanstack/react-router" {
       path: "/portfolio"
       fullPath: "/portfolio"
       preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/note": {
+      id: "/note"
+      path: "/note"
+      fullPath: "/note"
+      preLoaderRoute: typeof NoteRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/login": {
@@ -296,6 +338,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/note/": {
+      id: "/note/"
+      path: "/"
+      fullPath: "/note/"
+      preLoaderRoute: typeof NoteIndexRouteImport
+      parentRoute: typeof NoteRoute
+    }
     "/contact/": {
       id: "/contact/"
       path: "/"
@@ -309,6 +358,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/account/"
       preLoaderRoute: typeof AccountIndexRouteImport
       parentRoute: typeof AccountRoute
+    }
+    "/note/$noteId": {
+      id: "/note/$noteId"
+      path: "/$noteId"
+      fullPath: "/note/$noteId"
+      preLoaderRoute: typeof NoteNoteIdRouteImport
+      parentRoute: typeof NoteRoute
     }
     "/contact/$contactId": {
       id: "/contact/$contactId"
@@ -353,6 +409,18 @@ const ContactRouteChildren: ContactRouteChildren = {
 const ContactRouteWithChildren =
   ContactRoute._addFileChildren(ContactRouteChildren)
 
+interface NoteRouteChildren {
+  NoteNoteIdRoute: typeof NoteNoteIdRoute
+  NoteIndexRoute: typeof NoteIndexRoute
+}
+
+const NoteRouteChildren: NoteRouteChildren = {
+  NoteNoteIdRoute: NoteNoteIdRoute,
+  NoteIndexRoute: NoteIndexRoute,
+}
+
+const NoteRouteWithChildren = NoteRoute._addFileChildren(NoteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
@@ -361,6 +429,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocumentRoute: DocumentRoute,
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
+  NoteRoute: NoteRouteWithChildren,
   PortfolioRoute: PortfolioRoute,
   TaskRoute: TaskRoute,
   TenantRoute: TenantRoute,

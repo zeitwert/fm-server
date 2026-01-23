@@ -1,10 +1,11 @@
-import { Button, Space, message } from "antd";
+import { Button, Space } from "antd";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
 import { AfForm, AfInput, AfSelect } from "../../../../common/components/form";
 import { useCreateContact } from "../../queries";
-import type { ContactCreationFormInput } from "../../schemas";
+import { contactCreationSchema, type ContactCreationFormInput } from "../../schemas";
 import type { CreateFormProps } from "../../../../common/components/items";
 import { useSessionStore } from "../../../../session/model/sessionStore";
 
@@ -22,6 +23,7 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 		: null;
 
 	const form = useForm<ContactCreationFormInput>({
+		resolver: zodResolver(contactCreationSchema),
 		defaultValues: {
 			firstName: "",
 			lastName: "",
@@ -36,26 +38,6 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 	});
 
 	const handleSubmit = async (data: ContactCreationFormInput) => {
-		let hasError = false;
-
-		if (!data.lastName?.trim()) {
-			form.setError("lastName", { message: t("contact:message.validation.lastNameRequired") });
-			hasError = true;
-		}
-		if (!data.salutation) {
-			form.setError("salutation", { message: t("contact:message.validation.salutationRequired") });
-			hasError = true;
-		}
-		if (!data.owner) {
-			form.setError("owner", { message: t("contact:message.validation.ownerRequired") });
-			hasError = true;
-		}
-
-		if (hasError) {
-			message.error(t("contact:message.validation.fillRequiredFields"));
-			return;
-		}
-
 		try {
 			const createdContact = await createMutation.mutateAsync({
 				firstName: data.firstName,

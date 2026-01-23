@@ -9,6 +9,7 @@ import enApp from "./locales/en/app.json";
 import enHome from "./locales/en/home.json";
 import enAccount from "./locales/en/account.json";
 import enContact from "./locales/en/contact.json";
+import enNote from "./locales/en/note.json";
 
 import deCommon from "./locales/de/common.json";
 import deLogin from "./locales/de/login.json";
@@ -16,6 +17,7 @@ import deApp from "./locales/de/app.json";
 import deHome from "./locales/de/home.json";
 import deAccount from "./locales/de/account.json";
 import deContact from "./locales/de/contact.json";
+import deNote from "./locales/de/note.json";
 
 // Each translation file is a separate namespace
 // This allows using t("account:label.name") with namespace:key syntax
@@ -27,6 +29,7 @@ const resources = {
 		home: enHome,
 		account: enAccount,
 		contact: enContact,
+		note: enNote,
 	},
 	de: {
 		common: deCommon,
@@ -35,10 +38,11 @@ const resources = {
 		home: deHome,
 		account: deAccount,
 		contact: deContact,
+		note: deNote,
 	},
 };
 
-const namespaces = ["common", "login", "app", "home", "account", "contact"];
+const namespaces = ["common", "login", "app", "home", "account", "contact", "note"];
 
 i18n
 	.use(ICU)

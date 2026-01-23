@@ -1,0 +1,30 @@
+{
+	"label": {
+		"entity": "Note",
+		"entityCount": "{count, plural, =0 {No notes} one {# note} other {# notes}}",
+		"subject": "Subject",
+		"content": "Content",
+		"noteType": "Note Type",
+		"isPrivate": "Private",
+		"relatedTo": "Related To",
+		"tenant": "Tenant",
+		"owner": "Created By",
+		"modifiedAt": "Modified",
+		"basicInfo": "Basic Information",
+		"relatedInfo": "Related",
+		"tabMain": "Main",
+		"notes": "Notes",
+		"tasks": "Tasks",
+		"activity": "Activity"
+	},
+	"action": {
+		"backToList": "Back to note list"
+	},
+	"message": {
+		"notFound": "Note not found",
+		"notFoundDescription": "The requested note could not be found.",
+		"validation": {
+			"noteTypeRequired": "Note type is required"
+		}
+	}
+}
