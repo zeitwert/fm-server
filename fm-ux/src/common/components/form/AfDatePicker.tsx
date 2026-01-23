@@ -52,7 +52,7 @@ export function AfDatePicker({
 				render={({
 					field: { value, onChange },
 				}: {
-					field: { value: Date | null | undefined; onChange: (value: Date | null) => void };
+					field: { value: string | null | undefined; onChange: (value: string | null) => void };
 				}) => {
 					const dateValue = value ? dayjs(value) : null;
 
@@ -67,7 +67,7 @@ export function AfDatePicker({
 					return (
 						<DatePicker
 							value={dateValue}
-							onChange={(date: Dayjs | null) => onChange(date?.toDate() ?? null)}
+							onChange={(date: Dayjs | null) => onChange(date?.format("YYYY-MM-DD") ?? null)}
 							format={format}
 							disabled={disabled}
 							className="af-full-width"
