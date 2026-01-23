@@ -98,12 +98,7 @@ const taskArea = createArea(
 	React.createElement(CheckSquareOutlined),
 	"task"
 );
-const noteArea = createArea(
-	"note",
-	"app:label.notes",
-	React.createElement(FormOutlined),
-	"note"
-);
+const noteArea = createArea("note", "app:label.notes", React.createElement(FormOutlined), "note");
 
 // Applications
 const fmApp: Application = {
@@ -208,6 +203,10 @@ export function getApplicationInfo(appId: string): ApplicationInfo | undefined {
 
 export function getArea(areaId: string): ApplicationArea | undefined {
 	return AreaMap[areaId];
+}
+
+export function useAreaIcon(areaId: string): ReactNode | undefined {
+	return AreaMap[areaId]?.icon;
 }
 
 export const AppConfig = {

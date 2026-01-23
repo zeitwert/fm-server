@@ -1,4 +1,3 @@
-import { TeamOutlined } from "@ant-design/icons";
 import type { ColumnType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
 import { ItemsPage } from "../../../common/components/items";
@@ -9,6 +8,7 @@ import { ContactCreationForm } from "./forms/ContactCreationForm";
 import { ContactPreview } from "./ContactPreview";
 import type { ContactListItem } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
+import { getArea } from "../../../app/config/AppConfig";
 
 export function ContactArea() {
 	const { t } = useTranslation();
@@ -55,7 +55,7 @@ export function ContactArea() {
 			entityType="contact"
 			entityLabelKey="contact.label.entityCount"
 			entityLabelSingular={t("contact:label.entity")}
-			icon={<TeamOutlined />}
+			icon={getArea("contact")?.icon}
 			queryKey={[...contactKeys.lists()]}
 			queryFn={() => contactListApi.list()}
 			columns={columns}

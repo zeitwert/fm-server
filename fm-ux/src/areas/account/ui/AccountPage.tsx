@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
-import { BankOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
@@ -21,6 +20,7 @@ import { AccountMainForm } from "./forms/AccountMainForm";
 import { ContactCreationForm } from "../../contact/ui/forms/ContactCreationForm";
 import type { Account } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
+import { getArea } from "../../../app/config/AppConfig";
 
 interface AccountPageProps {
 	accountId: string;
@@ -75,7 +75,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 	return (
 		<div className="af-flex-column af-full-height">
 			<ItemPageHeader
-				icon={<BankOutlined />}
+				icon={getArea("account")?.icon}
 				title={account.name}
 				details={[
 					{

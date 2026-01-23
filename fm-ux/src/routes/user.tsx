@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, Typography } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { getArea } from "../app/config/AppConfig";
 
 const { Title, Text } = Typography;
 
@@ -12,7 +12,7 @@ function UserArea() {
 	return (
 		<Card>
 			<Title level={3}>
-				<UserOutlined style={{ marginRight: 12 }} />
+				<span style={{ marginRight: 12 }}>{getArea("user")?.icon}</span>
 				Benutzer
 			</Title>
 			<Text type="secondary">

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, Typography } from "antd";
-import { AppstoreOutlined } from "@ant-design/icons";
+import { getArea } from "../app/config/AppConfig";
 
 const { Title, Text } = Typography;
 
@@ -12,7 +12,7 @@ function PortfolioArea() {
 	return (
 		<Card>
 			<Title level={3}>
-				<AppstoreOutlined style={{ marginRight: 12 }} />
+				<span style={{ marginRight: 12 }}>{getArea("portfolio")?.icon}</span>
 				Portfolios
 			</Title>
 			<Text type="secondary">

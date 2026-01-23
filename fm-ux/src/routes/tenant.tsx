@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, Typography } from "antd";
-import { FileTextOutlined } from "@ant-design/icons";
+import { getArea } from "../app/config/AppConfig";
 
 const { Title, Text } = Typography;
 
@@ -12,7 +12,7 @@ function TenantArea() {
 	return (
 		<Card>
 			<Title level={3}>
-				<FileTextOutlined style={{ marginRight: 12 }} />
+				<span style={{ marginRight: 12 }}>{getArea("tenant")?.icon}</span>
 				Mandanten
 			</Title>
 			<Text type="secondary">

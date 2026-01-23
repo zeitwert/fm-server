@@ -185,7 +185,7 @@ Table view using `ItemsPage` component with create modal.
 **Adaptation notes:**
 - Define columns based on `header` array from layout config (`fm-domain/.../layouts/default.json`)
 - For `Enumerated` fields, use `dataIndex: ["{field}", "name"]` to access the nested `name` property
-- **Icon**: Use the same icon from the fm-ux area definition in `AppConfig.ts` (e.g., `BankOutlined` for accounts). The icon appears in the Area, Page, and Preview components - keep it consistent.
+- **Icon**: Use `getArea("{entity}")?.icon` from `AppConfig.ts` instead of hardcoding. This ensures consistency across Area, Page, and Preview components.
 - Use `canCreate()` permission check with appropriate roles (see Gotcha #9)
 - Pass `PreviewComponent` if you want a preview drawer (optional)
 - Use `[...{entity}Keys.lists()]` spread for queryKey (readonly array conversion)

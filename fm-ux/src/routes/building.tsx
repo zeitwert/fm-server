@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, Typography } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { getArea } from "../app/config/AppConfig";
 
 const { Title, Text } = Typography;
 
@@ -12,7 +12,7 @@ function BuildingArea() {
 	return (
 		<Card>
 			<Title level={3}>
-				<HomeOutlined style={{ marginRight: 12 }} />
+				<span style={{ marginRight: 12 }}>{getArea("building")?.icon}</span>
 				Immobilien
 			</Title>
 			<Text type="secondary">

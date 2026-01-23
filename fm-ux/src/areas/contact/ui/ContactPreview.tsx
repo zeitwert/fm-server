@@ -1,8 +1,9 @@
 import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
-import { TeamOutlined, EditOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useContact } from "../queries";
+import { getArea } from "../../../app/config/AppConfig";
 
 const { Text, Paragraph } = Typography;
 
@@ -41,7 +42,7 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 		<div className="af-preview-container">
 			<div className="af-preview-avatar">
 				<div className="af-preview-avatar-placeholder">
-					<TeamOutlined />
+					{getArea("contact")?.icon}
 				</div>
 			</div>
 

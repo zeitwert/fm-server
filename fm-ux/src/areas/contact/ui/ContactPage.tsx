@@ -1,5 +1,4 @@
 import { Card, Spin, Result, Tabs } from "antd";
-import { TeamOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { useEditableEntity } from "../../../common/hooks/useEditableEntity";
@@ -19,6 +18,7 @@ import { contactFormSchema, type ContactFormInput } from "../schemas";
 import { ContactMainForm } from "./forms/ContactMainForm";
 import type { Contact } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
+import { getArea } from "../../../app/config/AppConfig";
 
 interface ContactPageProps {
 	contactId: string;
@@ -72,7 +72,7 @@ export function ContactPage({ contactId }: ContactPageProps) {
 	return (
 		<div className="af-flex-column af-full-height">
 			<ItemPageHeader
-				icon={<TeamOutlined />}
+				icon={getArea("contact")?.icon}
 				title={contact.caption || `${contact.firstName ?? ""} ${contact.lastName ?? ""}`.trim()}
 				details={[
 					{

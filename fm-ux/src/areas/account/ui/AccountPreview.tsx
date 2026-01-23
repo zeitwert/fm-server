@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
-import { BankOutlined, EditOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useAccount } from "../queries";
 import { getLogoUrl } from "../../../common/api/client";
+import { getArea } from "../../../app/config/AppConfig";
 
 const { Text, Paragraph } = Typography;
 
@@ -57,7 +58,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 					/>
 				) : (
 					<div className="af-preview-avatar-placeholder">
-						<BankOutlined />
+						{getArea("account")?.icon}
 					</div>
 				)}
 			</div>

@@ -1,4 +1,3 @@
-import { BankOutlined } from "@ant-design/icons";
 import type { ColumnType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
 import { ItemsPage } from "../../../common/components/items";
@@ -9,6 +8,7 @@ import { AccountCreationForm } from "./forms/AccountCreationForm";
 import { AccountPreview } from "./AccountPreview";
 import type { AccountListItem } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
+import { getArea } from "../../../app/config/AppConfig";
 
 export function AccountArea() {
 	const { t } = useTranslation();
@@ -65,7 +65,7 @@ export function AccountArea() {
 			entityType="account"
 			entityLabelKey="account.label.entityCount"
 			entityLabelSingular={t("account:label.entity")}
-			icon={<BankOutlined />}
+			icon={getArea("account")?.icon}
 			queryKey={[...accountKeys.lists()]}
 			queryFn={() => accountListApi.list()}
 			columns={columns}
