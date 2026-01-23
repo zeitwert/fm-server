@@ -1,0 +1,45 @@
+{
+	"label": {
+		"entity": "Portfolio",
+		"entityCount": "{count, plural, =0 {No portfolios} one {# portfolio} other {# portfolios}}",
+		"name": "Name",
+		"portfolioNr": "Portfolio No.",
+		"description": "Description / Comments",
+		"account": "Account",
+		"owner": "Owner",
+		"tenant": "Tenant",
+		"tabMain": "Main",
+		"tabDocuments": "Documents",
+		"notes": "Notes",
+		"tasks": "Tasks",
+		"activity": "Activity",
+		"identification": "Identification",
+		"includes": "Elements to Include",
+		"excludes": "Elements to Exclude",
+		"includesCount": "Elements to Include ({count})",
+		"excludesCount": "Elements to Exclude ({count})",
+		"buildings": "Current Result",
+		"buildingsCount": "Current Result ({count})",
+		"addInclude": "Add Include",
+		"addExclude": "Add Exclude",
+		"selectObject": "Account / Portfolio / Building:",
+		"element": "Element",
+		"type": "Type",
+		"actionColumn": "Action",
+		"basicInfo": "Identification"
+	},
+	"action": {
+		"backToList": "Back to portfolio list",
+		"remove": "Remove"
+	},
+	"message": {
+		"created": "Portfolio created",
+		"saved": "Portfolio saved",
+		"deleted": "Portfolio deleted",
+		"notFound": "Portfolio not found",
+		"notFoundDescription": "The requested portfolio could not be found.",
+		"validation": {
+			"nameRequired": "Name is required"
+		}
+	}
+}

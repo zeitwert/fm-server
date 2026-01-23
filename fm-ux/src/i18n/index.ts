@@ -13,6 +13,7 @@ import enNote from "./locales/en/note.json";
 import enTask from "./locales/en/task.json";
 import enTenant from "./locales/en/tenant.json";
 import enUser from "./locales/en/user.json";
+import enPortfolio from "./locales/en/portfolio.json";
 
 import deCommon from "./locales/de/common.json";
 import deLogin from "./locales/de/login.json";
@@ -24,6 +25,7 @@ import deNote from "./locales/de/note.json";
 import deTask from "./locales/de/task.json";
 import deTenant from "./locales/de/tenant.json";
 import deUser from "./locales/de/user.json";
+import dePortfolio from "./locales/de/portfolio.json";
 
 // Each translation file is a separate namespace
 // This allows using t("account:label.name") with namespace:key syntax
@@ -39,6 +41,7 @@ const resources = {
 		task: enTask,
 		tenant: enTenant,
 		user: enUser,
+		portfolio: enPortfolio,
 	},
 	de: {
 		common: deCommon,
@@ -51,6 +54,7 @@ const resources = {
 		task: deTask,
 		tenant: deTenant,
 		user: deUser,
+		portfolio: dePortfolio,
 	},
 };
 
@@ -65,6 +69,7 @@ const namespaces = [
 	"task",
 	"tenant",
 	"user",
+	"portfolio",
 ];
 
 i18n

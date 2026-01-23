@@ -24,12 +24,14 @@ import { Route as IndexRouteImport } from "./routes/index"
 import { Route as UserIndexRouteImport } from "./routes/user.index"
 import { Route as TenantIndexRouteImport } from "./routes/tenant.index"
 import { Route as TaskIndexRouteImport } from "./routes/task.index"
+import { Route as PortfolioIndexRouteImport } from "./routes/portfolio.index"
 import { Route as NoteIndexRouteImport } from "./routes/note.index"
 import { Route as ContactIndexRouteImport } from "./routes/contact.index"
 import { Route as AccountIndexRouteImport } from "./routes/account.index"
 import { Route as UserUserIdRouteImport } from "./routes/user.$userId"
 import { Route as TenantTenantIdRouteImport } from "./routes/tenant.$tenantId"
 import { Route as TaskTaskIdRouteImport } from "./routes/task.$taskId"
+import { Route as PortfolioPortfolioIdRouteImport } from "./routes/portfolio.$portfolioId"
 import { Route as NoteNoteIdRouteImport } from "./routes/note.$noteId"
 import { Route as ContactContactIdRouteImport } from "./routes/contact.$contactId"
 import { Route as AccountAccountIdRouteImport } from "./routes/account.$accountId"
@@ -109,6 +111,11 @@ const TaskIndexRoute = TaskIndexRouteImport.update({
   path: "/",
   getParentRoute: () => TaskRoute,
 } as any)
+const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => PortfolioRoute,
+} as any)
 const NoteIndexRoute = NoteIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -139,6 +146,11 @@ const TaskTaskIdRoute = TaskTaskIdRouteImport.update({
   path: "/$taskId",
   getParentRoute: () => TaskRoute,
 } as any)
+const PortfolioPortfolioIdRoute = PortfolioPortfolioIdRouteImport.update({
+  id: "/$portfolioId",
+  path: "/$portfolioId",
+  getParentRoute: () => PortfolioRoute,
+} as any)
 const NoteNoteIdRoute = NoteNoteIdRouteImport.update({
   id: "/$noteId",
   path: "/$noteId",
@@ -164,19 +176,21 @@ export interface FileRoutesByFullPath {
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
   "/note": typeof NoteRouteWithChildren
-  "/portfolio": typeof PortfolioRoute
+  "/portfolio": typeof PortfolioRouteWithChildren
   "/task": typeof TaskRouteWithChildren
   "/tenant": typeof TenantRouteWithChildren
   "/user": typeof UserRouteWithChildren
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
+  "/portfolio/$portfolioId": typeof PortfolioPortfolioIdRoute
   "/task/$taskId": typeof TaskTaskIdRoute
   "/tenant/$tenantId": typeof TenantTenantIdRoute
   "/user/$userId": typeof UserUserIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
+  "/portfolio/": typeof PortfolioIndexRoute
   "/task/": typeof TaskIndexRoute
   "/tenant/": typeof TenantIndexRoute
   "/user/": typeof UserIndexRoute
@@ -187,16 +201,17 @@ export interface FileRoutesByTo {
   "/document": typeof DocumentRoute
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
-  "/portfolio": typeof PortfolioRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
+  "/portfolio/$portfolioId": typeof PortfolioPortfolioIdRoute
   "/task/$taskId": typeof TaskTaskIdRoute
   "/tenant/$tenantId": typeof TenantTenantIdRoute
   "/user/$userId": typeof UserUserIdRoute
   "/account": typeof AccountIndexRoute
   "/contact": typeof ContactIndexRoute
   "/note": typeof NoteIndexRoute
+  "/portfolio": typeof PortfolioIndexRoute
   "/task": typeof TaskIndexRoute
   "/tenant": typeof TenantIndexRoute
   "/user": typeof UserIndexRoute
@@ -211,19 +226,21 @@ export interface FileRoutesById {
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
   "/note": typeof NoteRouteWithChildren
-  "/portfolio": typeof PortfolioRoute
+  "/portfolio": typeof PortfolioRouteWithChildren
   "/task": typeof TaskRouteWithChildren
   "/tenant": typeof TenantRouteWithChildren
   "/user": typeof UserRouteWithChildren
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
+  "/portfolio/$portfolioId": typeof PortfolioPortfolioIdRoute
   "/task/$taskId": typeof TaskTaskIdRoute
   "/tenant/$tenantId": typeof TenantTenantIdRoute
   "/user/$userId": typeof UserUserIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
+  "/portfolio/": typeof PortfolioIndexRoute
   "/task/": typeof TaskIndexRoute
   "/tenant/": typeof TenantIndexRoute
   "/user/": typeof UserIndexRoute
@@ -246,12 +263,14 @@ export interface FileRouteTypes {
     | "/account/$accountId"
     | "/contact/$contactId"
     | "/note/$noteId"
+    | "/portfolio/$portfolioId"
     | "/task/$taskId"
     | "/tenant/$tenantId"
     | "/user/$userId"
     | "/account/"
     | "/contact/"
     | "/note/"
+    | "/portfolio/"
     | "/task/"
     | "/tenant/"
     | "/user/"
@@ -262,16 +281,17 @@ export interface FileRouteTypes {
     | "/document"
     | "/home"
     | "/login"
-    | "/portfolio"
     | "/account/$accountId"
     | "/contact/$contactId"
     | "/note/$noteId"
+    | "/portfolio/$portfolioId"
     | "/task/$taskId"
     | "/tenant/$tenantId"
     | "/user/$userId"
     | "/account"
     | "/contact"
     | "/note"
+    | "/portfolio"
     | "/task"
     | "/tenant"
     | "/user"
@@ -292,12 +312,14 @@ export interface FileRouteTypes {
     | "/account/$accountId"
     | "/contact/$contactId"
     | "/note/$noteId"
+    | "/portfolio/$portfolioId"
     | "/task/$taskId"
     | "/tenant/$tenantId"
     | "/user/$userId"
     | "/account/"
     | "/contact/"
     | "/note/"
+    | "/portfolio/"
     | "/task/"
     | "/tenant/"
     | "/user/"
@@ -312,7 +334,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   LoginRoute: typeof LoginRoute
   NoteRoute: typeof NoteRouteWithChildren
-  PortfolioRoute: typeof PortfolioRoute
+  PortfolioRoute: typeof PortfolioRouteWithChildren
   TaskRoute: typeof TaskRouteWithChildren
   TenantRoute: typeof TenantRouteWithChildren
   UserRoute: typeof UserRouteWithChildren
@@ -425,6 +447,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof TaskIndexRouteImport
       parentRoute: typeof TaskRoute
     }
+    "/portfolio/": {
+      id: "/portfolio/"
+      path: "/"
+      fullPath: "/portfolio/"
+      preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof PortfolioRoute
+    }
     "/note/": {
       id: "/note/"
       path: "/"
@@ -466,6 +495,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/task/$taskId"
       preLoaderRoute: typeof TaskTaskIdRouteImport
       parentRoute: typeof TaskRoute
+    }
+    "/portfolio/$portfolioId": {
+      id: "/portfolio/$portfolioId"
+      path: "/$portfolioId"
+      fullPath: "/portfolio/$portfolioId"
+      preLoaderRoute: typeof PortfolioPortfolioIdRouteImport
+      parentRoute: typeof PortfolioRoute
     }
     "/note/$noteId": {
       id: "/note/$noteId"
@@ -529,6 +565,20 @@ const NoteRouteChildren: NoteRouteChildren = {
 
 const NoteRouteWithChildren = NoteRoute._addFileChildren(NoteRouteChildren)
 
+interface PortfolioRouteChildren {
+  PortfolioPortfolioIdRoute: typeof PortfolioPortfolioIdRoute
+  PortfolioIndexRoute: typeof PortfolioIndexRoute
+}
+
+const PortfolioRouteChildren: PortfolioRouteChildren = {
+  PortfolioPortfolioIdRoute: PortfolioPortfolioIdRoute,
+  PortfolioIndexRoute: PortfolioIndexRoute,
+}
+
+const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
+  PortfolioRouteChildren,
+)
+
 interface TaskRouteChildren {
   TaskTaskIdRoute: typeof TaskTaskIdRoute
   TaskIndexRoute: typeof TaskIndexRoute
@@ -575,7 +625,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   LoginRoute: LoginRoute,
   NoteRoute: NoteRouteWithChildren,
-  PortfolioRoute: PortfolioRoute,
+  PortfolioRoute: PortfolioRouteWithChildren,
   TaskRoute: TaskRouteWithChildren,
   TenantRoute: TenantRouteWithChildren,
   UserRoute: UserRouteWithChildren,

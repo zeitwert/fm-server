@@ -1,0 +1,45 @@
+{
+	"label": {
+		"entity": "Portfolio",
+		"entityCount": "{count, plural, =0 {Keine Portfolios} one {# Portfolio} other {# Portfolios}}",
+		"name": "Name",
+		"portfolioNr": "Portfolio Nr.",
+		"description": "Beschreibung / Kommentare",
+		"account": "Gemeinde",
+		"owner": "Eigentümer",
+		"tenant": "Mandant",
+		"tabMain": "Stammdaten",
+		"tabDocuments": "Dokumente",
+		"notes": "Notizen",
+		"tasks": "Aufgaben",
+		"activity": "Aktivität",
+		"identification": "Identifikation",
+		"includes": "Einzuschliessende Elemente",
+		"excludes": "Auszuschliessende Elemente",
+		"includesCount": "Einzuschliessende Elemente ({count})",
+		"excludesCount": "Auszuschliessende Elemente ({count})",
+		"buildings": "Aktuelles Resultat",
+		"buildingsCount": "Aktuelles Resultat ({count})",
+		"addInclude": "Neu einschliessen",
+		"addExclude": "Neu ausschliessen",
+		"selectObject": "Kunde / Portfolio / Immobilie:",
+		"element": "Element",
+		"type": "Typ",
+		"actionColumn": "Aktion",
+		"basicInfo": "Identifikation"
+	},
+	"action": {
+		"backToList": "Zurück zur Portfolio-Liste",
+		"remove": "Entfernen"
+	},
+	"message": {
+		"created": "Portfolio erstellt",
+		"saved": "Portfolio gespeichert",
+		"deleted": "Portfolio gelöscht",
+		"notFound": "Portfolio nicht gefunden",
+		"notFoundDescription": "Das angeforderte Portfolio konnte nicht gefunden werden.",
+		"validation": {
+			"nameRequired": "Name ist erforderlich"
+		}
+	}
+}
