@@ -5,7 +5,8 @@ export { taskApi, taskListApi } from "./api";
 export {
 	taskKeys,
 	useTaskList,
-	useTask,
+	useTaskQuery,
+	useUpdateTask,
 	getTaskQueryOptions,
 	getTaskListQueryOptions,
 } from "./queries";

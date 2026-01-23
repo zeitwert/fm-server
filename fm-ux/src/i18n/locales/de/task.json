@@ -23,6 +23,7 @@
 		"backToList": "Zurück zur Aufgabenliste"
 	},
 	"message": {
+		"saved": "Aufgabe gespeichert",
 		"notFound": "Aufgabe nicht gefunden",
 		"notFoundDescription": "Die angeforderte Aufgabe konnte nicht gefunden werden.",
 		"validation": {

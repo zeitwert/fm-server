@@ -5,8 +5,9 @@ export { contactApi, contactListApi } from "./api";
 export {
 	contactKeys,
 	useContactList,
-	useContact,
+	useContactQuery,
 	useCreateContact,
+	useUpdateContact,
 	useDeleteContact,
 	getContactQueryOptions,
 	getContactListQueryOptions,

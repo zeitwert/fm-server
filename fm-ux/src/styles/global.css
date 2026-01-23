@@ -1,12 +1,20 @@
+/* Position antd message notifications in top-right corner */
+.ant-message {
+	left: auto !important;
+	right: 24px !important;
+	transform: none !important;
+	width: auto !important;
+}
+
 /* Override browser autofill background color (not controllable via Ant Design theme) */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active,
-.ant-input-affix-wrapper > input.ant-input:-webkit-autofill,
-.ant-input-affix-wrapper > input.ant-input:-webkit-autofill:hover,
-.ant-input-affix-wrapper > input.ant-input:-webkit-autofill:focus,
-.ant-input-affix-wrapper > input.ant-input:-webkit-autofill:active {
+.ant-input-affix-wrapper>input.ant-input:-webkit-autofill,
+.ant-input-affix-wrapper>input.ant-input:-webkit-autofill:hover,
+.ant-input-affix-wrapper>input.ant-input:-webkit-autofill:focus,
+.ant-input-affix-wrapper>input.ant-input:-webkit-autofill:active {
 	-webkit-box-shadow: 0 0 0 1000px white inset !important;
 	box-shadow: 0 0 0 1000px white inset !important;
 	-webkit-text-fill-color: inherit !important;
@@ -18,6 +26,7 @@ input:-webkit-autofill:active,
 		transform: translateX(100%);
 		opacity: 0;
 	}
+
 	to {
 		transform: translateX(0);
 		opacity: 1;
@@ -29,6 +38,7 @@ input:-webkit-autofill:active,
 		transform: translateX(-100%);
 		opacity: 0;
 	}
+
 	to {
 		transform: translateX(0);
 		opacity: 1;
@@ -36,12 +46,12 @@ input:-webkit-autofill:active,
 }
 
 /* Compact table styling for aggregate lists */
-.ant-table-thead > tr > th {
+.ant-table-thead>tr>th {
 	padding: 6px 16px !important;
 	background: #f5f5f5 !important;
 }
 
-.ant-table-tbody > tr > td {
+.ant-table-tbody>tr>td {
 	padding: 6px 16px !important;
 }
 
@@ -54,11 +64,11 @@ input:-webkit-autofill:active,
 	border-radius: 0 !important;
 }
 
-.ant-table-thead > tr:first-child > th:first-child {
+.ant-table-thead>tr:first-child>th:first-child {
 	border-start-start-radius: 0 !important;
 }
 
-.ant-table-thead > tr:first-child > th:last-child {
+.ant-table-thead>tr:first-child>th:last-child {
 	border-start-end-radius: 0 !important;
 }
 
@@ -77,22 +87,23 @@ input:-webkit-autofill:active,
 }
 
 /* Row hover - light blue background */
-.items-page-table-wrapper .ant-table-tbody > tr:hover > td {
-	background: #e6f4ff !important; /* Ant Design's colorPrimaryBg */
+.items-page-table-wrapper .ant-table-tbody>tr:hover>td {
+	background: #e6f4ff !important;
+	/* Ant Design's colorPrimaryBg */
 }
 
 /* Text cells appear as links on row hover - blue color */
-.items-page-table-wrapper .ant-table-tbody > tr:hover > td {
+.items-page-table-wrapper .ant-table-tbody>tr:hover>td {
 	color: var(--ant-color-primary, #1677ff);
 }
 
 /* Underline only when hovering the text itself */
-.items-page-table-wrapper .ant-table-tbody > tr > td:hover {
+.items-page-table-wrapper .ant-table-tbody>tr>td:hover {
 	text-decoration: underline;
 }
 
 /* Reduce form label font size by 1pt and match secondary text opacity */
-.ant-form-item .ant-form-item-label > label {
+.ant-form-item .ant-form-item-label>label {
 	font-size: calc(1em - 1px);
 	color: rgba(0, 0, 0, 0.45);
 }
@@ -108,9 +119,11 @@ input:-webkit-autofill:active,
 .af-number-align-left .ant-input-number-input {
 	text-align: left;
 }
+
 .af-number-align-center .ant-input-number-input {
 	text-align: center;
 }
+
 .af-number-align-right .ant-input-number-input {
 	text-align: right;
 }
@@ -187,15 +200,19 @@ input:-webkit-autofill:active,
 .af-mb-0 {
 	margin-bottom: 0;
 }
+
 .af-mb-4 {
 	margin-bottom: 4px;
 }
+
 .af-mb-8 {
 	margin-bottom: 8px;
 }
+
 .af-mb-16 {
 	margin-bottom: 16px;
 }
+
 .af-mb-24 {
 	margin-bottom: 24px;
 }
@@ -204,9 +221,11 @@ input:-webkit-autofill:active,
 .af-mt-8 {
 	margin-top: 8px;
 }
+
 .af-mt-16 {
 	margin-top: 16px;
 }
+
 .af-mt-24 {
 	margin-top: 24px;
 }
@@ -215,12 +234,15 @@ input:-webkit-autofill:active,
 .af-ml-2 {
 	margin-left: 2px;
 }
+
 .af-ml-4 {
 	margin-left: 4px;
 }
+
 .af-ml-8 {
 	margin-left: 8px;
 }
+
 .af-ml-48 {
 	margin-left: 48px;
 }
@@ -229,16 +251,20 @@ input:-webkit-autofill:active,
 .af-p-8 {
 	padding: 8px;
 }
+
 .af-p-16 {
 	padding: 16px;
 }
+
 .af-p-48 {
 	padding: 48px;
 }
+
 .af-px-8 {
 	padding-left: 8px;
 	padding-right: 8px;
 }
+
 .af-px-16 {
 	padding-left: 16px;
 	padding-right: 16px;
@@ -248,9 +274,11 @@ input:-webkit-autofill:active,
 .af-gap-4 {
 	gap: 4px;
 }
+
 .af-gap-8 {
 	gap: 8px;
 }
+
 .af-gap-16 {
 	gap: 16px;
 }

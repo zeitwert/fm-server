@@ -11,7 +11,7 @@ This cookbook describes how to migrate or create a new entity area in the fm-ux 
 
 An entity area consists of:
 - **List View** (`{Entity}Area`) - Table with create modal using `ItemsPage`
-- **Detail View** (`{Entity}Page`) - Edit form with `useEntityQueries` hook
+- **Detail View** (`{Entity}Page`) - Edit form with `usePersistentForm` hook and separate query/mutation hooks
 - **API Layer** - CRUD operations using `createEntityApi`
 - **Query Hooks** - TanStack Query hooks for data fetching
 - **Routes** - TanStack Router file-based routes
@@ -232,7 +232,7 @@ export const {entity}ListApi = createEntityApi<{Entity}ListItem>({
 import { useQuery } from "@tanstack/react-query";
 import { {entity}Api, {entity}ListApi } from "./api";
 import type { {Entity} } from "./types";
-import { useCreateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
 
 export const {entity}Keys = {
 	all: ["{entity}"] as const,
@@ -249,7 +249,7 @@ export function use{Entity}List() {
 	});
 }
 
-export function use{Entity}(id: string) {
+export function use{Entity}Query(id: string) {
 	return useQuery({
 		queryKey: {entity}Keys.detail(id),
 		queryFn: () => {entity}Api.get(id),
@@ -261,7 +261,16 @@ export function useCreate{Entity}() {
 	return useCreateEntity<{Entity}>({
 		createFn: (data) => {entity}Api.create(data),
 		listQueryKey: {entity}Keys.lists(),
-		successMessage: "{Entity} erstellt",  // Update German message
+		successMessageKey: "{entity}:message.created",
+	});
+}
+
+export function useUpdate{Entity}() {
+	return useUpdateEntity<{Entity}>({
+		updateFn: {entity}Api.update,
+		queryKey: {entity}Keys.details(),
+		listQueryKey: {entity}Keys.lists(),
+		successMessageKey: "{entity}:message.saved",
 	});
 }
 
@@ -269,7 +278,7 @@ export function useDelete{Entity}() {
 	return useDeleteEntity({
 		deleteFn: {entity}Api.delete,
 		listQueryKey: {entity}Keys.lists(),
-		successMessage: "{Entity} gelöscht",  // Update German message
+		successMessageKey: "{entity}:message.deleted",
 	});
 }
 
@@ -370,6 +379,9 @@ function {Entity}PageRoute() {
 		"backToList": "Zurück zur {Entity}-Liste"
 	},
 	"message": {
+		"created": "{Entity} erstellt",
+		"saved": "{Entity} gespeichert",
+		"deleted": "{Entity} gelöscht",
 		"notFound": "{Entity} nicht gefunden",
 		"notFoundDescription": "Der angeforderte {Entity} konnte nicht gefunden werden.",
 		"validation": {
@@ -398,6 +410,9 @@ function {Entity}PageRoute() {
 		"backToList": "Back to {entity} list"
 	},
 	"message": {
+		"created": "{Entity} created",
+		"saved": "{Entity} saved",
+		"deleted": "{Entity} deleted",
 		"notFound": "{Entity} not found",
 		"notFoundDescription": "The requested {entity} could not be found.",
 		"validation": {
@@ -497,8 +512,6 @@ export function {Entity}Area() {
 	return (
 		<ItemsPage<{Entity}ListItem>
 			entityType="{entity}"
-			entityLabelKey="{entity}.label.entityCount"
-			entityLabelSingular={t("{entity}:label.entity")}
 			icon={getArea("{entity}")?.icon}
 			queryKey={[...{entity}Keys.lists()]}
 			queryFn={() => {entity}ListApi.list()}
@@ -519,7 +532,7 @@ import { useState } from "react";
 import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
+import { usePersistentForm } from "../../../common/hooks";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -530,8 +543,7 @@ import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import { {entity}Api } from "../api";
-import { {entity}Keys } from "../queries";
+import { use{Entity}Query, useUpdate{Entity} } from "../queries";
 import { {entity}FormSchema, type {Entity}FormInput } from "../schemas";
 import { {Entity}MainForm } from "./forms/{Entity}MainForm";
 import type { {Entity} } from "../types";
@@ -547,26 +559,20 @@ export function {Entity}Page({ {ENTITY_ID_PARAM} }: {Entity}PageProps) {
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id ?? "";
 
-	const {
-		entity: {entity},
-		form,
-		isLoading,
-		isError,
-		isEditing,
-		isDirty,
-		isStoring,
-		handleEdit,
-		handleCancel,
-		handleStore,
-	} = useEntityQueries<{Entity}, {Entity}FormInput>({
-		id: {ENTITY_ID_PARAM},
-		queryKey: [...{entity}Keys.all],
-		queryFn: (id) => {entity}Api.get(id),
-		updateFn: {entity}Api.update,
-		schema: {entity}FormSchema,
-	});
+	const query = use{Entity}Query({ENTITY_ID_PARAM});
+	const updateMutation = useUpdate{Entity}();
 
-	if (isLoading) {
+	const { form, isEditing, isDirty, isStoring, handleEdit, handleCancel, handleStore } =
+		usePersistentForm<{Entity}, {Entity}FormInput>({
+			id: {ENTITY_ID_PARAM},
+			data: query.data,
+			updateMutation,
+			schema: {entity}FormSchema,
+		});
+
+	const {entity} = query.data;
+
+	if (query.isLoading) {
 		return (
 			<div className="af-loading-inline">
 				<Spin size="large" />
@@ -574,7 +580,7 @@ export function {Entity}Page({ {ENTITY_ID_PARAM} }: {Entity}PageProps) {
 		);
 	}
 
-	if (isError || !{entity}) {
+	if (query.isError || !{entity}) {
 		return (
 			<Result
 				status="404"
@@ -1062,16 +1068,25 @@ After implementing, verify:
 
 ## 2. Generic Mutation Hooks
 
-Use `useCreateEntity` and `useDeleteEntity` from `common/hooks` instead of writing custom mutation hooks:
+Use `useCreateEntity`, `useUpdateEntity`, and `useDeleteEntity` from `common/hooks` instead of writing custom mutation hooks:
 
 ```typescript
-import { useCreateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
 
 export function useCreate{Entity}() {
 	return useCreateEntity<{Entity}>({
 		createFn: (data) => {entity}Api.create(data),
 		listQueryKey: {entity}Keys.lists(),
-		successMessage: "{Entity} erstellt",
+		successMessageKey: "{entity}:message.created",
+	});
+}
+
+export function useUpdate{Entity}() {
+	return useUpdateEntity<{Entity}>({
+		updateFn: {entity}Api.update,
+		queryKey: {entity}Keys.details(),
+		listQueryKey: {entity}Keys.lists(),
+		successMessageKey: "{entity}:message.saved",
 	});
 }
 
@@ -1079,7 +1094,7 @@ export function useDelete{Entity}() {
 	return useDeleteEntity({
 		deleteFn: {entity}Api.delete,
 		listQueryKey: {entity}Keys.lists(),
-		successMessage: "{Entity} gelöscht",
+		successMessageKey: "{entity}:message.deleted",
 	});
 }
 ```
@@ -1089,7 +1104,7 @@ export function useDelete{Entity}() {
 - Consistent error handling across all entities
 - Less boilerplate in entity query files
 
-**Note:** Update mutations are handled by `useEntityQueries` hook, not as separate hooks.
+**Note:** Update mutations are used by `usePersistentForm` hook in detail pages, with `useUpdateEntity` providing the underlying mutation.
 
 ## 3. Display-Only Fields (Schema Metadata)
 
@@ -1247,8 +1262,8 @@ If the entity can be created from a parent entity's page (e.g., creating a Conta
 - `fm-ux/src/common/components/related/` - RelatedPanel, NotesList, TasksList
 
 **Hooks:**
-- `fm-ux/src/common/hooks/useEntityQueries.ts` - Detail page edit/cancel/store pattern
-- `fm-ux/src/common/hooks/useEntityMutations.ts` - Generic useCreateEntity, useDeleteEntity hooks
+- `fm-ux/src/common/hooks/usePersistentForm.ts` - Form state with edit/cancel/store pattern
+- `fm-ux/src/common/hooks/useEntityMutations.ts` - Generic useCreateEntity, useUpdateEntity, useDeleteEntity hooks
 
 **Utilities:**
 - `fm-ux/src/common/utils/zodMeta.ts` - enumeratedSchema, displayOnly helper

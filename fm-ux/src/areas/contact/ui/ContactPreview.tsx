@@ -2,7 +2,7 @@ import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useContact } from "../queries";
+import { useContactQuery } from "../queries";
 import { getArea } from "../../../app/config/AppConfig";
 
 const { Text, Paragraph } = Typography;
@@ -16,7 +16,7 @@ export function ContactPreview({ id, onClose }: ContactPreviewProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
-	const { data: contact, isLoading, isError } = useContact(id);
+	const { data: contact, isLoading, isError } = useContactQuery(id);
 
 	const handleEdit = () => {
 		onClose();

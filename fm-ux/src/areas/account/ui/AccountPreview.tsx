@@ -3,7 +3,7 @@ import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useAccount } from "../queries";
+import { useAccountQuery } from "../queries";
 import { getLogoUrl } from "../../../common/api/client";
 import { getArea } from "../../../app/config/AppConfig";
 
@@ -19,7 +19,7 @@ export function AccountPreview({ id, onClose }: AccountPreviewProps) {
 	const navigate = useNavigate();
 	const [logoError, setLogoError] = useState(false);
 
-	const { data: account, isLoading, isError } = useAccount(id);
+	const { data: account, isLoading, isError } = useAccountQuery(id);
 
 	// Reset logo error when account changes
 	useEffect(() => {

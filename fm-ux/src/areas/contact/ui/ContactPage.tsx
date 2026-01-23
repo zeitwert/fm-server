@@ -1,7 +1,7 @@
 import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
+import { usePersistentForm } from "../../../common/hooks";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -12,8 +12,7 @@ import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import { contactApi } from "../api";
-import { contactKeys } from "../queries";
+import { useContactQuery, useUpdateContact } from "../queries";
 import { contactFormSchema, type ContactFormInput } from "../schemas";
 import { ContactMainForm } from "./forms/ContactMainForm";
 import type { Contact } from "../types";
@@ -29,27 +28,20 @@ export function ContactPage({ contactId }: ContactPageProps) {
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id ?? "";
 
-	const {
-		entity: contact,
-		form,
-		isLoading,
-		isError,
-		isEditing,
-		isDirty,
-		isStoring,
-		handleEdit,
-		handleCancel,
-		handleStore,
-	} = useEntityQueries<Contact, ContactFormInput>({
-		id: contactId,
-		queryKey: contactKeys.details(),
-		queryFn: (id) => contactApi.get(id),
-		updateFn: contactApi.update,
-		schema: contactFormSchema,
-		listQueryKey: contactKeys.lists(),
-	});
+	const query = useContactQuery(contactId);
+	const updateMutation = useUpdateContact();
 
-	if (isLoading) {
+	const { form, isEditing, isDirty, isStoring, handleEdit, handleCancel, handleStore } =
+		usePersistentForm<Contact, ContactFormInput>({
+			id: contactId,
+			data: query.data,
+			updateMutation,
+			schema: contactFormSchema,
+		});
+
+	const contact = query.data;
+
+	if (query.isLoading) {
 		return (
 			<div className="af-loading-inline">
 				<Spin size="large" />
@@ -57,7 +49,7 @@ export function ContactPage({ contactId }: ContactPageProps) {
 		);
 	}
 
-	if (isError || !contact) {
+	if (query.isError || !contact) {
 		return (
 			<Result
 				status="404"

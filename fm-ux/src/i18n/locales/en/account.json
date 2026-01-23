@@ -29,6 +29,9 @@
 		"backToList": "Back to account list"
 	},
 	"message": {
+		"saved": "Account saved",
+		"created": "Account created",
+		"deleted": "Account deleted",
 		"noContacts": "No contacts available",
 		"notFound": "Account not found",
 		"notFoundDescription": "The requested account could not be found.",

@@ -46,6 +46,9 @@
 		"noTasks": "Keine Aufgaben",
 		"noActivity": "Keine Aktivität",
 		"error": "Fehler: {message}",
+		"saveError": "Fehler beim Speichern: {message}",
+		"createError": "Fehler beim Erstellen: {message}",
+		"deleteError": "Fehler beim Löschen: {message}",
 		"loadError": "Fehler beim Laden der {entity}",
 		"paginationRange": "{start}-{end} von {total}"
 	}

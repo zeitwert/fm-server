@@ -29,6 +29,9 @@
 		"backToList": "Zurück zur Kontaktliste"
 	},
 	"message": {
+		"saved": "Kontakt gespeichert",
+		"created": "Kontakt erstellt",
+		"deleted": "Kontakt gelöscht",
 		"notFound": "Kontakt nicht gefunden",
 		"notFoundDescription": "Der angeforderte Kontakt konnte nicht gefunden werden.",
 		"validation": {

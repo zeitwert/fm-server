@@ -5,8 +5,9 @@ export { accountApi, accountListApi } from "./api";
 export {
 	accountKeys,
 	useAccountList,
-	useAccount,
+	useAccountQuery,
 	useCreateAccount,
+	useUpdateAccount,
 	useDeleteAccount,
 	getAccountQueryOptions,
 	getAccountListQueryOptions,

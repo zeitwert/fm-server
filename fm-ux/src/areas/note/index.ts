@@ -5,7 +5,8 @@ export { noteApi, noteListApi } from "./api";
 export {
 	noteKeys,
 	useNoteList,
-	useNote,
+	useNoteQuery,
+	useUpdateNote,
 	useDeleteNote,
 	getNoteQueryOptions,
 	getNoteListQueryOptions,

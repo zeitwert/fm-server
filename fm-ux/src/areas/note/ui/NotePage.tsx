@@ -1,15 +1,14 @@
 import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
+import { usePersistentForm } from "../../../common/hooks";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
 import { ActivityTimeline } from "../../../common/components/related/ActivityTimeline";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import { noteApi } from "../api";
-import { noteKeys } from "../queries";
+import { useNoteQuery, useUpdateNote } from "../queries";
 import { noteFormSchema, type NoteFormInput } from "../schemas";
 import { NoteMainForm } from "./forms/NoteMainForm";
 import type { Note } from "../types";
@@ -25,27 +24,20 @@ export function NotePage({ noteId }: NotePageProps) {
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id ?? "";
 
-	const {
-		entity: note,
-		form,
-		isLoading,
-		isError,
-		isEditing,
-		isDirty,
-		isStoring,
-		handleEdit,
-		handleCancel,
-		handleStore,
-	} = useEntityQueries<Note, NoteFormInput>({
-		id: noteId,
-		queryKey: noteKeys.details(),
-		queryFn: (id) => noteApi.get(id),
-		updateFn: noteApi.update,
-		schema: noteFormSchema,
-		listQueryKey: noteKeys.lists(),
-	});
+	const query = useNoteQuery(noteId);
+	const updateMutation = useUpdateNote();
 
-	if (isLoading) {
+	const { form, isEditing, isDirty, isStoring, handleEdit, handleCancel, handleStore } =
+		usePersistentForm<Note, NoteFormInput>({
+			id: noteId,
+			data: query.data,
+			updateMutation,
+			schema: noteFormSchema,
+		});
+
+	const note = query.data;
+
+	if (query.isLoading) {
 		return (
 			<div className="af-loading-inline">
 				<Spin size="large" />
@@ -53,7 +45,7 @@ export function NotePage({ noteId }: NotePageProps) {
 		);
 	}
 
-	if (isError || !note) {
+	if (query.isError || !note) {
 		return (
 			<Result
 				status="404"

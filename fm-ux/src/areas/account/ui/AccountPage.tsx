@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Card, Modal, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
+import { usePersistentForm } from "../../../common/hooks";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -13,8 +13,7 @@ import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import { accountApi } from "../api";
-import { accountKeys } from "../queries";
+import { useAccountQuery, useUpdateAccount } from "../queries";
 import { accountFormSchema, type AccountFormInput } from "../schemas";
 import { AccountMainForm } from "./forms/AccountMainForm";
 import { ContactCreationForm } from "../../contact/ui/forms/ContactCreationForm";
@@ -32,27 +31,20 @@ export function AccountPage({ accountId }: AccountPageProps) {
 	const userRole = sessionInfo?.user?.role?.id ?? "";
 	const [isContactCreateOpen, setIsContactCreateOpen] = useState(false);
 
-	const {
-		entity: account,
-		form,
-		isLoading,
-		isError,
-		isEditing,
-		isDirty,
-		isStoring,
-		handleEdit,
-		handleCancel,
-		handleStore,
-	} = useEntityQueries<Account, AccountFormInput>({
-		id: accountId,
-		queryKey: accountKeys.details(),
-		queryFn: (id) => accountApi.get(id),
-		updateFn: accountApi.update,
-		schema: accountFormSchema,
-		listQueryKey: accountKeys.lists(),
-	});
+	const query = useAccountQuery(accountId);
+	const updateMutation = useUpdateAccount();
 
-	if (isLoading) {
+	const { form, isEditing, isDirty, isStoring, handleEdit, handleCancel, handleStore } =
+		usePersistentForm<Account, AccountFormInput>({
+			id: accountId,
+			data: query.data,
+			updateMutation,
+			schema: accountFormSchema,
+		});
+
+	const account = query.data;
+
+	if (query.isLoading) {
 		return (
 			<div className="af-loading-inline">
 				<Spin size="large" />
@@ -60,7 +52,7 @@ export function AccountPage({ accountId }: AccountPageProps) {
 		);
 	}
 
-	if (isError || !account) {
+	if (query.isError || !account) {
 		return (
 			<Result
 				status="404"

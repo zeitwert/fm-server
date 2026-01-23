@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Enumerated } from "../../common/types";
+import type { CaseStage } from "./types";
 import { enumeratedSchema, displayOnly } from "../../common/utils/zodMeta";
 
 export interface TaskFormInput {
@@ -11,6 +12,8 @@ export interface TaskFormInput {
 	remindAt?: string | null;
 	relatedTo: Enumerated | null;
 	owner: Enumerated | null;
+	caseStage?: CaseStage | null;
+	assignee?: Enumerated | null;
 }
 
 export const taskFormSchema = z.object({
@@ -22,6 +25,8 @@ export const taskFormSchema = z.object({
 	remindAt: z.string().optional().nullable(),
 	relatedTo: displayOnly(enumeratedSchema),
 	owner: displayOnly(enumeratedSchema),
+	caseStage: z.custom<CaseStage>().optional().nullable(),
+	assignee: enumeratedSchema.optional().nullable(),
 });
 
 export type TaskFormData = z.infer<typeof taskFormSchema>;

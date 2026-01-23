@@ -46,6 +46,9 @@
 		"noTasks": "No tasks",
 		"noActivity": "No activity",
 		"error": "Error: {message}",
+		"saveError": "Error saving: {message}",
+		"createError": "Error creating: {message}",
+		"deleteError": "Error deleting: {message}",
 		"loadError": "Error loading {entity}",
 		"paginationRange": "{start}-{end} of {total}"
 	}

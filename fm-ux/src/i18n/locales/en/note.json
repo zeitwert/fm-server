@@ -21,6 +21,9 @@
 		"backToList": "Back to note list"
 	},
 	"message": {
+		"saved": "Note saved",
+		"created": "Note created",
+		"deleted": "Note deleted",
 		"notFound": "Note not found",
 		"notFoundDescription": "The requested note could not be found.",
 		"validation": {

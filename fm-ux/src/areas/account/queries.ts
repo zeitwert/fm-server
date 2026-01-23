@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { accountApi, accountListApi } from "./api";
 import type { Account } from "./types";
-import { useCreateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
 
 export const accountKeys = {
 	all: ["account"] as const,
@@ -18,7 +18,7 @@ export function useAccountList() {
 	});
 }
 
-export function useAccount(id: string) {
+export function useAccountQuery(id: string) {
 	return useQuery({
 		queryKey: accountKeys.detail(id),
 		queryFn: () => accountApi.get(id),
@@ -30,7 +30,16 @@ export function useCreateAccount() {
 	return useCreateEntity<Account>({
 		createFn: (data) => accountApi.create(data),
 		listQueryKey: accountKeys.lists(),
-		successMessage: "Kunde erstellt",
+		successMessageKey: "account:message.created",
+	});
+}
+
+export function useUpdateAccount() {
+	return useUpdateEntity<Account>({
+		updateFn: accountApi.update,
+		queryKey: accountKeys.details(),
+		listQueryKey: accountKeys.lists(),
+		successMessageKey: "account:message.saved",
 	});
 }
 
@@ -38,7 +47,7 @@ export function useDeleteAccount() {
 	return useDeleteEntity({
 		deleteFn: accountApi.delete,
 		listQueryKey: accountKeys.lists(),
-		successMessage: "Kunde gelöscht",
+		successMessageKey: "account:message.deleted",
 	});
 }
 

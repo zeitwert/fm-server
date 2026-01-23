@@ -29,6 +29,8 @@ export interface Task {
 	relatedTo: Enumerated;
 	owner: Enumerated;
 	tenant: Enumerated;
+	caseStage?: CaseStage;
+	assignee?: Enumerated;
 }
 
 export interface TaskListItem {

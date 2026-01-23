@@ -2,7 +2,7 @@ import { Button, Descriptions, Spin, Result, Space, Typography } from "antd";
 import { EditOutlined, LockOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useNote } from "../queries";
+import { useNoteQuery } from "../queries";
 import { getArea } from "../../../app/config/AppConfig";
 
 const { Paragraph } = Typography;
@@ -16,7 +16,7 @@ export function NotePreview({ id, onClose }: NotePreviewProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
-	const { data: note, isLoading, isError } = useNote(id);
+	const { data: note, isLoading, isError } = useNoteQuery(id);
 
 	const handleEdit = () => {
 		onClose();

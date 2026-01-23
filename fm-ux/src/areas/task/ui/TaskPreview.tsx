@@ -2,7 +2,7 @@ import { Button, Descriptions, Spin, Result, Space, Typography, Tag } from "antd
 import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useTask } from "../queries";
+import { useTaskQuery } from "../queries";
 
 const { Text, Paragraph } = Typography;
 
@@ -15,7 +15,7 @@ export function TaskPreview({ id, onClose }: TaskPreviewProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
-	const { data: task, isLoading, isError } = useTask(id);
+	const { data: task, isLoading, isError } = useTaskQuery(id);
 
 	const handleEdit = () => {
 		onClose();

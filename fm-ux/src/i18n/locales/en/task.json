@@ -23,6 +23,7 @@
 		"backToList": "Back to task list"
 	},
 	"message": {
+		"saved": "Task saved",
 		"notFound": "Task not found",
 		"notFoundDescription": "The requested task could not be found.",
 		"validation": {

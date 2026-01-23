@@ -29,6 +29,9 @@
 		"backToList": "Zurück zur Kundenliste"
 	},
 	"message": {
+		"saved": "Kunde gespeichert",
+		"created": "Kunde erstellt",
+		"deleted": "Kunde gelöscht",
 		"noContacts": "Keine Kontakte vorhanden",
 		"notFound": "Kunde nicht gefunden",
 		"notFoundDescription": "Der angeforderte Kunde konnte nicht gefunden werden.",

@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { taskApi, taskListApi } from "./api";
+import type { Task } from "./types";
+import { useUpdateEntity } from "../../common/hooks";
 
 export const taskKeys = {
 	all: ["task"] as const,
@@ -16,11 +18,20 @@ export function useTaskList() {
 	});
 }
 
-export function useTask(id: string) {
+export function useTaskQuery(id: string) {
 	return useQuery({
 		queryKey: taskKeys.detail(id),
 		queryFn: () => taskApi.get(id),
 		enabled: !!id,
+	});
+}
+
+export function useUpdateTask() {
+	return useUpdateEntity<Task>({
+		updateFn: taskApi.update,
+		queryKey: taskKeys.details(),
+		listQueryKey: taskKeys.lists(),
+		successMessageKey: "task:message.saved",
 	});
 }
 

@@ -21,6 +21,9 @@
 		"backToList": "Zurück zur Notizliste"
 	},
 	"message": {
+		"saved": "Notiz gespeichert",
+		"created": "Notiz erstellt",
+		"deleted": "Notiz gelöscht",
 		"notFound": "Notiz nicht gefunden",
 		"notFoundDescription": "Die angeforderte Notiz konnte nicht gefunden werden.",
 		"validation": {

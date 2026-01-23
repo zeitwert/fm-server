@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { noteApi, noteListApi } from "./api";
 import type { Note } from "./types";
-import { useDeleteEntity } from "../../common/hooks";
+import { useUpdateEntity, useDeleteEntity } from "../../common/hooks";
 
 export const noteKeys = {
 	all: ["note"] as const,
@@ -18,7 +18,7 @@ export function useNoteList() {
 	});
 }
 
-export function useNote(id: string) {
+export function useNoteQuery(id: string) {
 	return useQuery({
 		queryKey: noteKeys.detail(id),
 		queryFn: () => noteApi.get(id),
@@ -26,11 +26,20 @@ export function useNote(id: string) {
 	});
 }
 
+export function useUpdateNote() {
+	return useUpdateEntity<Note>({
+		updateFn: noteApi.update,
+		queryKey: noteKeys.details(),
+		listQueryKey: noteKeys.lists(),
+		successMessageKey: "note:message.saved",
+	});
+}
+
 export function useDeleteNote() {
 	return useDeleteEntity({
 		deleteFn: noteApi.delete,
 		listQueryKey: noteKeys.lists(),
-		successMessage: "Notiz gelöscht",
+		successMessageKey: "note:message.deleted",
 	});
 }
 

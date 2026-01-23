@@ -1,7 +1,7 @@
 import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useEntityQueries } from "../../../common/hooks/useEntityQueries";
+import { usePersistentForm } from "../../../common/hooks";
 import { DocPageHeader } from "../../../common/components/doc";
 import { ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
@@ -11,8 +11,7 @@ import { ActivityTimeline } from "../../../common/components/related/ActivityTim
 import type { Note } from "../../../common/components/related/NotesList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import { taskApi } from "../api";
-import { taskKeys } from "../queries";
+import { useTaskQuery, useUpdateTask } from "../queries";
 import { taskFormSchema, type TaskFormInput } from "../schemas";
 import { TaskMainForm } from "./forms/TaskMainForm";
 import type { Task, CaseStage } from "../types";
@@ -28,32 +27,28 @@ export function TaskPage({ taskId }: TaskPageProps) {
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id ?? "";
 
-	const {
-		entity: task,
-		form,
-		isLoading,
-		isError,
-		isEditing,
-		isDirty,
-		isStoring,
-		handleEdit,
-		handleCancel,
-		handleStore,
-		directMutation,
-	} = useEntityQueries<Task, TaskFormInput>({
-		id: taskId,
-		queryKey: taskKeys.details(),
-		queryFn: (id) => taskApi.get(id),
-		updateFn: taskApi.update,
-		schema: taskFormSchema,
-		listQueryKey: taskKeys.lists(),
-	});
+	const query = useTaskQuery(taskId);
+	const updateMutation = useUpdateTask();
 
+	const { form, isEditing, isDirty, isStoring, handleEdit, handleCancel, handleStore } =
+		usePersistentForm<Task, TaskFormInput>({
+			id: taskId,
+			data: query.data,
+			updateMutation,
+			schema: taskFormSchema,
+		});
+
+	const task = query.data;
+
+	// Stage transition now works through the form to maintain dirty tracking
 	const handleStageTransition = async (stage: CaseStage) => {
-		await directMutation({ caseStage: stage });
+		// Update the form field to mark it as dirty
+		form.setValue("caseStage", stage, { shouldDirty: true });
+		// Trigger the standard save flow
+		await handleStore();
 	};
 
-	if (isLoading) {
+	if (query.isLoading) {
 		return (
 			<div className="af-loading-inline">
 				<Spin size="large" />
@@ -61,7 +56,7 @@ export function TaskPage({ taskId }: TaskPageProps) {
 		);
 	}
 
-	if (isError || !task) {
+	if (query.isError || !task) {
 		return (
 			<Result
 				status="404"
