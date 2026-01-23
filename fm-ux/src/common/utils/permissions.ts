@@ -17,6 +17,7 @@ import {
 export function canModifyEntity(entityType: string, role: string): boolean {
 	switch (entityType) {
 		case "account":
+		case "tenant":
 			return isAdmin(role);
 		case "contact":
 			return true;

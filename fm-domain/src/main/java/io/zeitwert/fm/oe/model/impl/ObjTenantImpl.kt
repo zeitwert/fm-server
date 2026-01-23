@@ -1,11 +1,11 @@
 package io.zeitwert.fm.oe.model.impl
 
 import dddrive.app.ddd.model.SessionContext
-import dddrive.property.path.setValueByPath
 import dddrive.property.delegate.baseProperty
 import dddrive.property.delegate.enumProperty
 import dddrive.property.delegate.referenceIdProperty
 import dddrive.property.delegate.referenceProperty
+import dddrive.property.path.setValueByPath
 import dddrive.query.query
 import io.zeitwert.app.obj.model.base.FMObjBase
 import io.zeitwert.fm.dms.model.ObjDocument
@@ -54,7 +54,6 @@ class ObjTenantImpl(
 	override fun doAfterCreate(sessionContext: SessionContext) {
 		super.doAfterCreate(sessionContext)
 		setValueByPath("tenantId", id)
-		this.addLogoImage()
 	}
 
 	override fun doBeforeStore(sessionContext: SessionContext) {

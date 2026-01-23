@@ -113,13 +113,25 @@ abstract class AggregateMemPersistenceProviderBase<A : Aggregate>(
 		// Add tenant filter
 		val tenantId = sessionContext.tenantId as Int
 		if (!kernelContext.isKernelTenant(tenantId)) { // in kernel tenant everything is visible
-			filters.add(FilterSpec.Comparison("tenantId", ComparisonOperator.EQ, tenantId))
+			val tenantFilters = FilterSpec.Or(
+				listOf(
+					// FilterSpec.Comparison("tenantId", ComparisonOperator.EQ, kernelContext.kernelTenantId),
+					FilterSpec.Comparison("tenantId", ComparisonOperator.EQ, tenantId)
+				)
+			)
+			filters.add(tenantFilters)
 		}
 
 		// Add account filter
 		if (hasAccount && sessionContext.hasAccount()) {
 			val accountId = sessionContext.accountId
-			filters.add(FilterSpec.Comparison("accountId", ComparisonOperator.EQ, accountId))
+			val accountFilters = FilterSpec.Or(
+				listOf(
+					FilterSpec.Comparison("accountId", ComparisonOperator.EQ, null),
+					FilterSpec.Comparison("accountId", ComparisonOperator.EQ, accountId)
+				)
+			)
+			filters.add(accountFilters)
 		}
 
 		return QuerySpec(

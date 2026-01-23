@@ -1,0 +1,33 @@
+{
+	"label": {
+		"entity": "Tenant",
+		"entityCount": "{count, plural, =0 {No tenants} one {# tenant} other {# tenants}}",
+		"name": "Name",
+		"description": "Description",
+		"tenantType": "Type",
+		"owner": "Owner",
+		"inflationRate": "Inflation Rate",
+		"discountRate": "Discount Rate",
+		"basicInfo": "Basic Information",
+		"calculationParams": "Calculation Parameters",
+		"tabMain": "Main",
+		"tabDocuments": "Documents",
+		"notes": "Notes",
+		"tasks": "Tasks",
+		"activity": "Activity"
+	},
+	"action": {
+		"backToList": "Back to tenant list"
+	},
+	"message": {
+		"saved": "Tenant saved",
+		"created": "Tenant created",
+		"deleted": "Tenant deleted",
+		"notFound": "Tenant not found",
+		"notFoundDescription": "The requested tenant could not be found.",
+		"validation": {
+			"nameRequired": "Name is required",
+			"tenantTypeRequired": "Type is required"
+		}
+	}
+}

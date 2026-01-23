@@ -53,12 +53,11 @@ object MemoryDb {
 		type: Class<*>?,
 		query: QuerySpec?,
 	): List<Map<String, Any?>> {
-		val candidates =
-			if (type != null) {
-				storage[type]?.values ?: emptyList()
-			} else {
-				storage.values.flatMap { it.values }
-			}
+		val candidates = if (type != null) {
+			storage[type]?.values ?: emptyList()
+		} else {
+			storage.values.flatMap { it.values }
+		}
 
 		if (query == null || query.filters.isEmpty()) {
 			return candidates.toList()

@@ -101,6 +101,8 @@ object Tenant {
 		newTenant.key = ctx.key
 		newTenant.name = ctx.name
 		newTenant.tenantType = CodeTenantType.getTenantType(ctx.type)
+		// make sure logo has same tenant
+		TestSessionContext.overrideTenantId(newTenant.id as Int)
 		tenantRepository.transaction {
 			tenantRepository.store(newTenant)
 		}

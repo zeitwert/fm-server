@@ -11,6 +11,7 @@ import enAccount from "./locales/en/account.json";
 import enContact from "./locales/en/contact.json";
 import enNote from "./locales/en/note.json";
 import enTask from "./locales/en/task.json";
+import enTenant from "./locales/en/tenant.json";
 
 import deCommon from "./locales/de/common.json";
 import deLogin from "./locales/de/login.json";
@@ -20,6 +21,7 @@ import deAccount from "./locales/de/account.json";
 import deContact from "./locales/de/contact.json";
 import deNote from "./locales/de/note.json";
 import deTask from "./locales/de/task.json";
+import deTenant from "./locales/de/tenant.json";
 
 // Each translation file is a separate namespace
 // This allows using t("account:label.name") with namespace:key syntax
@@ -33,6 +35,7 @@ const resources = {
 		contact: enContact,
 		note: enNote,
 		task: enTask,
+		tenant: enTenant,
 	},
 	de: {
 		common: deCommon,
@@ -43,10 +46,21 @@ const resources = {
 		contact: deContact,
 		note: deNote,
 		task: deTask,
+		tenant: deTenant,
 	},
 };
 
-const namespaces = ["common", "login", "app", "home", "account", "contact", "note", "task"];
+const namespaces = [
+	"common",
+	"login",
+	"app",
+	"home",
+	"account",
+	"contact",
+	"note",
+	"task",
+	"tenant",
+];
 
 i18n
 	.use(ICU)

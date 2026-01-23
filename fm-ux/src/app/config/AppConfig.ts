@@ -137,14 +137,14 @@ const appAdminApp: Application = {
 const fmAppInfo: ApplicationInfo = {
 	id: "fmMenu",
 	name: "ZEitWERT: fm",
-	areas: [homeArea, portfolioArea, buildingArea, taskArea, noteArea],
+	areas: [homeArea, portfolioArea, buildingArea, contactArea, taskArea, noteArea],
 	defaultArea: "home",
 };
 
 const fmAdminAppInfo: ApplicationInfo = {
 	id: "fmAdminMenu",
 	name: "ZEitWERT: fmAdmin",
-	areas: [accountArea, contactArea],
+	areas: [tenantArea, accountArea, userArea],
 	defaultArea: "home",
 };
 
