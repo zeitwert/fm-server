@@ -48,7 +48,7 @@ describe("Home Dashboard", () => {
 			// Open activities card (includes count)
 			await waitFor(
 				() => {
-					expect(screen.getByText(/home\.label\.openActivities/)).toBeInTheDocument();
+					expect(screen.getByText(/home:label\.openActivities/)).toBeInTheDocument();
 				},
 				{ timeout: 10000 }
 			);
@@ -138,7 +138,7 @@ describe("Home Dashboard", () => {
 
 			// The activity with dueAt=now is overdue, so it's in a collapsed section
 			// Find and click the collapse panel to expand it
-			const overdueSection = await screen.findByText(/home\.label\.overdue/);
+			const overdueSection = await screen.findByText(/home:label\.overdue/);
 			expect(overdueSection).toBeInTheDocument();
 
 			// Click to expand the overdue section

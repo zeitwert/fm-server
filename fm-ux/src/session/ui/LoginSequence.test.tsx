@@ -90,7 +90,7 @@ describe("Login Sequence", () => {
 
 			// Wait for tenant selection wizard - title uses translation key
 			const selectTenantText = await screen.findByText(
-				"login.label.selectTenant",
+				"login:label.selectTenant",
 				{},
 				{ timeout: ASYNC_TIMEOUT }
 			);
