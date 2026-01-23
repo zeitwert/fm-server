@@ -21,11 +21,13 @@ import { Route as ContactRouteImport } from "./routes/contact"
 import { Route as BuildingRouteImport } from "./routes/building"
 import { Route as AccountRouteImport } from "./routes/account"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as UserIndexRouteImport } from "./routes/user.index"
 import { Route as TenantIndexRouteImport } from "./routes/tenant.index"
 import { Route as TaskIndexRouteImport } from "./routes/task.index"
 import { Route as NoteIndexRouteImport } from "./routes/note.index"
 import { Route as ContactIndexRouteImport } from "./routes/contact.index"
 import { Route as AccountIndexRouteImport } from "./routes/account.index"
+import { Route as UserUserIdRouteImport } from "./routes/user.$userId"
 import { Route as TenantTenantIdRouteImport } from "./routes/tenant.$tenantId"
 import { Route as TaskTaskIdRouteImport } from "./routes/task.$taskId"
 import { Route as NoteNoteIdRouteImport } from "./routes/note.$noteId"
@@ -92,6 +94,11 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserIndexRoute = UserIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => UserRoute,
+} as any)
 const TenantIndexRoute = TenantIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -116,6 +123,11 @@ const AccountIndexRoute = AccountIndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => AccountRoute,
+} as any)
+const UserUserIdRoute = UserUserIdRouteImport.update({
+  id: "/$userId",
+  path: "/$userId",
+  getParentRoute: () => UserRoute,
 } as any)
 const TenantTenantIdRoute = TenantTenantIdRouteImport.update({
   id: "/$tenantId",
@@ -155,17 +167,19 @@ export interface FileRoutesByFullPath {
   "/portfolio": typeof PortfolioRoute
   "/task": typeof TaskRouteWithChildren
   "/tenant": typeof TenantRouteWithChildren
-  "/user": typeof UserRoute
+  "/user": typeof UserRouteWithChildren
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
   "/task/$taskId": typeof TaskTaskIdRoute
   "/tenant/$tenantId": typeof TenantTenantIdRoute
+  "/user/$userId": typeof UserUserIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
   "/task/": typeof TaskIndexRoute
   "/tenant/": typeof TenantIndexRoute
+  "/user/": typeof UserIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -174,17 +188,18 @@ export interface FileRoutesByTo {
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
   "/portfolio": typeof PortfolioRoute
-  "/user": typeof UserRoute
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
   "/task/$taskId": typeof TaskTaskIdRoute
   "/tenant/$tenantId": typeof TenantTenantIdRoute
+  "/user/$userId": typeof UserUserIdRoute
   "/account": typeof AccountIndexRoute
   "/contact": typeof ContactIndexRoute
   "/note": typeof NoteIndexRoute
   "/task": typeof TaskIndexRoute
   "/tenant": typeof TenantIndexRoute
+  "/user": typeof UserIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -199,17 +214,19 @@ export interface FileRoutesById {
   "/portfolio": typeof PortfolioRoute
   "/task": typeof TaskRouteWithChildren
   "/tenant": typeof TenantRouteWithChildren
-  "/user": typeof UserRoute
+  "/user": typeof UserRouteWithChildren
   "/account/$accountId": typeof AccountAccountIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
   "/task/$taskId": typeof TaskTaskIdRoute
   "/tenant/$tenantId": typeof TenantTenantIdRoute
+  "/user/$userId": typeof UserUserIdRoute
   "/account/": typeof AccountIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
   "/task/": typeof TaskIndexRoute
   "/tenant/": typeof TenantIndexRoute
+  "/user/": typeof UserIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -231,11 +248,13 @@ export interface FileRouteTypes {
     | "/note/$noteId"
     | "/task/$taskId"
     | "/tenant/$tenantId"
+    | "/user/$userId"
     | "/account/"
     | "/contact/"
     | "/note/"
     | "/task/"
     | "/tenant/"
+    | "/user/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -244,17 +263,18 @@ export interface FileRouteTypes {
     | "/home"
     | "/login"
     | "/portfolio"
-    | "/user"
     | "/account/$accountId"
     | "/contact/$contactId"
     | "/note/$noteId"
     | "/task/$taskId"
     | "/tenant/$tenantId"
+    | "/user/$userId"
     | "/account"
     | "/contact"
     | "/note"
     | "/task"
     | "/tenant"
+    | "/user"
   id:
     | "__root__"
     | "/"
@@ -274,11 +294,13 @@ export interface FileRouteTypes {
     | "/note/$noteId"
     | "/task/$taskId"
     | "/tenant/$tenantId"
+    | "/user/$userId"
     | "/account/"
     | "/contact/"
     | "/note/"
     | "/task/"
     | "/tenant/"
+    | "/user/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -293,7 +315,7 @@ export interface RootRouteChildren {
   PortfolioRoute: typeof PortfolioRoute
   TaskRoute: typeof TaskRouteWithChildren
   TenantRoute: typeof TenantRouteWithChildren
-  UserRoute: typeof UserRoute
+  UserRoute: typeof UserRouteWithChildren
 }
 
 declare module "@tanstack/react-router" {
@@ -382,6 +404,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/user/": {
+      id: "/user/"
+      path: "/"
+      fullPath: "/user/"
+      preLoaderRoute: typeof UserIndexRouteImport
+      parentRoute: typeof UserRoute
+    }
     "/tenant/": {
       id: "/tenant/"
       path: "/"
@@ -416,6 +445,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/account/"
       preLoaderRoute: typeof AccountIndexRouteImport
       parentRoute: typeof AccountRoute
+    }
+    "/user/$userId": {
+      id: "/user/$userId"
+      path: "/$userId"
+      fullPath: "/user/$userId"
+      preLoaderRoute: typeof UserUserIdRouteImport
+      parentRoute: typeof UserRoute
     }
     "/tenant/$tenantId": {
       id: "/tenant/$tenantId"
@@ -518,6 +554,18 @@ const TenantRouteChildren: TenantRouteChildren = {
 const TenantRouteWithChildren =
   TenantRoute._addFileChildren(TenantRouteChildren)
 
+interface UserRouteChildren {
+  UserUserIdRoute: typeof UserUserIdRoute
+  UserIndexRoute: typeof UserIndexRoute
+}
+
+const UserRouteChildren: UserRouteChildren = {
+  UserUserIdRoute: UserUserIdRoute,
+  UserIndexRoute: UserIndexRoute,
+}
+
+const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
@@ -530,7 +578,7 @@ const rootRouteChildren: RootRouteChildren = {
   PortfolioRoute: PortfolioRoute,
   TaskRoute: TaskRouteWithChildren,
   TenantRoute: TenantRouteWithChildren,
-  UserRoute: UserRoute,
+  UserRoute: UserRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

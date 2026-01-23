@@ -18,6 +18,7 @@ export function canModifyEntity(entityType: string, role: string): boolean {
 	switch (entityType) {
 		case "account":
 		case "tenant":
+		case "user":
 			return isAdmin(role);
 		case "contact":
 			return true;
@@ -36,10 +37,12 @@ export function canModifyEntity(entityType: string, role: string): boolean {
  */
 export function canCreateEntity(entityType: string, role: string, tenantType: string): boolean {
 	switch (entityType) {
-		case "tenant":
-		case "user": {
+		case "tenant": {
 			// OE entities can only be created in kernel tenant
 			return tenantType === KERNEL_TENANT;
+		}
+		case "user": {
+			return isAdmin(role);
 		}
 		case "account": {
 			// Accounts can only be created in kernel or advisory tenants
