@@ -97,6 +97,10 @@ export function useCreateEntity<T extends BaseEntity>(options: UseCreateEntityOp
  * Handles cache updates, list invalidation, and user feedback automatically.
  * The mutation function receives { id, ...changes, meta? } and returns the updated entity.
  *
+ * Supports calculation-only operations via `meta.operations: ["calculationOnly"]`.
+ * When calculation-only, cache updates and success messages are skipped since
+ * the operation is a preview that should not pollute the persisted cache state.
+ *
  * @example
  * export function useUpdateAccount() {
  *   return useUpdateEntity<Account>({
@@ -106,6 +110,14 @@ export function useCreateEntity<T extends BaseEntity>(options: UseCreateEntityOp
  *     successMessageKey: "account:message.saved",
  *   });
  * }
+ *
+ * @example
+ * // Calculation-only (preview) - no cache update, no success message
+ * await updateMutation.mutateAsync({
+ *   id: entityId,
+ *   ...changes,
+ *   meta: { clientVersion: entity.meta?.version, operations: ["calculationOnly"] },
+ * });
  */
 export function useUpdateEntity<T extends BaseEntity>(options: UseUpdateEntityOptions<T>) {
 	const {
@@ -121,9 +133,16 @@ export function useUpdateEntity<T extends BaseEntity>(options: UseUpdateEntityOp
 
 	return useMutation({
 		mutationFn: updateFn,
-		onSuccess: (updatedEntity) => {
+		onSuccess: (response, request) => {
+			// Skip cache update and success message for calculation-only operations.
+			// These are previews that should not pollute the persisted cache state.
+			const isCalculationOnly = request.meta?.operations?.includes("calculationOnly");
+			if (isCalculationOnly) {
+				return;
+			}
+
 			// Update the detail cache with the response data
-			queryClient.setQueryData([...queryKey, updatedEntity.id], updatedEntity);
+			queryClient.setQueryData([...queryKey, response.id], response);
 			// Invalidate list to ensure consistency
 			if (listQueryKey) {
 				queryClient.invalidateQueries({ queryKey: listQueryKey as unknown[] });

@@ -1,12 +1,5 @@
-/**
- * Matches existing fm-ui Enumerated type for API compatibility.
- * Used for code tables and entity references.
- */
-export interface Enumerated {
-	id: string;
-	name: string;
-	itemType?: string;
-}
+// Re-export Enumerated from its own file
+export { type Enumerated } from "./Enumerated";
 
 /**
  * Common form field props shared across all Af components.

@@ -19,3 +19,4 @@ export { AfDependentSelect } from "./AfDependentSelect";
 export { AfDatePicker } from "./AfDatePicker";
 export { AfRadioGroup } from "./AfRadioGroup";
 export { AfCombobox } from "./AfCombobox";
+export { AfItemSelect, type ItemSelectOption } from "./AfItemSelect";

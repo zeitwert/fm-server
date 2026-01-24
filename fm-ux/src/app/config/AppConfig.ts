@@ -1,18 +1,9 @@
 // Application configuration - defines all apps and their areas
 import type { ReactNode } from "react";
 import type { TFunction } from "i18next";
-import {
-	AppstoreOutlined,
-	BankOutlined,
-	CheckSquareOutlined,
-	DashboardOutlined,
-	FileTextOutlined,
-	FormOutlined,
-	HomeOutlined,
-	TeamOutlined,
-	UserOutlined,
-} from "@ant-design/icons";
+import { DashboardOutlined } from "@ant-design/icons";
 import React from "react";
+import { getItemTypeMeta } from "./ItemTypeRegistry";
 
 export interface Application {
 	id: string;
@@ -48,6 +39,21 @@ function createArea(id: string, labelKey: string, icon: ReactNode, path: string)
 	};
 }
 
+// Helper to create area from ItemTypeRegistry
+function createAreaFromItemType(id: string): ApplicationArea {
+	const meta = getItemTypeMeta(id);
+	if (!meta) {
+		throw new Error(`Unknown itemType: ${id}`);
+	}
+	return {
+		id: meta.id,
+		labelKey: meta.pluralKey,
+		label: (t: TFunction) => t(meta.pluralKey),
+		icon: meta.icon,
+		path: meta.path,
+	};
+}
+
 // Application Areas
 const homeArea = createArea(
 	"home",
@@ -55,50 +61,15 @@ const homeArea = createArea(
 	React.createElement(DashboardOutlined),
 	"home"
 );
-const tenantArea = createArea(
-	"tenant",
-	"app:label.tenants",
-	React.createElement(FileTextOutlined),
-	"tenant"
-);
-const userArea = createArea("user", "app:label.users", React.createElement(UserOutlined), "user");
-const accountArea = createArea(
-	"account",
-	"app:label.accounts",
-	React.createElement(BankOutlined),
-	"account"
-);
-const contactArea = createArea(
-	"contact",
-	"app:label.contacts",
-	React.createElement(TeamOutlined),
-	"contact"
-);
-const portfolioArea = createArea(
-	"portfolio",
-	"app:label.portfolios",
-	React.createElement(AppstoreOutlined),
-	"portfolio"
-);
-const buildingArea = createArea(
-	"building",
-	"app:label.buildings",
-	React.createElement(HomeOutlined),
-	"building"
-);
-const documentArea = createArea(
-	"document",
-	"app:label.documents",
-	React.createElement(FileTextOutlined),
-	"document"
-);
-const taskArea = createArea(
-	"task",
-	"app:label.tasks",
-	React.createElement(CheckSquareOutlined),
-	"task"
-);
-const noteArea = createArea("note", "app:label.notes", React.createElement(FormOutlined), "note");
+const tenantArea = createAreaFromItemType("tenant");
+const userArea = createAreaFromItemType("user");
+const accountArea = createAreaFromItemType("account");
+const contactArea = createAreaFromItemType("contact");
+const portfolioArea = createAreaFromItemType("portfolio");
+const buildingArea = createAreaFromItemType("building");
+const documentArea = createAreaFromItemType("document");
+const taskArea = createAreaFromItemType("task");
+const noteArea = createAreaFromItemType("note");
 
 // Applications
 const fmApp: Application = {

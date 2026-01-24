@@ -14,12 +14,7 @@ import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import {
-	usePortfolioQuery,
-	useUpdatePortfolio,
-	usePortfolioCalculate,
-	portfolioKeys,
-} from "../queries";
+import { usePortfolioQuery, useUpdatePortfolio, portfolioKeys } from "../queries";
 import { portfolioFormSchema, type PortfolioFormInput } from "../schemas";
 import { PortfolioMainForm, type AvailableObject } from "./forms/PortfolioMainForm";
 import type { PortfolioObject } from "../types";
@@ -46,7 +41,6 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 
 	const query = usePortfolioQuery(portfolioId);
 	const updateMutation = useUpdatePortfolio();
-	const calculateMutation = usePortfolioCalculate();
 
 	// Fetch available objects for dropdowns
 	const { data: accounts = [] } = useQuery({
@@ -123,11 +117,14 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 			if (!portfolio) return;
 
 			try {
-				const result = await calculateMutation.mutateAsync({
+				const result = await updateMutation.mutateAsync({
 					id: portfolioId,
 					includes: newIncludes,
 					excludes: newExcludes,
-					meta: { clientVersion: portfolio.meta?.version },
+					meta: {
+						clientVersion: portfolio.meta?.version,
+						operations: ["calculationOnly"],
+					},
 				});
 
 				// Update form values to reflect calculated state
@@ -136,7 +133,7 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 				console.error("Calculation failed:", error);
 			}
 		},
-		[portfolio, portfolioId, calculateMutation, form]
+		[portfolio, portfolioId, updateMutation, form]
 	);
 
 	const handleAddInclude = useCallback(
@@ -312,7 +309,7 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 								<EditControls
 									isEditing={isEditing}
 									isDirty={isDirty}
-									isStoring={updateMutation.isPending || calculateMutation.isPending}
+									isStoring={updateMutation.isPending}
 									canEdit={canEdit}
 									onEdit={handleEdit}
 									onCancel={handleCancel}

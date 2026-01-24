@@ -1,21 +1,24 @@
 import { useMemo, useState } from "react";
-import { Button, Col, Row, Table, Select, Typography } from "antd";
+import { Button, Col, Row, Table, Typography } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { CloseOutlined } from "@ant-design/icons";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { AfInput, AfTextArea, AfFieldRow, AfFieldGroup } from "../../../../common/components/form";
+import {
+	AfInput,
+	AfTextArea,
+	AfFieldRow,
+	AfFieldGroup,
+	AfItemSelect,
+	type ItemSelectOption,
+} from "../../../../common/components/form";
 import type { PortfolioFormInput } from "../../schemas";
 import type { PortfolioObject } from "../../types";
-import type { Enumerated } from "../../../../common/types";
 
 const { Text } = Typography;
 
-export interface AvailableObject {
-	id: string;
-	name: string;
-	itemType?: Enumerated;
-}
+// Re-export ItemSelectOption as AvailableObject for backward compatibility
+export type AvailableObject = ItemSelectOption;
 
 interface PortfolioMainFormProps {
 	disabled: boolean;
@@ -218,37 +221,23 @@ export function PortfolioMainForm({
 				<Row style={{ marginTop: 16 }}>
 					<Col span={12}>
 						<AfFieldGroup legend={t("portfolio:label.addInclude")}>
-							<Select
-								style={{ width: "100%" }}
-								placeholder={t("portfolio:label.selectObject")}
+							<AfItemSelect
 								value={includeSelectValue}
 								onChange={handleIncludeSelect}
-								options={availableForInclude.map((obj) => ({
-									value: obj.id,
-									label: obj.name,
-								}))}
-								showSearch
-								filterOption={(input, option) =>
-									(option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-								}
+								options={availableForInclude}
+								placeholder={t("portfolio:label.selectObject")}
+								aria-label="portfolio:selectInclude"
 							/>
 						</AfFieldGroup>
 					</Col>
 					<Col span={12}>
 						<AfFieldGroup legend={t("portfolio:label.addExclude")}>
-							<Select
-								style={{ width: "100%" }}
-								placeholder={t("portfolio:label.selectObject")}
+							<AfItemSelect
 								value={excludeSelectValue}
 								onChange={handleExcludeSelect}
-								options={availableForExclude.map((obj) => ({
-									value: obj.id,
-									label: obj.name,
-								}))}
-								showSearch
-								filterOption={(input, option) =>
-									(option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-								}
+								options={availableForExclude}
+								placeholder={t("portfolio:label.selectObject")}
+								aria-label="portfolio:selectExclude"
 							/>
 						</AfFieldGroup>
 					</Col>

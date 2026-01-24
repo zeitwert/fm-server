@@ -1,8 +1,7 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { portfolioApi, portfolioListApi } from "./api";
-import type { Portfolio, PortfolioObject } from "./types";
+import type { Portfolio } from "./types";
 import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
-import type { EntityMeta } from "../../common/api/jsonapi";
 
 export const portfolioKeys = {
 	all: ["portfolio"] as const,
@@ -49,35 +48,6 @@ export function useDeletePortfolio() {
 		deleteFn: portfolioApi.delete,
 		listQueryKey: portfolioKeys.lists(),
 		successMessageKey: "portfolio:message.deleted",
-	});
-}
-
-interface CalculatePortfolioParams {
-	id: string;
-	includes: PortfolioObject[];
-	excludes: PortfolioObject[];
-	meta?: EntityMeta;
-}
-
-export function usePortfolioCalculate() {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		mutationFn: async ({ id, includes, excludes, meta }: CalculatePortfolioParams) => {
-			return portfolioApi.update({
-				id,
-				includes,
-				excludes,
-				meta: {
-					...meta,
-					operations: ["calculationOnly"],
-				},
-			});
-		},
-		onSuccess: (updatedPortfolio) => {
-			// Update the detail cache with calculated result (not persisted on server)
-			queryClient.setQueryData(portfolioKeys.detail(updatedPortfolio.id), updatedPortfolio);
-		},
 	});
 }
 

@@ -57,7 +57,7 @@ export function useAggregateSearch(
 					}) => ({
 						id: item.id,
 						name: item.attributes?.caption ?? item.attributes?.name ?? item.id,
-						itemType: item.type,
+						itemType: item.type ? { id: item.type, name: item.type } : undefined,
 					})
 				);
 			}
@@ -68,7 +68,7 @@ export function useAggregateSearch(
 					(item: { id: string; name?: string; caption?: string; itemType?: string }) => ({
 						id: item.id,
 						name: item.caption ?? item.name ?? item.id,
-						itemType: item.itemType,
+						itemType: item.itemType ? { id: item.itemType, name: item.itemType } : undefined,
 					})
 				);
 			}
