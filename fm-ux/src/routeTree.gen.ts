@@ -27,6 +27,7 @@ import { Route as TaskIndexRouteImport } from "./routes/task.index"
 import { Route as PortfolioIndexRouteImport } from "./routes/portfolio.index"
 import { Route as NoteIndexRouteImport } from "./routes/note.index"
 import { Route as ContactIndexRouteImport } from "./routes/contact.index"
+import { Route as BuildingIndexRouteImport } from "./routes/building.index"
 import { Route as AccountIndexRouteImport } from "./routes/account.index"
 import { Route as UserUserIdRouteImport } from "./routes/user.$userId"
 import { Route as TenantTenantIdRouteImport } from "./routes/tenant.$tenantId"
@@ -34,6 +35,7 @@ import { Route as TaskTaskIdRouteImport } from "./routes/task.$taskId"
 import { Route as PortfolioPortfolioIdRouteImport } from "./routes/portfolio.$portfolioId"
 import { Route as NoteNoteIdRouteImport } from "./routes/note.$noteId"
 import { Route as ContactContactIdRouteImport } from "./routes/contact.$contactId"
+import { Route as BuildingBuildingIdRouteImport } from "./routes/building.$buildingId"
 import { Route as AccountAccountIdRouteImport } from "./routes/account.$accountId"
 
 const UserRoute = UserRouteImport.update({
@@ -126,6 +128,11 @@ const ContactIndexRoute = ContactIndexRouteImport.update({
   path: "/",
   getParentRoute: () => ContactRoute,
 } as any)
+const BuildingIndexRoute = BuildingIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => BuildingRoute,
+} as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
   id: "/",
   path: "/",
@@ -161,6 +168,11 @@ const ContactContactIdRoute = ContactContactIdRouteImport.update({
   path: "/$contactId",
   getParentRoute: () => ContactRoute,
 } as any)
+const BuildingBuildingIdRoute = BuildingBuildingIdRouteImport.update({
+  id: "/$buildingId",
+  path: "/$buildingId",
+  getParentRoute: () => BuildingRoute,
+} as any)
 const AccountAccountIdRoute = AccountAccountIdRouteImport.update({
   id: "/$accountId",
   path: "/$accountId",
@@ -170,7 +182,7 @@ const AccountAccountIdRoute = AccountAccountIdRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/account": typeof AccountRouteWithChildren
-  "/building": typeof BuildingRoute
+  "/building": typeof BuildingRouteWithChildren
   "/contact": typeof ContactRouteWithChildren
   "/document": typeof DocumentRoute
   "/home": typeof HomeRoute
@@ -181,6 +193,7 @@ export interface FileRoutesByFullPath {
   "/tenant": typeof TenantRouteWithChildren
   "/user": typeof UserRouteWithChildren
   "/account/$accountId": typeof AccountAccountIdRoute
+  "/building/$buildingId": typeof BuildingBuildingIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
   "/portfolio/$portfolioId": typeof PortfolioPortfolioIdRoute
@@ -188,6 +201,7 @@ export interface FileRoutesByFullPath {
   "/tenant/$tenantId": typeof TenantTenantIdRoute
   "/user/$userId": typeof UserUserIdRoute
   "/account/": typeof AccountIndexRoute
+  "/building/": typeof BuildingIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
   "/portfolio/": typeof PortfolioIndexRoute
@@ -197,11 +211,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
-  "/building": typeof BuildingRoute
   "/document": typeof DocumentRoute
   "/home": typeof HomeRoute
   "/login": typeof LoginRoute
   "/account/$accountId": typeof AccountAccountIdRoute
+  "/building/$buildingId": typeof BuildingBuildingIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
   "/portfolio/$portfolioId": typeof PortfolioPortfolioIdRoute
@@ -209,6 +223,7 @@ export interface FileRoutesByTo {
   "/tenant/$tenantId": typeof TenantTenantIdRoute
   "/user/$userId": typeof UserUserIdRoute
   "/account": typeof AccountIndexRoute
+  "/building": typeof BuildingIndexRoute
   "/contact": typeof ContactIndexRoute
   "/note": typeof NoteIndexRoute
   "/portfolio": typeof PortfolioIndexRoute
@@ -220,7 +235,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
   "/account": typeof AccountRouteWithChildren
-  "/building": typeof BuildingRoute
+  "/building": typeof BuildingRouteWithChildren
   "/contact": typeof ContactRouteWithChildren
   "/document": typeof DocumentRoute
   "/home": typeof HomeRoute
@@ -231,6 +246,7 @@ export interface FileRoutesById {
   "/tenant": typeof TenantRouteWithChildren
   "/user": typeof UserRouteWithChildren
   "/account/$accountId": typeof AccountAccountIdRoute
+  "/building/$buildingId": typeof BuildingBuildingIdRoute
   "/contact/$contactId": typeof ContactContactIdRoute
   "/note/$noteId": typeof NoteNoteIdRoute
   "/portfolio/$portfolioId": typeof PortfolioPortfolioIdRoute
@@ -238,6 +254,7 @@ export interface FileRoutesById {
   "/tenant/$tenantId": typeof TenantTenantIdRoute
   "/user/$userId": typeof UserUserIdRoute
   "/account/": typeof AccountIndexRoute
+  "/building/": typeof BuildingIndexRoute
   "/contact/": typeof ContactIndexRoute
   "/note/": typeof NoteIndexRoute
   "/portfolio/": typeof PortfolioIndexRoute
@@ -261,6 +278,7 @@ export interface FileRouteTypes {
     | "/tenant"
     | "/user"
     | "/account/$accountId"
+    | "/building/$buildingId"
     | "/contact/$contactId"
     | "/note/$noteId"
     | "/portfolio/$portfolioId"
@@ -268,6 +286,7 @@ export interface FileRouteTypes {
     | "/tenant/$tenantId"
     | "/user/$userId"
     | "/account/"
+    | "/building/"
     | "/contact/"
     | "/note/"
     | "/portfolio/"
@@ -277,11 +296,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
-    | "/building"
     | "/document"
     | "/home"
     | "/login"
     | "/account/$accountId"
+    | "/building/$buildingId"
     | "/contact/$contactId"
     | "/note/$noteId"
     | "/portfolio/$portfolioId"
@@ -289,6 +308,7 @@ export interface FileRouteTypes {
     | "/tenant/$tenantId"
     | "/user/$userId"
     | "/account"
+    | "/building"
     | "/contact"
     | "/note"
     | "/portfolio"
@@ -310,6 +330,7 @@ export interface FileRouteTypes {
     | "/tenant"
     | "/user"
     | "/account/$accountId"
+    | "/building/$buildingId"
     | "/contact/$contactId"
     | "/note/$noteId"
     | "/portfolio/$portfolioId"
@@ -317,6 +338,7 @@ export interface FileRouteTypes {
     | "/tenant/$tenantId"
     | "/user/$userId"
     | "/account/"
+    | "/building/"
     | "/contact/"
     | "/note/"
     | "/portfolio/"
@@ -328,7 +350,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRouteWithChildren
-  BuildingRoute: typeof BuildingRoute
+  BuildingRoute: typeof BuildingRouteWithChildren
   ContactRoute: typeof ContactRouteWithChildren
   DocumentRoute: typeof DocumentRoute
   HomeRoute: typeof HomeRoute
@@ -468,6 +490,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ContactIndexRouteImport
       parentRoute: typeof ContactRoute
     }
+    "/building/": {
+      id: "/building/"
+      path: "/"
+      fullPath: "/building/"
+      preLoaderRoute: typeof BuildingIndexRouteImport
+      parentRoute: typeof BuildingRoute
+    }
     "/account/": {
       id: "/account/"
       path: "/"
@@ -517,6 +546,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ContactContactIdRouteImport
       parentRoute: typeof ContactRoute
     }
+    "/building/$buildingId": {
+      id: "/building/$buildingId"
+      path: "/$buildingId"
+      fullPath: "/building/$buildingId"
+      preLoaderRoute: typeof BuildingBuildingIdRouteImport
+      parentRoute: typeof BuildingRoute
+    }
     "/account/$accountId": {
       id: "/account/$accountId"
       path: "/$accountId"
@@ -539,6 +575,20 @@ const AccountRouteChildren: AccountRouteChildren = {
 
 const AccountRouteWithChildren =
   AccountRoute._addFileChildren(AccountRouteChildren)
+
+interface BuildingRouteChildren {
+  BuildingBuildingIdRoute: typeof BuildingBuildingIdRoute
+  BuildingIndexRoute: typeof BuildingIndexRoute
+}
+
+const BuildingRouteChildren: BuildingRouteChildren = {
+  BuildingBuildingIdRoute: BuildingBuildingIdRoute,
+  BuildingIndexRoute: BuildingIndexRoute,
+}
+
+const BuildingRouteWithChildren = BuildingRoute._addFileChildren(
+  BuildingRouteChildren,
+)
 
 interface ContactRouteChildren {
   ContactContactIdRoute: typeof ContactContactIdRoute
@@ -619,7 +669,7 @@ const UserRouteWithChildren = UserRoute._addFileChildren(UserRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRouteWithChildren,
-  BuildingRoute: BuildingRoute,
+  BuildingRoute: BuildingRouteWithChildren,
   ContactRoute: ContactRouteWithChildren,
   DocumentRoute: DocumentRoute,
   HomeRoute: HomeRoute,

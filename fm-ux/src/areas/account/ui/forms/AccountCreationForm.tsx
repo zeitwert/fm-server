@@ -31,13 +31,14 @@ export function AccountCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 
 	const handleSubmit = async (data: AccountCreationFormInput) => {
 		try {
+			// Note: tenant is set automatically by the server based on the session
 			const createdAccount = await createMutation.mutateAsync({
 				name: data.name,
 				description: data.description,
 				accountType: data.accountType!,
 				clientSegment: data.clientSegment ?? undefined,
 				owner: data.owner!,
-			});
+			} as Parameters<typeof createMutation.mutateAsync>[0]);
 			onSuccess();
 			navigate({ to: "/account/$accountId", params: { accountId: createdAccount.id } });
 		} catch {

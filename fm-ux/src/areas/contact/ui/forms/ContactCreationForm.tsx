@@ -39,6 +39,7 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 
 	const handleSubmit = async (data: ContactCreationFormInput) => {
 		try {
+			// Note: tenant is set automatically by the server based on the session
 			const createdContact = await createMutation.mutateAsync({
 				firstName: data.firstName,
 				lastName: data.lastName,
@@ -49,7 +50,7 @@ export function ContactCreationForm({ onSuccess, onCancel, account }: ContactCre
 				contactRole: data.contactRole ?? undefined,
 				account: data.account ? { id: data.account.id, caption: data.account.name } : undefined,
 				owner: data.owner!,
-			});
+			} as Parameters<typeof createMutation.mutateAsync>[0]);
 			onSuccess();
 			navigate({ to: "/contact/$contactId", params: { contactId: createdContact.id } });
 		} catch {

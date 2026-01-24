@@ -11,3 +11,4 @@ export type {
 	UseDeleteEntityOptions,
 } from "./useEntityMutations";
 export { useStyles } from "./useStyles";
+export { useContainerSize } from "./useContainerSize";

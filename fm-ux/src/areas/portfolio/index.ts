@@ -9,7 +9,6 @@ export {
 	useCreatePortfolio,
 	useUpdatePortfolio,
 	useDeletePortfolio,
-	usePortfolioCalculate,
 	getPortfolioQueryOptions,
 	getPortfolioListQueryOptions,
 } from "./queries";

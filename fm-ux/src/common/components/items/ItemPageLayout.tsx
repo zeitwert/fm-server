@@ -14,10 +14,17 @@ export interface ItemPageLayoutProps {
 	children: ReactNode;
 	/** Content for the right panel (typically RelatedPanel with notes, tasks, etc.) */
 	rightPanel?: ReactNode;
+	/** When true, force full-width mode hiding the right panel entirely (no toggle button) */
+	fullWidth?: boolean;
 }
 
-export function ItemPageLayout({ children, rightPanel }: ItemPageLayoutProps) {
+export function ItemPageLayout({ children, rightPanel, fullWidth }: ItemPageLayoutProps) {
 	const { rightPanelCollapsed, toggleRightPanel } = useShellStore();
+
+	// Full-width mode forced by tab configuration - render without any panel toggle
+	if (fullWidth) {
+		return <div style={{ flex: 1, minHeight: 0 }}>{children}</div>;
+	}
 
 	// No right panel provided - render full width
 	if (!rightPanel) {

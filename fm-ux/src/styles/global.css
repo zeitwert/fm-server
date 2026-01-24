@@ -192,6 +192,48 @@ input:-webkit-autofill:active,
 	height: 100%;
 }
 
+/* Ensure full-height cards pass height through to Tabs content */
+.af-full-height>.ant-card-body {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.af-full-height>.ant-card-body>form {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.af-full-height .ant-tabs {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.af-full-height .ant-tabs-content-holder {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.af-full-height .ant-tabs-content {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.af-full-height .ant-tabs-tabpane {
+	flex: 1;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+}
+
 /* -----------------------------------------------------------------------------
    Spacing utilities (using Ant Design token values)
    ----------------------------------------------------------------------------- */
@@ -472,4 +514,44 @@ input:-webkit-autofill:active,
 
 .af-preview-actions {
 	margin-top: 8px;
+}
+
+/* -----------------------------------------------------------------------------
+   Projection table styles (compact, matching fm-ui design)
+   ----------------------------------------------------------------------------- */
+
+.af-projection-table {
+	height: 100%;
+}
+
+.af-projection-table .ant-table.ant-table-small {
+	font-size: 13px;
+}
+
+.af-projection-table .ant-table-thead>tr>th {
+	padding: 4px 8px !important;
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.af-projection-table .ant-table-tbody>tr>td {
+	padding: 4px 8px !important;
+}
+
+/* Consistent zebra striping - every row alternates */
+.af-projection-table .ant-table-tbody>tr:nth-child(odd)>td {
+	background: #ffffff !important;
+}
+
+.af-projection-table .ant-table-tbody>tr:nth-child(even)>td {
+	background: #fafafa !important;
+}
+
+/* Sub-rows styling - no bottom border */
+.af-projection-table .af-projection-subrow>td {
+	border-bottom: none !important;
+}
+
+.af-projection-table .ant-table-tbody>tr:hover>td {
+	background: #f0f0f0 !important;
 }

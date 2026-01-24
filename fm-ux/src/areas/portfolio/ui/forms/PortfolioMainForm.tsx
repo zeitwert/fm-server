@@ -40,10 +40,13 @@ export function PortfolioMainForm({
 	const { t } = useTranslation();
 	const { watch } = useFormContext<PortfolioFormInput>();
 
-	const includes = watch("includes") ?? [];
-	const excludes = watch("excludes") ?? [];
+	const watchedIncludes = watch("includes");
+	const watchedExcludes = watch("excludes");
 	const buildings = watch("buildings") ?? [];
 	const account = watch("account");
+
+	const includes = useMemo(() => watchedIncludes ?? [], [watchedIncludes]);
+	const excludes = useMemo(() => watchedExcludes ?? [], [watchedExcludes]);
 
 	const includedIds = useMemo(() => new Set(includes.map((i) => i.id)), [includes]);
 	const excludedIds = useMemo(() => new Set(excludes.map((e) => e.id)), [excludes]);
