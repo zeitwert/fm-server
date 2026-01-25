@@ -36,20 +36,17 @@ class BuildingDocumentController(
 	fun getCoverFoto(
 		@PathVariable id: Int,
 	): ResponseEntity<ByteArray> {
-		val documentId = this.buildingRepo.get(id).coverFotoId
-		if (documentId == null) {
-			return ResponseEntity.noContent().build()
-		}
-		return this.documentController.getContent(documentId as Int)
+		val documentId = buildingRepo.get(id).coverFotoId ?: return ResponseEntity.noContent().build()
+		return documentController.getContent(documentId as Int)
 	}
 
 	@GetMapping("/{id}/projection")
 	fun getBuildingProjection(
 		@PathVariable id: Int,
 	): ResponseEntity<ProjectionResult?> {
-		val buildings = setOf(this.buildingRepo.get(id))
+		val buildings = setOf(buildingRepo.get(id))
 		return ResponseEntity.ok<ProjectionResult?>(
-			this.projectionService.getProjection(
+			projectionService.getProjection(
 				buildings,
 				ProjectionService.DefaultDuration,
 			),
@@ -61,7 +58,7 @@ class BuildingDocumentController(
 		@PathVariable("ids") ids: String,
 		@RequestParam(required = false, name = "format") format: String?,
 		@RequestParam(required = false, name = "inline") isInline: Boolean?,
-	): ResponseEntity<ByteArray> = this.getBuildingEvaluation(ids, format, isInline)
+	): ResponseEntity<ByteArray> = getBuildingEvaluation(ids, format, isInline)
 
 	@GetMapping("/{ids}/evaluation")
 	fun getBuildingEvaluation(
@@ -71,9 +68,9 @@ class BuildingDocumentController(
 	): ResponseEntity<ByteArray> {
 		val idList = ids.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 		if (idList.size == 1) {
-			return this.getBuildingEvaluation(idList[0].toInt(), format, isInline)
+			return getBuildingEvaluation(idList[0].toInt(), format, isInline)
 		} else {
-			return this.getBuildingEvaluation(idList, format)
+			return getBuildingEvaluation(idList, format)
 		}
 	}
 
@@ -82,13 +79,13 @@ class BuildingDocumentController(
 		format: String?,
 		isInline: Boolean?,
 	): ResponseEntity<ByteArray> {
-		val building = this.buildingRepo.get(id)
+		val building = buildingRepo.get(id)
 		try {
 			ByteArrayOutputStream().use { stream ->
-				this.documentGeneration.generateEvaluationReport(building, stream, this.getSaveFormat(format))
+				documentGeneration.generateEvaluationReport(building, stream, getSaveFormat(format))
 				var fileName = building.account!!.name + " - " + building.name
 				fileName += " - " + monthFormatter.format(OffsetDateTime.now())
-				fileName = this.getFileName(fileName, this.getSaveFormat(format))
+				fileName = getFileName(fileName, getSaveFormat(format))
 				// mark file for download
 				val headers = HttpHeaders()
 				if (isInline != null && isInline) {
@@ -112,20 +109,20 @@ class BuildingDocumentController(
 		format: String?,
 	): ResponseEntity<ByteArray> {
 		for (id in ids) {
-			this.buildingRepo.get(id.toInt())
+			buildingRepo.get(id.toInt())
 		}
 		val dateTimeNow = monthFormatter.format(OffsetDateTime.now())
 		try {
 			ByteArrayOutputStream().use { baos ->
 				ZipOutputStream(baos).use { zos ->
 					for (id in ids) {
-						val building = this.buildingRepo.get(id.toInt())
+						val building = buildingRepo.get(id.toInt())
 						try {
 							ByteArrayOutputStream().use { stream ->
-								this.documentGeneration.generateEvaluationReport(building, stream, this.getSaveFormat(format))
+								documentGeneration.generateEvaluationReport(building, stream, getSaveFormat(format))
 								var fileName = building.account!!.name + " - " + building.name
 								fileName += " - $dateTimeNow"
-								fileName = this.getFileName(fileName, this.getSaveFormat(format))
+								fileName = getFileName(fileName, getSaveFormat(format))
 								fileName = fileName.replace("/", " ")
 								val entry = ZipEntry(fileName)
 								entry.setSize(stream.size().toLong())

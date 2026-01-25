@@ -44,13 +44,13 @@ export interface ContactFormInput {
 }
 
 export const contactFormSchema = z.object({
-	firstName: z.string().optional().nullable(),
+	firstName: z.string().optional(),
 	lastName: z.string().min(1, "contact:message.validation.lastNameRequired"),
-	email: z.string().optional().nullable(),
-	phone: z.string().optional().nullable(),
-	mobile: z.string().optional().nullable(),
-	description: z.string().optional().nullable(),
-	birthDate: z.string().optional().nullable(),
+	email: z.string().optional(),
+	phone: z.string().optional(),
+	mobile: z.string().optional(),
+	description: z.string().optional(),
+	birthDate: z.string().optional(),
 	contactRole: enumeratedSchema.optional().nullable(),
 	salutation: enumeratedSchema,
 	title: enumeratedSchema.optional().nullable(),

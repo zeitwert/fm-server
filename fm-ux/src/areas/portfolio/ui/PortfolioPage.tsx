@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, useRef } from "react";
 import { Card, Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { usePersistentForm } from "../../../common/hooks";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -14,13 +13,13 @@ import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
-import { usePortfolioQuery, useUpdatePortfolio, portfolioKeys } from "../queries";
+import { usePortfolioQuery, useUpdatePortfolio } from "../queries";
 import { portfolioFormSchema, type PortfolioFormInput } from "../schemas";
 import { PortfolioMainForm, type AvailableObject } from "./forms/PortfolioMainForm";
-import type { PortfolioObject } from "../types";
+import type { Portfolio, PortfolioObject } from "../types";
 import { useSessionStore } from "../../../session/model/sessionStore";
 import { getArea } from "../../../app/config/AppConfig";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { accountListApi } from "../../account/api";
 import { portfolioListApi, buildingListApi } from "../api";
 
@@ -32,15 +31,19 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 	const { t } = useTranslation();
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id ?? "";
-	const queryClient = useQueryClient();
-
-	const [isEditing, setIsEditing] = useState(false);
-	const [localIncludes, setLocalIncludes] = useState<PortfolioObject[]>([]);
-	const [localExcludes, setLocalExcludes] = useState<PortfolioObject[]>([]);
-	const [includesExcludesDirty, setIncludesExcludesDirty] = useState(false);
 
 	const query = usePortfolioQuery(portfolioId);
 	const updateMutation = useUpdatePortfolio();
+
+	const { form, isEditing, isDirty, isStoring, handleEdit, handleCancel, handleStore } =
+		usePersistentForm<Portfolio, PortfolioFormInput>({
+			id: portfolioId,
+			data: query.data,
+			updateMutation,
+			schema: portfolioFormSchema,
+		});
+
+	const portfolio = query.data;
 
 	// Fetch available objects for dropdowns
 	const { data: accounts = [] } = useQuery({
@@ -84,158 +87,101 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 		);
 	}, [accounts, portfolios, buildings, portfolioId]);
 
-	const form = useForm<PortfolioFormInput>({
-		resolver: standardSchemaResolver(portfolioFormSchema),
-	});
+	// Watch includes/excludes for calculation trigger
+	const includes = form.watch("includes") ?? [];
+	const excludes = form.watch("excludes") ?? [];
 
-	const portfolio = query.data;
+	// Track previous values to detect changes
+	const prevIncludesRef = useRef<PortfolioObject[]>(includes);
+	const prevExcludesRef = useRef<PortfolioObject[]>(excludes);
 
-	const isDirty = form.formState.isDirty || includesExcludesDirty;
-
-	// Sync form with portfolio data (only when not editing to avoid resetting dirty state)
+	// Trigger calculation when includes/excludes change during editing
 	useEffect(() => {
-		if (portfolio && !isEditing) {
-			form.reset({
-				name: portfolio.name,
-				portfolioNr: portfolio.portfolioNr,
-				description: portfolio.description,
-				account: portfolio.account,
-				owner: portfolio.owner,
-				includes: portfolio.includes,
-				excludes: portfolio.excludes,
-				buildings: portfolio.buildings,
-			});
-			setLocalIncludes(portfolio.includes ?? []);
-			setLocalExcludes(portfolio.excludes ?? []);
-			setIncludesExcludesDirty(false);
-		}
-	}, [portfolio, form, isEditing]);
+		if (!isEditing || !portfolio) return;
 
-	// Trigger calculation when includes/excludes change during edit
-	const triggerCalculation = useCallback(
-		async (newIncludes: PortfolioObject[], newExcludes: PortfolioObject[]) => {
-			if (!portfolio) return;
+		// Check if includes or excludes actually changed (compare by JSON to handle array reference changes)
+		const includesChanged = JSON.stringify(includes) !== JSON.stringify(prevIncludesRef.current);
+		const excludesChanged = JSON.stringify(excludes) !== JSON.stringify(prevExcludesRef.current);
 
+		if (!includesChanged && !excludesChanged) return;
+
+		// Update refs
+		prevIncludesRef.current = includes;
+		prevExcludesRef.current = excludes;
+
+		// Trigger calculation
+		const triggerCalculation = async () => {
 			try {
 				const result = await updateMutation.mutateAsync({
 					id: portfolioId,
-					includes: newIncludes,
-					excludes: newExcludes,
+					includes,
+					excludes,
 					meta: {
 						clientVersion: portfolio.meta?.version,
 						operations: ["calculationOnly"],
 					},
 				});
 
-				// Update form values to reflect calculated state
+				// Update buildings to reflect calculated state (without marking dirty)
 				form.setValue("buildings", result.buildings, { shouldDirty: false });
 			} catch (error) {
 				console.error("Calculation failed:", error);
 			}
-		},
-		[portfolio, portfolioId, updateMutation, form]
-	);
+		};
 
+		triggerCalculation();
+	}, [includes, excludes, isEditing, portfolio, portfolioId, updateMutation, form]);
+
+	// Simplified handlers using form.setValue directly
 	const handleAddInclude = useCallback(
 		(obj: AvailableObject) => {
+			const current = form.getValues("includes") ?? [];
 			const newInclude: PortfolioObject = {
 				id: obj.id,
 				name: obj.name,
 				itemType: obj.itemType,
 			};
-			const newIncludes = [...localIncludes, newInclude];
-			setLocalIncludes(newIncludes);
-			setIncludesExcludesDirty(true);
-			form.setValue("includes", newIncludes, { shouldDirty: true });
-			triggerCalculation(newIncludes, localExcludes);
+			form.setValue("includes", [...current, newInclude], { shouldDirty: true });
 		},
-		[localIncludes, localExcludes, form, triggerCalculation]
+		[form]
 	);
 
 	const handleRemoveInclude = useCallback(
 		(id: string) => {
-			const newIncludes = localIncludes.filter((i) => i.id !== id);
-			setLocalIncludes(newIncludes);
-			setIncludesExcludesDirty(true);
-			form.setValue("includes", newIncludes, { shouldDirty: true });
-			triggerCalculation(newIncludes, localExcludes);
+			const current = form.getValues("includes") ?? [];
+			form.setValue(
+				"includes",
+				current.filter((i) => i.id !== id),
+				{ shouldDirty: true }
+			);
 		},
-		[localIncludes, localExcludes, form, triggerCalculation]
+		[form]
 	);
 
 	const handleAddExclude = useCallback(
 		(obj: AvailableObject) => {
+			const current = form.getValues("excludes") ?? [];
 			const newExclude: PortfolioObject = {
 				id: obj.id,
 				name: obj.name,
 				itemType: obj.itemType,
 			};
-			const newExcludes = [...localExcludes, newExclude];
-			setLocalExcludes(newExcludes);
-			setIncludesExcludesDirty(true);
-			form.setValue("excludes", newExcludes, { shouldDirty: true });
-			triggerCalculation(localIncludes, newExcludes);
+			form.setValue("excludes", [...current, newExclude], { shouldDirty: true });
 		},
-		[localIncludes, localExcludes, form, triggerCalculation]
+		[form]
 	);
 
 	const handleRemoveExclude = useCallback(
 		(id: string) => {
-			const newExcludes = localExcludes.filter((e) => e.id !== id);
-			setLocalExcludes(newExcludes);
-			setIncludesExcludesDirty(true);
-			form.setValue("excludes", newExcludes, { shouldDirty: true });
-			triggerCalculation(localIncludes, newExcludes);
+			const current = form.getValues("excludes") ?? [];
+			form.setValue(
+				"excludes",
+				current.filter((e) => e.id !== id),
+				{ shouldDirty: true }
+			);
 		},
-		[localIncludes, localExcludes, form, triggerCalculation]
+		[form]
 	);
-
-	const handleEdit = () => {
-		setIsEditing(true);
-	};
-
-	const handleCancel = () => {
-		if (portfolio) {
-			form.reset({
-				name: portfolio.name,
-				portfolioNr: portfolio.portfolioNr,
-				description: portfolio.description,
-				account: portfolio.account,
-				owner: portfolio.owner,
-				includes: portfolio.includes,
-				excludes: portfolio.excludes,
-				buildings: portfolio.buildings,
-			});
-			setLocalIncludes(portfolio.includes ?? []);
-			setLocalExcludes(portfolio.excludes ?? []);
-		}
-		setIncludesExcludesDirty(false);
-		setIsEditing(false);
-	};
-
-	const handleStore = form.handleSubmit(async (formData) => {
-		if (!portfolio) return;
-
-		try {
-			await updateMutation.mutateAsync({
-				id: portfolioId,
-				name: formData.name,
-				portfolioNr: formData.portfolioNr ?? undefined,
-				description: formData.description ?? undefined,
-				owner: formData.owner!,
-				includes: localIncludes,
-				excludes: localExcludes,
-				meta: { clientVersion: portfolio.meta?.version },
-			});
-
-			// Reset dirty flag and invalidate to get fresh data
-			setIncludesExcludesDirty(false);
-			queryClient.invalidateQueries({ queryKey: portfolioKeys.detail(portfolioId) });
-			setIsEditing(false);
-		} catch (error) {
-			console.error("Save failed:", error);
-		}
-	});
 
 	if (query.isLoading) {
 		return (
@@ -309,7 +255,7 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 								<EditControls
 									isEditing={isEditing}
 									isDirty={isDirty}
-									isStoring={updateMutation.isPending}
+									isStoring={isStoring}
 									canEdit={canEdit}
 									onEdit={handleEdit}
 									onCancel={handleCancel}

@@ -37,12 +37,12 @@ export interface AccountFormInput {
 
 export const accountFormSchema = z.object({
 	name: z.string().min(1, "account:message.validation.nameRequired"),
-	description: z.string().optional().nullable(),
+	description: z.string().optional(),
 	accountType: enumeratedSchema,
 	clientSegment: enumeratedSchema.optional().nullable(),
 	owner: enumeratedSchema,
-	inflationRate: z.number().optional().nullable(),
-	discountRate: z.number().optional().nullable(),
+	inflationRate: z.number().optional(),
+	discountRate: z.number().optional(),
 	mainContact: enumeratedSchema.optional(),
 	// contacts is display-only (excluded from submission via schema metadata)
 	contacts: displayOnly(z.array(z.any()).optional()),

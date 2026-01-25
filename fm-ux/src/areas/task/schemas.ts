@@ -18,11 +18,11 @@ export interface TaskFormInput {
 
 export const taskFormSchema = z.object({
 	subject: z.string().min(1, "task:message.validation.subjectRequired"),
-	content: z.string().optional().nullable(),
+	content: z.string().optional(),
 	isPrivate: z.boolean().optional(),
 	priority: enumeratedSchema,
-	dueAt: z.string().optional().nullable(),
-	remindAt: z.string().optional().nullable(),
+	dueAt: z.string().optional(),
+	remindAt: z.string().optional(),
 	relatedTo: displayOnly(enumeratedSchema),
 	owner: displayOnly(enumeratedSchema),
 	caseStage: z.custom<CaseStage>().optional().nullable(),

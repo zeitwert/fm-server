@@ -70,7 +70,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 	var engine: ReportingEngine = ReportingEngine()
 
 	init {
-		this.engine.knownTypes.add(BuildingEvaluationResult::class.java)
+		engine.knownTypes.add(BuildingEvaluationResult::class.java)
 	}
 
 	override fun generateEvaluationReport(
@@ -78,20 +78,20 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		stream: ByteArrayOutputStream,
 		format: Int,
 	) {
-		val evaluationResult = this.evaluationService.getEvaluation(building)
+		val evaluationResult = evaluationService.getEvaluation(building)
 
 		try {
-			val doc = Document(this.templateFile.inputStream)
-			doc.fontSettings = this.asposeConfig.fontSettings
+			val doc = Document(templateFile.inputStream)
+			doc.fontSettings = asposeConfig.fontSettings
 
-			this.insertCoverFoto(doc, building)
-			this.insertLocationImage(doc, building)
-			this.engine.buildReport(doc, evaluationResult, "building")
-			this.fillOptRenovationTable(doc, evaluationResult)
-			this.fillCostsChart(doc, evaluationResult)
-			this.fillCostsTable(doc, evaluationResult)
-			this.fillOnePagerCostsChart(doc, evaluationResult)
-			this.fillOnePager(doc, evaluationResult)
+			insertCoverFoto(doc, building)
+			insertLocationImage(doc, building)
+			engine.buildReport(doc, evaluationResult, "building")
+			fillOptRenovationTable(doc, evaluationResult)
+			fillCostsChart(doc, evaluationResult)
+			fillCostsTable(doc, evaluationResult)
+			fillOnePagerCostsChart(doc, evaluationResult)
+			fillOnePager(doc, evaluationResult)
 
 			if (format == SaveFormat.PDF) {
 				val saveOptions = PdfSaveOptions()
@@ -109,7 +109,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 				doc.save(stream, format)
 			}
 		} catch (ex: Exception) {
-			this.logger.error("Document generation crashed", ex)
+			logger.error("Document generation crashed", ex)
 			ex.printStackTrace()
 			throw RuntimeException("Document generation crashed", ex)
 		}
@@ -120,11 +120,10 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		doc: Document?,
 		building: ObjBuilding,
 	) {
-		val imageContent: ByteArray?
-		if (building.coverFoto == null || building.coverFoto!!.contentType == null) {
-			imageContent = this.missingImage.inputStream.readAllBytes()
+		val imageContent = if (building.coverFoto == null || building.coverFoto!!.contentType == null) {
+			missingImage.inputStream.readAllBytes()
 		} else {
-			imageContent = building.coverFoto!!.content
+			building.coverFoto!!.content
 		}
 
 		val builder = DocumentBuilder(doc)
@@ -155,16 +154,15 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		doc: Document?,
 		building: ObjBuilding,
 	) {
-		val imageContent: ByteArray?
-		if (building.geoCoordinates == null || "" == building.geoCoordinates) {
-			imageContent = this.missingImage.inputStream.readAllBytes()
+		val imageContent = if (building.geoCoordinates == null || "" == building.geoCoordinates) {
+			missingImage.inputStream.readAllBytes()
 		} else {
 			val address = building.geoCoordinates!!.substring(4)
-			val ir = this.buildingService.getMap(address, Size(1200, 1200), building.geoZoom!!)
+			val ir = buildingService.getMap(address, Size(1200, 1200), building.geoZoom!!)
 			if (ir == null) {
-				imageContent = this.missingImage.inputStream.readAllBytes()
+				missingImage.inputStream.readAllBytes()
 			} else {
-				imageContent = ir.imageData
+				ir.imageData
 			}
 		}
 
@@ -194,13 +192,13 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		var totalRestorationCosts = 0
 		for (e in evaluationResult.elements!!) {
 			if (e != null && e.weight != null && e.weight > 0 && ("Total" != e.name)) {
-				val row = this.addRenovationTableRow(optRenovationTable)
+				val row = addRenovationTableRow(optRenovationTable)
 				var cell = row.firstCell
 				cell.firstParagraph.appendChild(Run(doc, e.name))
 				val restorationYear = e.restorationYear
 				if (restorationYear != null) {
 					val delta = max(0, restorationYear - evaluationResult.startYear!!)
-					cell = this.getNthNextSibling(row.firstCell, delta)
+					cell = getNthNextSibling(row.firstCell, delta)
 					builder.moveTo(cell.firstParagraph)
 					builder.write(OptimumRenovationMarker)
 					cell = row.lastCell
@@ -215,7 +213,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 			}
 		}
 
-		val row = this.addRenovationTableRow(optRenovationTable)
+		val row = addRenovationTableRow(optRenovationTable)
 		var cell = row.firstCell
 		builder.font.bold = true
 		builder.moveTo(cell.firstParagraph)
@@ -297,7 +295,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		val builder = DocumentBuilder(doc)
 
 		for (ep in evaluationResult.periods!!) {
-			val row = this.addCostsTableRow(costsTable)
+			val row = addCostsTableRow(costsTable)
 			var cell = row.firstCell
 			if (ep?.year != null) { // only yearly summary records
 				// year
@@ -387,7 +385,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		shapeBuilder.moveToBookmark(OnePagerBookmark)
 
 		var yearCell = onePagerDetailsTable.lastRow.firstCell
-		yearCell = this.getNthNextSibling(yearCell, 8)
+		yearCell = getNthNextSibling(yearCell, 8)
 		for (i in 0..25) {
 			yearCell = yearCell.nextSibling as Cell
 			builder.moveTo(yearCell.firstParagraph)
@@ -406,10 +404,10 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 			shape.allowOverlap = true
 			shape.relativeHorizontalPosition = RelativeHorizontalPosition.PAGE
 			shape.relativeVerticalPosition = RelativeVerticalPosition.PAGE
-			shape.top = this.getRatingLineVOffset(0)
-			shape.left = this.getRatingHOffset(titleElement.condition!!)
+			shape.top = getRatingLineVOffset(0)
+			shape.left = getRatingHOffset(titleElement.condition!!)
 
-			titleCell = this.getNthNextSibling(titleRow.firstCell, 13)
+			titleCell = getNthNextSibling(titleRow.firstCell, 13)
 			builder.moveTo(titleCell.firstParagraph)
 			builder.write("" + titleElement.condition)
 		}
@@ -424,7 +422,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 
 		var lineNr = 1
 		for (e in elements) {
-			val row = this.addOnePageTableRow(onePagerDetailsTable)
+			val row = addOnePageTableRow(onePagerDetailsTable)
 
 			var cell = row.firstCell
 			builder.moveTo(cell.firstParagraph)
@@ -447,17 +445,17 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 			shape.allowOverlap = true
 			shape.relativeHorizontalPosition = RelativeHorizontalPosition.PAGE
 			shape.relativeVerticalPosition = RelativeVerticalPosition.PAGE
-			shape.top = this.getRatingLineVOffset(lineNr)
-			shape.left = this.getRatingHOffset(e.condition!!)
+			shape.top = getRatingLineVOffset(lineNr)
+			shape.left = getRatingHOffset(e.condition!!)
 
-			cell = this.getNthNextSibling(row.firstCell, 13)
+			cell = getNthNextSibling(row.firstCell, 13)
 			builder.moveTo(cell.firstParagraph)
 			builder.write("" + e.condition)
 
 			val restorationYear = e.restorationYear
 			if (restorationYear != null) {
 				val delta = 15 + max(0, restorationYear - evaluationResult.startYear!!)
-				cell = this.getNthNextSibling(row.firstCell, delta)
+				cell = getNthNextSibling(row.firstCell, delta)
 				builder.moveTo(cell.firstParagraph)
 				builder.write(OptimumRenovationMarker)
 			}
@@ -497,7 +495,7 @@ class DocumentGenerationServiceImpl : DocumentGenerationService {
 		n: Int,
 	): Cell {
 		if (n >= 0) {
-			return this.getNthNextSibling(cell.nextSibling, n - 1)
+			return getNthNextSibling(cell.nextSibling, n - 1)
 		}
 		return cell as Cell
 	}

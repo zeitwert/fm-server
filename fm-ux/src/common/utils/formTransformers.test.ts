@@ -5,24 +5,26 @@ import { displayOnly } from "./zodMeta";
 
 describe("formTransformers", () => {
 	// Test schema with various field types
+	// Note: String fields use .optional() only (transformer handles null → "")
+	// Enumerated/reference fields use .nullable() (form uses null for "no selection")
 	const testSchema = z.object({
 		name: z.string().min(1),
-		description: z.string().optional().nullable(),
+		description: z.string().optional(), // String: .optional() only
 		count: z.number(),
-		optionalNumber: z.number().optional().nullable(),
+		optionalNumber: z.number().optional(), // Number: .optional() only
 		reference: z
 			.object({
 				id: z.string(),
 				name: z.string(),
 			})
-			.nullable(),
+			.nullable(), // Enumerated: .nullable() for "no selection"
 		optionalReference: z
 			.object({
 				id: z.string(),
 				name: z.string(),
 			})
 			.optional()
-			.nullable(),
+			.nullable(), // Enumerated: .nullable() for "no selection"
 		items: z.array(z.string()).optional(),
 	});
 
@@ -88,7 +90,7 @@ describe("formTransformers", () => {
 			expect(form.reference).toEqual(ref);
 		});
 
-		it("should convert undefined nullable numbers to null", () => {
+		it("should keep undefined numbers as undefined", () => {
 			const entity: TestEntity = {
 				name: "Test",
 				count: 5,
@@ -96,7 +98,7 @@ describe("formTransformers", () => {
 
 			const form = transformToForm<TestForm>(entity, testSchema);
 
-			expect(form.optionalNumber).toBeNull(); // undefined → null
+			expect(form.optionalNumber).toBeUndefined(); // undefined → undefined (non-nullable)
 		});
 
 		it("should preserve non-null numbers including zero", () => {
@@ -147,16 +149,16 @@ describe("formTransformers", () => {
 			expect(entity.description).toBe("A description");
 		});
 
-		it("should convert null to undefined for nullable fields", () => {
+		it("should convert null to undefined for nullable reference fields", () => {
 			const formData = {
 				reference: null,
-				optionalNumber: null,
+				optionalReference: null,
 			};
 
 			const entity = transformFromForm<TestEntity, TestForm>(formData, testSchema);
 
 			expect(entity.reference).toBeUndefined(); // null → undefined
-			expect(entity.optionalNumber).toBeUndefined(); // null → undefined
+			expect(entity.optionalReference).toBeUndefined(); // null → undefined
 		});
 
 		it("should preserve non-null object references", () => {
@@ -215,6 +217,196 @@ describe("formTransformers", () => {
 		});
 	});
 
+	describe("nested transformations", () => {
+		// Schema with nested objects and arrays
+		const nestedSchema = z.object({
+			name: z.string(),
+			rating: z
+				.object({
+					id: z.string(),
+					status: z.string().optional(),
+					elements: z.array(
+						z.object({
+							id: z.string(),
+							description: z.string().optional(),
+							weight: z.number().optional(),
+						})
+					),
+				})
+				.optional(),
+		});
+
+		type NestedForm = z.infer<typeof nestedSchema>;
+
+		interface NestedEntity {
+			name: string;
+			rating?: {
+				id: string;
+				status?: string;
+				elements: Array<{
+					id: string;
+					description?: string;
+					weight?: number;
+				}>;
+			};
+		}
+
+		describe("transformToForm - nested", () => {
+			it("should convert null strings in nested objects to empty string", () => {
+				const entity = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						status: null,
+						elements: [],
+					},
+				};
+				const form = transformToForm<NestedForm>(entity, nestedSchema);
+				expect(form.rating?.status).toBe(""); // null → ""
+			});
+
+			it("should convert null strings in nested arrays to empty string", () => {
+				const entity = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						elements: [
+							{ id: "1", description: null, weight: 10 },
+							{ id: "2", description: "has value", weight: null },
+						],
+					},
+				};
+				const form = transformToForm<NestedForm>(entity, nestedSchema);
+				expect(form.rating?.elements[0].description).toBe(""); // null → ""
+				expect(form.rating?.elements[0].weight).toBe(10);
+				expect(form.rating?.elements[1].description).toBe("has value");
+				expect(form.rating?.elements[1].weight).toBeUndefined(); // non-nullable number stays undefined
+			});
+
+			it("should handle deeply nested undefined strings", () => {
+				const entity = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						elements: [{ id: "1" }], // description and weight not present
+					},
+				};
+				const form = transformToForm<NestedForm>(entity, nestedSchema);
+				expect(form.rating?.elements[0].id).toBe("1");
+				expect(form.rating?.elements[0].description).toBe(""); // undefined → ""
+				expect(form.rating?.elements[0].weight).toBeUndefined(); // non-nullable stays undefined
+			});
+
+			it("should preserve non-null values in nested structures", () => {
+				const entity: NestedEntity = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						status: "active",
+						elements: [{ id: "1", description: "desc", weight: 5 }],
+					},
+				};
+				const form = transformToForm<NestedForm>(entity, nestedSchema);
+				expect(form.rating?.status).toBe("active");
+				expect(form.rating?.elements[0].description).toBe("desc");
+				expect(form.rating?.elements[0].weight).toBe(5);
+			});
+		});
+
+		describe("transformFromForm - nested", () => {
+			it("should convert empty strings in nested objects to undefined", () => {
+				const formData = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						status: "",
+						elements: [],
+					},
+				};
+				const entity = transformFromForm<NestedEntity, NestedForm>(formData, nestedSchema);
+				expect(entity.rating?.status).toBeUndefined(); // "" → undefined
+			});
+
+			it("should convert empty strings in nested arrays to undefined", () => {
+				const formData = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						elements: [
+							{ id: "1", description: "", weight: 10 },
+							{ id: "2", description: "has value", weight: 0 },
+						],
+					},
+				};
+				const entity = transformFromForm<NestedEntity, NestedForm>(formData, nestedSchema);
+				expect(entity.rating?.elements[0].description).toBeUndefined(); // "" → undefined
+				expect(entity.rating?.elements[0].weight).toBe(10);
+				expect(entity.rating?.elements[1].description).toBe("has value");
+				expect(entity.rating?.elements[1].weight).toBe(0); // 0 preserved
+			});
+
+			it("should preserve non-empty values in nested structures", () => {
+				const formData = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						status: "active",
+						elements: [{ id: "1", description: "desc", weight: 5 }],
+					},
+				};
+				const entity = transformFromForm<NestedEntity, NestedForm>(formData, nestedSchema);
+				expect(entity.rating?.status).toBe("active");
+				expect(entity.rating?.elements[0].description).toBe("desc");
+				expect(entity.rating?.elements[0].weight).toBe(5);
+			});
+		});
+
+		describe("nested round-trip", () => {
+			it("should handle round-trip for nested structures", () => {
+				const original: NestedEntity = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						status: "active",
+						elements: [
+							{ id: "1", description: "desc1", weight: 10 },
+							{ id: "2", description: "desc2", weight: 20 },
+						],
+					},
+				};
+				const form = transformToForm<NestedForm>(original, nestedSchema);
+				const back = transformFromForm<NestedEntity, NestedForm>(
+					form as Record<string, unknown>,
+					nestedSchema
+				);
+				expect(back).toEqual(original);
+			});
+
+			it("should handle round-trip with null/empty values normalized", () => {
+				// Server sends nulls for optional strings
+				const serverEntity = {
+					name: "Test",
+					rating: {
+						id: "r1",
+						status: null,
+						elements: [{ id: "1", description: null }],
+					},
+				};
+
+				const form = transformToForm<NestedForm>(serverEntity, nestedSchema);
+				expect(form.rating?.status).toBe(""); // null → ""
+				expect(form.rating?.elements[0].description).toBe(""); // null → ""
+
+				const back = transformFromForm<NestedEntity, NestedForm>(
+					form as Record<string, unknown>,
+					nestedSchema
+				);
+				expect(back.rating?.status).toBeUndefined(); // "" → undefined
+				expect(back.rating?.elements[0].description).toBeUndefined(); // "" → undefined
+			});
+		});
+	});
+
 	describe("round-trip transformations", () => {
 		it("should handle round-trip for complete entity", () => {
 			const originalEntity: TestEntity = {
@@ -240,9 +432,9 @@ describe("formTransformers", () => {
 			// Schema with items marked as display-only
 			const schemaWithDisplayOnly = z.object({
 				name: z.string().min(1),
-				description: z.string().optional().nullable(),
+				description: z.string().optional(),
 				count: z.number(),
-				optionalNumber: z.number().optional().nullable(),
+				optionalNumber: z.number().optional(),
 				reference: z
 					.object({
 						id: z.string(),

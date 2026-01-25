@@ -1,0 +1,926 @@
+/**
+ * Building Evaluation Report - Print Styles
+ * Based on coordinates from DocumentGenerationServiceImpl.kt (Aspose)
+ *
+ * A4 Landscape: 297mm × 210mm
+ * Points per mm: 2.834647454889553
+ *
+ * Key measurements from Aspose:
+ * - Cover photo: 400×230pt (~141×81mm)
+ * - Location map: 360×360pt (~127×127mm)
+ * - Page margins: 15mm top, 20mm right/bottom/left
+ */
+
+/* =============================================================================
+   CSS VARIABLES - Now on .report-page for WYSIWYG preview
+   ============================================================================= */
+
+/* .evaluation-report wrapper needs no styles - parent provides background */
+.evaluation-report {
+	/* Empty - kept for structure only */
+}
+
+/* =============================================================================
+   PAGE RULES
+   ============================================================================= */
+
+@page {
+	size: A4 landscape;
+	margin: 15mm 20mm 15mm 20mm;
+}
+
+@page :first {
+	margin-top: 10mm;
+}
+
+/* =============================================================================
+   PAGE CONTAINERS - WYSIWYG A4 Pages
+   ============================================================================= */
+
+.report-page {
+	/* Colors matching backend */
+	--color-condition-very-bad: #e54f29;
+	--color-condition-bad: #faa724;
+	--color-condition-ok: #78c06b;
+	--color-condition-good: #338721;
+	--color-condition-unknown: #999999;
+
+	/* Chart colors */
+	--color-original-value: #1890ff;
+	--color-time-value: #52c41a;
+	--color-maintenance: #faad14;
+	--color-restoration: #ff4d4f;
+
+	/* Page dimensions (A4 Landscape) */
+	--page-width: 297mm;
+	--page-height: 210mm;
+	--margin-top: 15mm;
+	--margin-right: 20mm;
+	--margin-bottom: 15mm;
+	--margin-left: 20mm;
+	--content-width: calc(297mm - 40mm);
+	/* 257mm */
+	--content-height: calc(210mm - 35mm);
+	/* 175mm */
+
+	/* Sizing from Aspose (converted to mm) */
+	--cover-photo-width: 141mm;
+	/* 400pt */
+	--cover-photo-height: 81mm;
+	/* 230pt */
+	--cover-photo-top: 60mm;
+	/* 170pt */
+	--location-map-size: 127mm;
+	/* 360pt */
+
+	/* Typography */
+	--font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	--font-size-base: 10pt;
+	--font-size-small: 8pt;
+	--font-size-title: 16pt;
+	--font-size-heading: 12pt;
+
+	/* Base typography */
+	font-family: var(--font-family);
+	font-size: var(--font-size-base);
+	line-height: 1.4;
+	color: #333;
+
+	/* WYSIWYG: Full A4 page with print margins as padding */
+	width: var(--page-width);
+	min-height: var(--page-height);
+	padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
+	box-sizing: border-box;
+	background: white;
+
+	/* Print behavior */
+	page-break-after: always;
+	break-after: page;
+	position: relative;
+}
+
+.report-page * {
+	box-sizing: border-box;
+}
+
+.report-page:last-child {
+	page-break-after: auto;
+	break-after: auto;
+}
+
+.page-break {
+	break-before: page;
+	page-break-before: always;
+}
+
+.avoid-break {
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+/* =============================================================================
+   REPORT HEADER & FOOTER
+   ============================================================================= */
+
+.report-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 12px;
+	min-height: 24px;
+}
+
+.report-header-left {
+	font-size: 9pt;
+	color: #333;
+	flex: 1;
+}
+
+.report-header-right {
+	flex-shrink: 0;
+}
+
+.report-logo {
+	height: 24px;
+	width: auto;
+	object-fit: contain;
+}
+
+.report-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: auto;
+	padding-top: 12px;
+	font-size: 8pt;
+	color: #666;
+}
+
+.report-footer-left {
+	flex: 1;
+	text-align: left;
+}
+
+.report-footer-center {
+	flex: 1;
+	text-align: center;
+}
+
+.report-footer-right {
+	flex: 1;
+	text-align: right;
+}
+
+/* Page layout with header/footer */
+.report-page-content {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	/* Fill the content area within the page padding */
+}
+
+.report-page-body {
+	flex: 1;
+}
+
+/* =============================================================================
+   COVER PAGE (Page 1)
+   Pixel-perfect layout matching original Aspose Word template.
+
+   A4 Landscape: 297mm × 210mm
+   Margins: 15mm top, 20mm right/bottom/left
+   Content area: 257mm × 175mm
+
+   Measurements from Aspose DocumentGenerationServiceImpl.kt:
+   - Photo: 400×230pt = 141×81mm
+   - Photo top offset: 170pt = 60mm from content top
+   - Photo right offset: 20pt from right margin
+   ============================================================================= */
+
+.cover-page-body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+/* Account name - top left, gray, regular weight */
+.cover-account-name {
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-size: 16pt;
+	font-style: normal;
+	font-weight: 400;
+	color: #666;
+	margin: 0;
+	line-height: 1.2;
+}
+
+/* Building name - bold, black, below account name */
+.cover-building-name {
+	position: absolute;
+	top: 8mm;
+	/* Below account name with ~2mm gap */
+	left: 0;
+	font-size: 24pt;
+	font-weight: 700;
+	color: #333;
+	margin: 0;
+	line-height: 1.2;
+}
+
+/* Photo container - right side, from Aspose: top=170pt=60mm, right aligned */
+.cover-photo-container {
+	position: absolute;
+	top: 45mm;
+	/* Aspose 170pt ≈ 60mm, adjusted for visual match */
+	right: 0;
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.cover-photo {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.cover-photo-placeholder {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #999;
+	font-size: 12pt;
+}
+
+/* "Strategische Unterhaltsplanung" - bottom left */
+.cover-strategic-label {
+	position: absolute;
+	bottom: 35mm;
+	/* ~35mm from content bottom */
+	left: 0;
+	font-size: 11pt;
+	font-style: normal;
+	font-weight: 400;
+	color: #333;
+	margin: 0;
+	line-height: 1.2;
+}
+
+/* "Objektauswertung" - below strategic label, bold */
+.cover-report-type {
+	position: absolute;
+	bottom: 20mm;
+	/* ~20mm from content bottom */
+	left: 0;
+	font-size: 18pt;
+	font-style: normal;
+	font-weight: 700;
+	color: #333;
+	margin: 0;
+	line-height: 1.2;
+}
+
+/* =============================================================================
+   DATA PAGE (Page 2)
+   Matching original Aspose PDF layout with numbered section headers
+   ============================================================================= */
+
+.data-page {
+	display: flex;
+	gap: 24px;
+}
+
+.data-tables {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+/* Numbered section header with underline (e.g., "1. Grunddaten") */
+.data-section-header {
+	font-size: 14pt;
+	font-weight: 700;
+	margin: 0 0 8px 0;
+	padding-bottom: 4px;
+	border-bottom: 1px solid #333;
+}
+
+/* Simple data table without borders - matching Aspose layout */
+.data-table-simple {
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: auto;
+}
+
+.data-table-simple th,
+.data-table-simple td {
+	padding: 3px 0;
+	vertical-align: top;
+	border: none;
+}
+
+.data-table-simple th {
+	text-align: left;
+	font-weight: 400;
+	color: #333;
+	/* Allow labels to wrap if needed, but values should not */
+}
+
+.data-table-simple td {
+	text-align: right;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* Location section container (right column) */
+.data-location-section {
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+}
+
+.location-map-container {
+	/* Size: 127mm (360pt) from Aspose */
+	width: var(--location-map-size);
+	height: var(--location-map-size);
+	overflow: hidden;
+	background: #f5f5f5;
+}
+
+.location-map {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.location-address {
+	margin-top: 8px;
+	font-size: var(--font-size-base);
+	color: #333;
+}
+
+/* =============================================================================
+   ELEMENTS PAGE (Page 4) - Datenerhebung am Objekt
+   Simple 4-column table: Bauteil | Beschreibung | Anteil | Zustand
+   ============================================================================= */
+
+/* Data Collection Table */
+.data-collection-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-size-base);
+}
+
+.data-collection-table thead tr {
+	border-top: 1px solid #333;
+	border-bottom: 1px solid #333;
+	background-color: #f0f0f0;
+}
+
+.data-collection-table th {
+	padding: 6px 8px;
+	text-align: left;
+	font-weight: 600;
+	color: #333;
+	vertical-align: bottom;
+}
+
+.data-collection-table th.col-bauteil {
+	width: 200px;
+}
+
+.data-collection-table th.col-beschreibung {
+	/* Takes remaining space */
+}
+
+.data-collection-table th.col-anteil {
+	width: 60px;
+	text-align: right;
+}
+
+.data-collection-table th.col-zustand {
+	width: 80px;
+	text-align: right;
+}
+
+.data-collection-table tbody tr {
+	border-bottom: 1px solid #e0e0e0;
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+.data-collection-table td {
+	padding: 8px;
+	vertical-align: top;
+}
+
+/* Element name cell */
+.element-name-cell {
+	font-weight: 500;
+	color: #1890ff;
+}
+
+/* Combined description cell */
+.element-description-cell {
+	color: #333;
+}
+
+.description-combined {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.description-line {
+	line-height: 1.4;
+}
+
+.description-line strong {
+	color: #1890ff;
+}
+
+/* Weight cell */
+.element-weight-cell {
+	text-align: right;
+	font-weight: 500;
+}
+
+/* Condition cell with square indicator */
+.element-condition-cell {
+	text-align: right;
+	white-space: nowrap;
+}
+
+.condition-value {
+	margin-right: 6px;
+}
+
+.condition-square {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	vertical-align: middle;
+	flex-shrink: 0;
+}
+
+/* Condition dot (used elsewhere, e.g. summary) */
+.condition-dot {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+/* =============================================================================
+   RENOVATION TIMELINE PAGE
+   ============================================================================= */
+
+.renovation-timeline-page {
+	break-inside: avoid;
+}
+
+.renovation-timeline {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-size-small);
+}
+
+.renovation-timeline th,
+.renovation-timeline td {
+	padding: 4px 2px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* Horizontal borders */
+.renovation-timeline thead {
+	border-top: 1px solid #333;
+	border-bottom: 1px solid #333;
+	background-color: #f5f5f5;
+}
+
+.renovation-timeline tbody tr {
+	border-bottom: 1px solid #e0e0e0;
+}
+
+/* Remove border from row before total so borders match */
+.renovation-timeline tbody tr:nth-last-child(2) {
+	border-bottom: none;
+}
+
+.renovation-timeline tr.total-row {
+	border-top: 1px solid #666;
+	border-bottom: 1px solid #666;
+	font-weight: 600;
+}
+
+/* Period header row (Kurzfr., Mittelfristig, Langfristig) */
+.renovation-timeline .period-header-row th {
+	font-weight: 600;
+	padding: 4px 2px;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.renovation-timeline .period-header-row th.period-col {
+	border-left: 1px dashed #ccc;
+	border-right: 1px dashed #ccc;
+}
+
+.renovation-timeline .period-header-row th.period-col:first-of-type {
+	border-left: 1px dashed #ccc;
+}
+
+/* Element column */
+.renovation-timeline th.element-col {
+	text-align: left;
+	width: 180px;
+	font-weight: 600;
+}
+
+/* Year columns - rotated 90 degrees */
+.renovation-timeline th.year-col {
+	width: 22px;
+	min-width: 22px;
+	max-width: 22px;
+	height: 50px;
+	padding: 2px 0;
+	vertical-align: bottom;
+	text-align: center;
+	border-left: 1px dashed #ccc;
+	border-right: none;
+}
+
+.renovation-timeline th.year-col:last-of-type {
+	border-right: 1px dashed #ccc;
+}
+
+.renovation-timeline th.year-col .year-label {
+	display: inline-block;
+	writing-mode: vertical-rl;
+	transform: rotate(180deg);
+	font-size: 7pt;
+	font-weight: 600;
+	line-height: 1;
+}
+
+/* Result columns (Jahr, Kosten) */
+.renovation-timeline th.result-col {
+	width: 55px;
+	font-weight: 600;
+	border-left: 1px dashed #ccc;
+}
+
+/* Year cells in body - dashed vertical borders */
+.renovation-timeline td.year-cell {
+	border-left: 1px dashed #ccc;
+	border-right: none;
+}
+
+.renovation-timeline tbody tr td.year-cell:last-of-type {
+	border-right: 1px dashed #ccc;
+}
+
+/* Element name - plain text, left aligned */
+.renovation-timeline td.element-name {
+	text-align: left;
+	font-weight: 400;
+}
+
+/* Renovation marker */
+.renovation-timeline td.year-marker {
+	vertical-align: middle;
+}
+
+.renovation-timeline td.year-marker .marker-dot {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	background-color: #1a5fb4;
+	border-radius: 50%;
+	vertical-align: middle;
+}
+
+/* Result cells */
+.renovation-timeline td.result-year,
+.renovation-timeline td.result-cost {
+	text-align: right;
+	font-weight: 400;
+	border-left: 1px dashed #ccc;
+}
+
+.renovation-timeline td.result-year {
+	padding-right: 8px;
+}
+
+/* =============================================================================
+   CHARTS PAGE
+   Print-optimized layout matching Aspose template:
+   - Single section header
+   - No borders, no individual titles
+   - Compact legends
+   - 30%/70% height split
+   ============================================================================= */
+
+.charts-page {
+	display: flex;
+	flex-direction: column;
+}
+
+.charts-page-body {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 8px;
+}
+
+/* Chart areas - no borders, just the chart */
+.chart-area {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Value chart - 30% height (~40mm) */
+.chart-area-value {
+	height: 40mm;
+	flex-shrink: 0;
+}
+
+/* Cost chart - 70% height (~100mm) */
+.chart-area-cost {
+	height: 100mm;
+	flex-shrink: 0;
+}
+
+/* Legacy container styles (keep for backward compatibility) */
+.chart-container {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	padding: 12px 16px;
+	display: flex;
+	flex-direction: column;
+}
+
+.chart-title {
+	font-size: var(--font-size-heading);
+	font-weight: 600;
+	margin: 0 0 8px 0;
+	flex-shrink: 0;
+}
+
+.chart-content {
+	flex: 1;
+	min-height: 0;
+}
+
+.chart-image {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+/* =============================================================================
+   COSTS TABLE PAGE (spanning multiple pages)
+   ============================================================================= */
+
+.costs-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-size-small);
+}
+
+.costs-table th,
+.costs-table td {
+	padding: 4px 8px;
+	text-align: right;
+	border: 1px solid #e0e0e0;
+	white-space: nowrap;
+}
+
+.costs-table th {
+	background: #fafafa;
+	font-weight: 600;
+	text-align: center;
+}
+
+.costs-table th:first-child,
+.costs-table td:first-child {
+	text-align: center;
+}
+
+.costs-table td.element-name {
+	text-align: left;
+}
+
+.costs-table tr {
+	break-inside: avoid;
+	page-break-inside: avoid;
+}
+
+.costs-table tbody tr:nth-child(even) {
+	background: #fafafa;
+}
+
+/* Sub-rows styling - no bottom border for visual grouping */
+.costs-table .costs-table-subrow td {
+	border-bottom: none;
+}
+
+/* =============================================================================
+   SUMMARY PAGE (One-Pager)
+   ============================================================================= */
+
+.summary-page {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.summary-header {
+	display: flex;
+	gap: 24px;
+}
+
+.summary-basic-data,
+.summary-evaluation {
+	flex: 1;
+}
+
+.summary-section {
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.summary-section-title {
+	font-size: 11pt;
+	font-weight: 600;
+	padding: 6px 10px;
+	background: #fafafa;
+	border-bottom: 1px solid #e0e0e0;
+	margin: 0;
+}
+
+.summary-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--font-size-small);
+}
+
+.summary-table th,
+.summary-table td {
+	padding: 4px 10px;
+	text-align: left;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.summary-table th {
+	font-weight: 500;
+	color: #666;
+	width: 50%;
+}
+
+.summary-table td {
+	text-align: right;
+}
+
+.summary-table tr:last-child th,
+.summary-table tr:last-child td {
+	border-bottom: none;
+}
+
+/* Summary elements overview */
+.summary-elements {
+	flex: 1;
+}
+
+.summary-elements-grid {
+	display: grid;
+	grid-template-columns: 140px 80px 50px 50px 1fr 50px;
+	gap: 2px;
+	font-size: 8pt;
+	border: 1px solid #e0e0e0;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.summary-elements-header {
+	display: contents;
+}
+
+.summary-elements-header>span {
+	padding: 4px 6px;
+	background: #fafafa;
+	font-weight: 600;
+	border-bottom: 1px solid #e0e0e0;
+}
+
+.summary-elements-header>span:not(:first-child) {
+	text-align: center;
+}
+
+.summary-element-row {
+	display: contents;
+}
+
+.summary-element-row>span {
+	padding: 3px 6px;
+	border-bottom: 1px solid #f0f0f0;
+	display: flex;
+	align-items: center;
+}
+
+.summary-element-row>span:not(:first-child) {
+	justify-content: center;
+}
+
+.summary-element-row:last-child>span {
+	border-bottom: none;
+}
+
+.summary-element-name {
+	font-weight: 500;
+}
+
+.summary-weight-bar {
+	height: 8px;
+	background: #1890ff;
+	border-radius: 2px;
+}
+
+.summary-condition-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	margin: 0 auto;
+}
+
+.summary-year-markers {
+	display: flex;
+	gap: 1px;
+	font-size: 6pt;
+}
+
+.summary-year-marker {
+	width: 8px;
+	text-align: center;
+	color: #999;
+}
+
+.summary-year-marker.active {
+	color: var(--color-restoration);
+	font-weight: bold;
+	font-size: 10pt;
+}
+
+/* Summary chart */
+.summary-chart {
+	height: 120px;
+	margin-top: 8px;
+}
+
+/* =============================================================================
+   PRINT-SPECIFIC STYLES
+   ============================================================================= */
+
+@media print {
+	.no-print {
+		display: none !important;
+	}
+
+	/* For print, the page margins are handled by @page rule */
+	.report-page {
+		padding: 0;
+		/* @page margins handle the spacing */
+		width: auto;
+		min-height: auto;
+		box-shadow: none;
+	}
+
+	/* Hide interactive charts, show static images */
+	.recharts-wrapper {
+		display: none !important;
+	}
+
+	.chart-image-print {
+		display: block !important;
+	}
+}
+
+@media screen {
+
+	/* On screen, hide print-only images */
+	.chart-image-print {
+		display: none;
+	}
+
+	/* WYSIWYG preview - each page is a complete A4 representation */
+	.report-page {
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+		margin: 0 auto 20px auto;
+		/* Center with gap between pages */
+	}
+}

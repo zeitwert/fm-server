@@ -1,10 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Button, Card, Spin, Result, Tabs, Space, Modal, Segmented } from "antd";
 import { LineChartOutlined, TableOutlined, PrinterOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { ItemPageHeader, ItemPageLayout, EditControls } from "../../../common/components/items";
 import { AfForm } from "../../../common/components/form";
 import { RelatedPanel } from "../../../common/components/related";
@@ -15,16 +13,15 @@ import type { Note } from "../../../common/components/related/NotesList";
 import type { Task } from "../../../common/components/related/TasksList";
 import type { Activity } from "../../../common/components/related/ActivityTimeline";
 import { canModifyEntity } from "../../../common/utils";
+import { usePersistentForm } from "../../../common/hooks";
 import {
 	useBuildingQuery,
 	useUpdateBuilding,
 	useAddBuildingRating,
 	useMoveRatingStatus,
-	buildingKeys,
 } from "../queries";
-import { buildingFormSchema } from "../schemas";
-
-type BuildingFormValues = ReturnType<typeof buildingFormSchema.parse>;
+import { buildingFormSchema, type BuildingFormInput } from "../schemas";
+import type { Building } from "../types";
 import { BuildingMainForm } from "./forms/BuildingMainForm";
 import { BuildingLocationForm } from "./forms/BuildingLocationForm";
 import { BuildingRatingForm } from "./forms/BuildingRatingForm";
@@ -41,7 +38,6 @@ const TAB_CONFIG = {
 
 type TabKey = keyof typeof TAB_CONFIG;
 import { getArea } from "../../../app/config/AppConfig";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface BuildingPageProps {
 	buildingId: string;
@@ -51,9 +47,7 @@ export function BuildingPage({ buildingId }: BuildingPageProps) {
 	const { t } = useTranslation();
 	const { sessionInfo } = useSessionStore();
 	const userRole = sessionInfo?.user?.role?.id ?? "";
-	const queryClient = useQueryClient();
 
-	const [isEditing, setIsEditing] = useState(false);
 	const [activeTab, setActiveTab] = useState<TabKey>("main");
 	const [evaluationViewType, setEvaluationViewType] = useState<EvaluationViewType>("chart");
 	const [confirmAction, setConfirmAction] = useState<"deleteBuilding" | "discardRating" | null>(
@@ -65,8 +59,14 @@ export function BuildingPage({ buildingId }: BuildingPageProps) {
 	const addRatingMutation = useAddBuildingRating();
 	const moveRatingMutation = useMoveRatingStatus();
 
-	const form = useForm<BuildingFormValues>({
-		resolver: standardSchemaResolver(buildingFormSchema),
+	const { form, isEditing, isStoring, handleEdit, handleCancel, handleStore } = usePersistentForm<
+		Building,
+		BuildingFormInput
+	>({
+		id: buildingId,
+		data: query.data,
+		updateMutation,
+		schema: buildingFormSchema,
 	});
 
 	const building = query.data;
@@ -87,136 +87,6 @@ export function BuildingPage({ buildingId }: BuildingPageProps) {
 	const allowEdit =
 		(canEditStaticData && (activeTab === "main" || activeTab === "location")) ||
 		(canEditRating && activeTab === "rating");
-
-	// Sync form with building data (only when not editing)
-	useEffect(() => {
-		if (building && !isEditing) {
-			form.reset({
-				name: building.name,
-				description: building.description,
-				buildingNr: building.buildingNr,
-				insuranceNr: building.insuranceNr,
-				plotNr: building.plotNr,
-				nationalBuildingId: building.nationalBuildingId,
-				historicPreservation: building.historicPreservation,
-				buildingType: building.buildingType,
-				buildingSubType: building.buildingSubType,
-				buildingYear: building.buildingYear,
-				currency: building.currency,
-				street: building.street,
-				zip: building.zip,
-				city: building.city,
-				country: building.country,
-				geoAddress: building.geoAddress,
-				geoCoordinates: building.geoCoordinates,
-				geoZoom: building.geoZoom,
-				volume: building.volume,
-				areaGross: building.areaGross,
-				areaNet: building.areaNet,
-				nrOfFloorsAboveGround: building.nrOfFloorsAboveGround,
-				nrOfFloorsBelowGround: building.nrOfFloorsBelowGround,
-				insuredValue: building.insuredValue,
-				insuredValueYear: building.insuredValueYear,
-				notInsuredValue: building.notInsuredValue,
-				notInsuredValueYear: building.notInsuredValueYear,
-				thirdPartyValue: building.thirdPartyValue,
-				thirdPartyValueYear: building.thirdPartyValueYear,
-				owner: building.owner,
-				currentRating: building.currentRating,
-				contacts: building.contacts,
-			});
-		}
-	}, [building, form, isEditing]);
-
-	const handleEdit = () => {
-		setIsEditing(true);
-	};
-
-	const handleCancel = () => {
-		if (building) {
-			form.reset({
-				name: building.name,
-				description: building.description,
-				buildingNr: building.buildingNr,
-				insuranceNr: building.insuranceNr,
-				plotNr: building.plotNr,
-				nationalBuildingId: building.nationalBuildingId,
-				historicPreservation: building.historicPreservation,
-				buildingType: building.buildingType,
-				buildingSubType: building.buildingSubType,
-				buildingYear: building.buildingYear,
-				currency: building.currency,
-				street: building.street,
-				zip: building.zip,
-				city: building.city,
-				country: building.country,
-				geoAddress: building.geoAddress,
-				geoCoordinates: building.geoCoordinates,
-				geoZoom: building.geoZoom,
-				volume: building.volume,
-				areaGross: building.areaGross,
-				areaNet: building.areaNet,
-				nrOfFloorsAboveGround: building.nrOfFloorsAboveGround,
-				nrOfFloorsBelowGround: building.nrOfFloorsBelowGround,
-				insuredValue: building.insuredValue,
-				insuredValueYear: building.insuredValueYear,
-				notInsuredValue: building.notInsuredValue,
-				notInsuredValueYear: building.notInsuredValueYear,
-				thirdPartyValue: building.thirdPartyValue,
-				thirdPartyValueYear: building.thirdPartyValueYear,
-				owner: building.owner,
-				currentRating: building.currentRating,
-				contacts: building.contacts,
-			});
-		}
-		setIsEditing(false);
-	};
-
-	const handleStore = form.handleSubmit(async (formData) => {
-		if (!building) return;
-
-		try {
-			await updateMutation.mutateAsync({
-				id: buildingId,
-				name: formData.name,
-				description: formData.description ?? undefined,
-				buildingNr: formData.buildingNr,
-				insuranceNr: formData.insuranceNr ?? undefined,
-				plotNr: formData.plotNr ?? undefined,
-				nationalBuildingId: formData.nationalBuildingId ?? undefined,
-				historicPreservation: formData.historicPreservation ?? undefined,
-				buildingType: formData.buildingType ?? undefined,
-				buildingSubType: formData.buildingSubType ?? undefined,
-				buildingYear: formData.buildingYear ?? undefined,
-				currency: formData.currency ?? undefined,
-				street: formData.street ?? undefined,
-				zip: formData.zip ?? undefined,
-				city: formData.city ?? undefined,
-				country: formData.country ?? undefined,
-				geoAddress: formData.geoAddress ?? undefined,
-				geoCoordinates: formData.geoCoordinates ?? undefined,
-				geoZoom: formData.geoZoom ?? undefined,
-				volume: formData.volume ?? undefined,
-				areaGross: formData.areaGross ?? undefined,
-				areaNet: formData.areaNet ?? undefined,
-				nrOfFloorsAboveGround: formData.nrOfFloorsAboveGround ?? undefined,
-				nrOfFloorsBelowGround: formData.nrOfFloorsBelowGround ?? undefined,
-				insuredValue: formData.insuredValue,
-				insuredValueYear: formData.insuredValueYear,
-				notInsuredValue: formData.notInsuredValue ?? undefined,
-				notInsuredValueYear: formData.notInsuredValueYear ?? undefined,
-				thirdPartyValue: formData.thirdPartyValue ?? undefined,
-				thirdPartyValueYear: formData.thirdPartyValueYear ?? undefined,
-				owner: formData.owner!,
-				meta: { clientVersion: building.meta?.version },
-			});
-
-			queryClient.invalidateQueries({ queryKey: buildingKeys.detail(buildingId) });
-			setIsEditing(false);
-		} catch (error) {
-			console.error("Save failed:", error);
-		}
-	});
 
 	const handleAddRating = useCallback(async () => {
 		if (!building) return;
@@ -389,7 +259,7 @@ export function BuildingPage({ buildingId }: BuildingPageProps) {
 									<EditControls
 										isEditing={isEditing}
 										isDirty={form.formState.isDirty}
-										isStoring={updateMutation.isPending}
+										isStoring={isStoring}
 										canEdit={canEdit && allowEdit}
 										onEdit={handleEdit}
 										onCancel={handleCancel}
@@ -449,7 +319,9 @@ export function BuildingPage({ buildingId }: BuildingPageProps) {
 									key: "evaluation",
 									label: t("building:label.tabEvaluation"),
 									disabled: isEditing || hasErrors,
-									children: <BuildingEvaluationForm building={building} viewType={evaluationViewType} />,
+									children: (
+										<BuildingEvaluationForm building={building} viewType={evaluationViewType} />
+									),
 								},
 							]}
 						/>

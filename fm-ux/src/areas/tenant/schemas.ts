@@ -26,10 +26,10 @@ export interface TenantFormInput {
 
 export const tenantFormSchema = z.object({
 	name: z.string().min(1, "tenant:message.validation.nameRequired"),
-	description: z.string().optional().nullable(),
+	description: z.string().optional(),
 	tenantType: enumeratedSchema,
-	inflationRate: z.number().optional().nullable(),
-	discountRate: z.number().optional().nullable(),
+	inflationRate: z.number().optional(),
+	discountRate: z.number().optional(),
 });
 
 export type TenantFormData = z.infer<typeof tenantFormSchema>;

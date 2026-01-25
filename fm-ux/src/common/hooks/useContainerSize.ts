@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef, type RefObject } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface ContainerSize {
 	width: number;
 	height: number;
 }
 
-export function useContainerSize<T extends HTMLElement>(): [RefObject<T | null>, ContainerSize] {
-	const ref = useRef<T | null>(null);
+export function useContainerSize<T extends HTMLElement>(): [React.RefObject<T>, ContainerSize] {
+	const ref = useRef<T>(null);
 	const [size, setSize] = useState<ContainerSize>({ width: 0, height: 0 });
 
 	useEffect(() => {

@@ -34,6 +34,11 @@ export const buildingCreationSchema = z.object({
 
 export type BuildingCreationData = z.infer<typeof buildingCreationSchema>;
 
+// Note: Server may send null for optional fields. The transformer converts:
+// - null strings → "" (empty string for form inputs)
+// - null numbers → undefined
+// The | null documents the server contract, not what the form sees after transformation.
+
 export interface BuildingElementFormInput {
 	id: string;
 	buildingPart?: Enumerated;
@@ -48,7 +53,7 @@ export interface BuildingRatingFormInput {
 	partCatalog: Enumerated | null;
 	maintenanceStrategy: Enumerated | null;
 	ratingStatus: Enumerated | null;
-	ratingDate: string | null;
+	ratingDate?: string | null;
 	ratingUser: Enumerated | null;
 	elements: BuildingElementFormInput[];
 }
@@ -118,37 +123,37 @@ const ratingSchema = z.object({
 
 export const buildingFormSchema = z.object({
 	name: z.string().min(1, "building:message.validation.nameRequired"),
-	description: z.string().optional().nullable(),
+	description: z.string().optional(),
 	buildingNr: z.string().min(1, "building:message.validation.buildingNrRequired"),
-	insuranceNr: z.string().optional().nullable(),
-	plotNr: z.string().optional().nullable(),
-	nationalBuildingId: z.string().optional().nullable(),
+	insuranceNr: z.string().optional(),
+	plotNr: z.string().optional(),
+	nationalBuildingId: z.string().optional(),
 	historicPreservation: enumeratedSchema.optional().nullable(),
 	buildingType: enumeratedSchema.optional().nullable(),
 	buildingSubType: enumeratedSchema.optional().nullable(),
-	buildingYear: z.number().min(1000).max(2100).optional().nullable(),
+	buildingYear: z.number().min(1000).max(2100).optional(),
 	currency: enumeratedSchema.optional().nullable(),
-	street: z.string().optional().nullable(),
-	zip: z.string().optional().nullable(),
-	city: z.string().optional().nullable(),
+	street: z.string().optional(),
+	zip: z.string().optional(),
+	city: z.string().optional(),
 	country: enumeratedSchema.optional().nullable(),
-	geoAddress: z.string().optional().nullable(),
-	geoCoordinates: z.string().optional().nullable(),
-	geoZoom: z.number().optional().nullable(),
-	volume: z.number().optional().nullable(),
-	areaGross: z.number().optional().nullable(),
-	areaNet: z.number().optional().nullable(),
-	nrOfFloorsAboveGround: z.number().optional().nullable(),
-	nrOfFloorsBelowGround: z.number().optional().nullable(),
+	geoAddress: z.string().optional(),
+	geoCoordinates: z.string().optional(),
+	geoZoom: z.number().optional(),
+	volume: z.number().optional(),
+	areaGross: z.number().optional(),
+	areaNet: z.number().optional(),
+	nrOfFloorsAboveGround: z.number().optional(),
+	nrOfFloorsBelowGround: z.number().optional(),
 	insuredValue: z.number().min(0, "building:message.validation.insuredValueRequired"),
 	insuredValueYear: z
 		.number()
 		.min(1800, "building:message.validation.insuredValueYearMin")
 		.max(2100, "building:message.validation.insuredValueYearMax"),
-	notInsuredValue: z.number().optional().nullable(),
-	notInsuredValueYear: z.number().min(1800).max(2100).optional().nullable(),
-	thirdPartyValue: z.number().optional().nullable(),
-	thirdPartyValueYear: z.number().min(1800).max(2100).optional().nullable(),
+	notInsuredValue: z.number().optional(),
+	notInsuredValueYear: z.number().min(1800).max(2100).optional(),
+	thirdPartyValue: z.number().optional(),
+	thirdPartyValueYear: z.number().min(1800).max(2100).optional(),
 	owner: enumeratedSchema,
 	currentRating: displayOnly(ratingSchema.optional()),
 	contacts: displayOnly(z.array(enumeratedSchema).optional()),

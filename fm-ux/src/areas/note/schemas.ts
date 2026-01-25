@@ -11,8 +11,8 @@ export interface NoteFormInput {
 }
 
 export const noteFormSchema = z.object({
-	subject: z.string().optional().nullable(),
-	content: z.string().optional().nullable(),
+	subject: z.string().optional(),
+	content: z.string().optional(),
 	noteType: enumeratedSchema,
 	isPrivate: z.boolean().optional().nullable(),
 	relatedTo: displayOnly(enumeratedSchema.optional()),

@@ -1,20 +1,38 @@
-import { Card, Typography, Space, Empty, Spin } from "antd";
-import { PrinterOutlined } from "@ant-design/icons";
+import { Typography, Space, Empty, Spin, Card } from "antd";
 import { useTranslation } from "react-i18next";
 import type { Building } from "../../types";
 import { useProjectionQuery } from "../../queries";
 import { ProjectionValueChart } from "../components/ProjectionValueChart";
 import { ProjectionCostChart } from "../components/ProjectionCostChart";
 import { ProjectionTable } from "../components/ProjectionTable";
+import { BuildingEvaluationReport } from "../report";
 import { useContainerSize } from "../../../../common/hooks";
+import { getRestUrl } from "../../../../common/api/client";
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 
 export type EvaluationViewType = "chart" | "table" | "print";
 
 interface BuildingEvaluationFormProps {
 	building: Building;
 	viewType: EvaluationViewType;
+}
+
+/**
+ * Generate the location map URL for a building if coordinates are available.
+ * Uses the server-side static map endpoint which returns a JPEG image.
+ */
+function getLocationMapUrl(building: Building): string | undefined {
+	if (!building.geoCoordinates) return undefined;
+	return `/rest/building/buildings/${building.id}/location`;
+}
+
+/**
+ * Generate the cover photo URL for a building.
+ * The server always provides an image, even if not explicitly defined.
+ */
+function getCoverPhotoUrl(building: Building): string {
+	return getRestUrl("building", `buildings/${building.id}/coverFoto`);
 }
 
 export function BuildingEvaluationForm({ building, viewType }: BuildingEvaluationFormProps) {
@@ -109,10 +127,7 @@ export function BuildingEvaluationForm({ building, viewType }: BuildingEvaluatio
 				</div>
 				{/* Cost Chart - remaining height */}
 				<div style={{ flex: 1, minHeight: 200 }}>
-					<ProjectionCostChart
-						data={projection.periodList}
-						elements={projection.elementList}
-					/>
+					<ProjectionCostChart data={projection.periodList} elements={projection.elementList} />
 				</div>
 			</>
 		);
@@ -159,24 +174,55 @@ export function BuildingEvaluationForm({ building, viewType }: BuildingEvaluatio
 		return <ProjectionTable periodList={projection.periodList} />;
 	};
 
-	const renderPrintView = () => (
-		<div
-			style={{
-				flex: 1,
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "center",
-				backgroundColor: "#fafafa",
-				borderRadius: 4,
-				padding: 48,
-			}}
-		>
-			<PrinterOutlined style={{ fontSize: 64, color: "#1890ff", marginBottom: 24 }} />
-			<Title level={4}>{t("building:label.projectionPrint")}</Title>
-			<Text type="secondary">{t("building:message.evaluationPlaceholder")}</Text>
-		</div>
-	);
+	const renderPrintView = () => {
+		if (isLoading) {
+			return (
+				<div
+					style={{
+						flex: 1,
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+					}}
+				>
+					<Spin size="large" />
+				</div>
+			);
+		}
+
+		if (error || !projection) {
+			return (
+				<Empty
+					image={Empty.PRESENTED_IMAGE_SIMPLE}
+					description={
+						<Space direction="vertical">
+							<Text type="danger">{t("building:message.projectionLoadError")}</Text>
+						</Space>
+					}
+				/>
+			);
+		}
+
+		if (projection.periodList.length === 0) {
+			return (
+				<Empty
+					image={Empty.PRESENTED_IMAGE_SIMPLE}
+					description={<Text type="secondary">{t("building:message.noProjectionData")}</Text>}
+				/>
+			);
+		}
+
+		// TODO: Get inflation rate from account settings
+		return (
+			<BuildingEvaluationReport
+				building={building}
+				projection={projection}
+				coverPhotoUrl={getCoverPhotoUrl(building)}
+				locationMapUrl={getLocationMapUrl(building)}
+				inflationRate={2}
+			/>
+		);
+	};
 
 	return (
 		<div

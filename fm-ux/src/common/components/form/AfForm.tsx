@@ -48,9 +48,14 @@ export function AfForm<T extends FieldValues = FieldValues>({
 	htmlFormProps,
 }: AfFormProps<T>) {
 	const handleSubmit = onSubmit
-		? form.handleSubmit(async (data) => {
-				await onSubmit(data);
-			})
+		? form.handleSubmit(
+				async (data) => {
+					await onSubmit(data);
+				},
+				(errors) => {
+					console.error("[AfForm] Validation failed; aborting submit.", errors);
+				}
+			)
 		: undefined;
 
 	const content = onSubmit ? (

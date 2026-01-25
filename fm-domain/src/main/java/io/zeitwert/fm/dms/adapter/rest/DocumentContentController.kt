@@ -3,8 +3,11 @@ package io.zeitwert.fm.dms.adapter.rest
 import io.zeitwert.app.session.model.SessionContext
 import io.zeitwert.fm.dms.model.ObjDocumentRepository
 import io.zeitwert.fm.dms.model.enums.CodeContentType.Enumeration.getContentType
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.Resource
 import org.springframework.http.ContentDisposition
 import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,23 +25,28 @@ class DocumentContentController(
 	private val sessionContext: SessionContext,
 ) {
 
+	@Value("classpath:templates/missing.jpg")
+	lateinit var missingImage: Resource
+
 	@GetMapping(value = ["/{documentId}/content"])
 	fun getContent(
 		@PathVariable documentId: Int,
 	): ResponseEntity<ByteArray> {
-		val document = this.documentRepository.get(documentId)
+		val document = documentRepository.get(documentId)
 		val contentType = document.contentType
-		if (contentType == null) {
-			return ResponseEntity.noContent().build()
+		val content = if (contentType == null) {
+			missingImage.inputStream.readAllBytes()
+		} else {
+			document.content
 		}
 		val contentDisposition = ContentDisposition.builder("inline").filename(document.name).build()
 		val headers = HttpHeaders()
 		headers.contentDisposition = contentDisposition
 		return ResponseEntity
 			.ok()
-			.contentType(contentType.getMediaType())
+			.contentType(contentType?.getMediaType() ?: MediaType.APPLICATION_OCTET_STREAM)
 			.headers(headers)
-			.body(document.content)
+			.body(content)
 	}
 
 	@PostMapping(value = ["/{documentId}/content"])
@@ -54,7 +62,7 @@ class DocumentContentController(
 			if (contentType == null) {
 				return ResponseEntity.badRequest().body(null)
 			}
-			val document = this.documentRepository.load(documentId)
+			val document = documentRepository.load(documentId)
 			document.storeContent(contentType, file.bytes, sessionContext.userId, sessionContext.currentTime)
 		} catch (e: IOException) {
 			e.printStackTrace()

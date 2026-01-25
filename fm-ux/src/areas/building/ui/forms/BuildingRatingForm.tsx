@@ -210,10 +210,11 @@ export function BuildingRatingForm({ building, disabled }: BuildingRatingFormPro
 			{elements.length > 0 && (
 				<div style={{ marginTop: 16 }}>
 					<AfFieldGroup
-						legend={`${t("building:label.ratingNumber")} #${(currentRating.seqNr ?? 0) + 1}${currentRating.ratingDate
+						legend={`${t("building:label.ratingNumber")} #${(currentRating.seqNr ?? 0) + 1}${
+							currentRating.ratingDate
 								? ` (${t("building:label.asOf")} ${currentRating.ratingDate})`
 								: ""
-							}`}
+						}`}
 					>
 						<Row style={{ marginBottom: 8 }}>
 							<Col span={6} />

@@ -27,7 +27,7 @@ class BuildingEvaluationServiceImpl(
 		var value: String? = null
 
 		val projectionResult =
-			this.projectionService.getProjection(
+			projectionService.getProjection(
 				Set.of<ObjBuilding>(building),
 				ProjectionService.DefaultDuration,
 			)
@@ -37,40 +37,40 @@ class BuildingEvaluationServiceImpl(
 
 		if (building.buildingNr != null) {
 			value = building.buildingNr
-			this.addParameter(facts, "Gebäudenummer", value)
-			this.addParameter(onePageFacts, "Gebäudenummer", value)
+			addParameter(facts, "Gebäudenummer", value)
+			addParameter(onePageFacts, "Gebäudenummer", value)
 		}
 		val currentRating = building.currentRating!!
 		if (currentRating.partCatalog != null) {
 			value = currentRating.partCatalog!!.defaultName
-			this.addParameter(facts, "Gebäudekategorie", value)
-			this.addParameter(onePageFacts, "Gebäudekategorie", value)
+			addParameter(facts, "Gebäudekategorie", value)
+			addParameter(onePageFacts, "Gebäudekategorie", value)
 		}
 		if (building.buildingYear != null && building.buildingYear!! > 0) {
 			value = building.buildingYear.toString()
-			this.addParameter(facts, "Baujahr", value)
-			this.addParameter(onePageFacts, "Baujahr", value)
+			addParameter(facts, "Baujahr", value)
+			addParameter(onePageFacts, "Baujahr", value)
 		}
 		if (building.insuredValue != null) {
 			value = Formatter.formatMonetaryValue(1000 * building.insuredValue!!.toDouble(), "CHF")
-			this.addParameter(facts, "GV-Neuwert (" + building.insuredValueYear + ")", value)
-			this.addParameter(onePageFacts, "GV-Neuwert (" + building.insuredValueYear + ")", value)
+			addParameter(facts, "GV-Neuwert (" + building.insuredValueYear + ")", value)
+			addParameter(onePageFacts, "GV-Neuwert (" + building.insuredValueYear + ")", value)
 		}
 		if (building.volume != null) {
 			value = Formatter.formatNumber(building.volume) + " m³"
-			this.addParameter(facts, "Volumen Rauminhalt SIA 416", value)
+			addParameter(facts, "Volumen Rauminhalt SIA 416", value)
 		}
 		if (currentRating.ratingDate != null) {
 			value = Formatter.formatDate(currentRating.ratingDate!!)
-			this.addParameter(facts, "Begehung am", value)
+			addParameter(facts, "Begehung am", value)
 		}
 
 		val timeValue = Formatter.formatMonetaryValue(projectionResult.periodList.get(0).timeValue, "CHF")
-		val shortTermRestoration = Formatter.formatMonetaryValue(this.getRestorationCosts(projectionResult, 0, 1), "CHF")
-		val midTermRestoration = Formatter.formatMonetaryValue(this.getRestorationCosts(projectionResult, 2, 5), "CHF")
-		val longTermRestoration = Formatter.formatMonetaryValue(this.getRestorationCosts(projectionResult, 6, 25), "CHF")
+		val shortTermRestoration = Formatter.formatMonetaryValue(getRestorationCosts(projectionResult, 0, 1), "CHF")
+		val midTermRestoration = Formatter.formatMonetaryValue(getRestorationCosts(projectionResult, 2, 5), "CHF")
+		val longTermRestoration = Formatter.formatMonetaryValue(getRestorationCosts(projectionResult, 6, 25), "CHF")
 		val averageMaintenance =
-			Formatter.formatMonetaryValue(this.getAverageMaintenanceCosts(projectionResult, 1, 5), "CHF")
+			Formatter.formatMonetaryValue(getAverageMaintenanceCosts(projectionResult, 1, 5), "CHF")
 
 		var ratingYear = 9999
 		var elementCount = 0
@@ -79,7 +79,7 @@ class BuildingEvaluationServiceImpl(
 		val elements: MutableList<EvaluationElement> = mutableListOf()
 		for (element in currentRating.elementList) {
 			if (element.weight != null && element.weight!! > 0) {
-				var description = this.replaceEol(element.description)
+				var description = replaceEol(element.description)
 				if (!StringUtils.isEmpty(element.conditionDescription)) {
 					description += "<br/><b>Zustand</b>: " + element.conditionDescription
 				}
@@ -94,9 +94,9 @@ class BuildingEvaluationServiceImpl(
 						condition = element.condition,
 						conditionColor = getConditionColor(element.condition),
 						restorationYear =
-							this.getRestorationYear(projectionResult, element.buildingPart!!),
+							getRestorationYear(projectionResult, element.buildingPart!!),
 						restorationCosts =
-							this.getRestorationCosts(projectionResult, element.buildingPart!!),
+							getRestorationCosts(projectionResult, element.buildingPart!!),
 					)
 				elements.add(dto)
 				if (element.ratingYear!! < ratingYear) {
@@ -119,26 +119,26 @@ class BuildingEvaluationServiceImpl(
 		elements.add(totalDto)
 
 		val params: MutableList<EvaluationParameter> = mutableListOf()
-		this.addParameter(params, "Laufzeit (Zeithorizont)", "25 Jahre")
-		this.addParameter(params, "Teuerung", String.format("%.1f", building.inflationRate) + " %")
-		this.addParameter(params, "Z/N Wert", "" + totalCondition)
-		this.addParameter(params, "Zeitwert", timeValue)
-		this.addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration)
-		this.addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration)
-		this.addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration)
-		this.addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance)
+		addParameter(params, "Laufzeit (Zeithorizont)", "25 Jahre")
+		addParameter(params, "Teuerung", String.format("%.1f", building.inflationRate) + " %")
+		addParameter(params, "Z/N Wert", "" + totalCondition)
+		addParameter(params, "Zeitwert", timeValue)
+		addParameter(params, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration)
+		addParameter(params, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration)
+		addParameter(params, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration)
+		addParameter(params, "Durchschnittliche IH Kosten (nächste 5 Jahre)", averageMaintenance)
 
 		val onePageParams: MutableList<EvaluationParameter> = mutableListOf()
-		this.addParameter(
+		addParameter(
 			onePageParams,
 			"Laufzeit (Zeithorizont); Teuerung",
 			"25 Jahre; " + String.format("%.1f", building.inflationRate) + " %",
 		)
-		this.addParameter(onePageParams, "Zeitwert (Z/N Wert: " + totalCondition + ")", timeValue)
-		this.addParameter(onePageParams, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration)
-		this.addParameter(onePageParams, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration)
-		this.addParameter(onePageParams, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration)
-		this.addParameter(
+		addParameter(onePageParams, "Zeitwert (Z/N Wert: " + totalCondition + ")", timeValue)
+		addParameter(onePageParams, "IS Kosten kurzfristig (0 - 1 Jahre)", shortTermRestoration)
+		addParameter(onePageParams, "IS Kosten mittelfristig (2 - 5 Jahre)", midTermRestoration)
+		addParameter(onePageParams, "IS Kosten langfristig (6 - 25 Jahre)", longTermRestoration)
+		addParameter(
 			onePageParams,
 			"Durchschnittliche IH Kosten (nächste 5 Jahre)",
 			averageMaintenance,
@@ -187,7 +187,7 @@ class BuildingEvaluationServiceImpl(
 		return BuildingEvaluationResult(
 			id = building.id as Int,
 			name = building.name,
-			description = this.replaceEol(building.description),
+			description = replaceEol(building.description),
 			address = building.street + ", " + building.zip + " " + building.city + ", " + building.country!!.defaultName,
 			accountName = building.account!!.name,
 			facts = facts,

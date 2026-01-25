@@ -25,21 +25,23 @@ export interface PortfolioFormInput {
 	description?: string | null;
 	account?: Enumerated | null;
 	owner: Enumerated | null;
-	// Display-only fields (not submitted via standard form save)
+	// Editable array fields
 	includes?: PortfolioObject[];
 	excludes?: PortfolioObject[];
+	// Display-only field (computed by server)
 	buildings?: PortfolioObject[];
 }
 
 export const portfolioFormSchema = z.object({
 	name: z.string().min(1, "portfolio:message.validation.nameRequired"),
-	portfolioNr: z.string().optional().nullable(),
-	description: z.string().optional().nullable(),
+	portfolioNr: z.string().optional(),
+	description: z.string().optional(),
 	account: enumeratedSchema.optional().nullable(),
 	owner: enumeratedSchema,
-	// Display-only fields (excluded from submission via schema metadata)
-	includes: displayOnly(z.array(z.any()).optional()),
-	excludes: displayOnly(z.array(z.any()).optional()),
+	// Editable array fields (submitted with form)
+	includes: z.array(z.any()).optional(),
+	excludes: z.array(z.any()).optional(),
+	// Display-only field (computed by server, excluded from submission)
 	buildings: displayOnly(z.array(z.any()).optional()),
 });
 

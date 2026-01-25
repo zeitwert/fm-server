@@ -41,7 +41,7 @@ export const userFormSchema = z.object({
 		.string()
 		.email("user:message.validation.emailInvalid")
 		.min(1, "user:message.validation.emailRequired"),
-	description: z.string().optional().nullable(),
+	description: z.string().optional(),
 	role: enumeratedSchema,
 	owner: enumeratedSchema,
 });

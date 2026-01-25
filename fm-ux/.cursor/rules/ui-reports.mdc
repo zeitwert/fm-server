@@ -1,0 +1,271 @@
+---
+alwaysApply: false
+globs:
+  - "**/ui/report/**"
+  - "**/utils/evaluationUtils.ts"
+---
+
+# HTML Print Reports
+
+This document describes the architecture for generating print-ready HTML reports in fm-ux.
+Reports use pure HTML/CSS with `@page` rules for pagination - no PDF libraries or server-side rendering.
+
+## Architecture Overview
+
+```
+areas/{entity}/
+├── ui/report/
+│   ├── index.ts                        # Re-exports all report types
+│   └── {reportType}/                   # e.g., buildingEvaluation/
+│       ├── index.ts                    # Re-exports report + sections
+│       ├── {Entity}{Report}Report.tsx  # Main orchestrator
+│       ├── report.css                  # Print styles with @page rules
+│       └── sections/
+│           ├── index.ts                # Re-exports all sections
+│           ├── CoverPage.tsx           # Page 1: Title, photo
+│           ├── DataPage.tsx            # Page 2: Data tables + map
+│           ├── ElementsPage.tsx        # Page 3+: Detail cards
+│           └── ...                     # Additional pages
+└── utils/
+    └── evaluationUtils.ts              # Calculations, formatting, constants
+```
+
+## Key Concepts
+
+### 1. Page Sizing (A4 Landscape)
+
+All measurements originate from the original Aspose Word template in `DocumentGenerationServiceImpl.kt`.
+The conversion factor is: **1mm = 2.834647 points**
+
+```typescript
+// From evaluationUtils.ts
+export const POINTS_PER_MM = 2.834647454889553;
+
+export const A4_LANDSCAPE = {
+  width: 297 * POINTS_PER_MM,   // ~842pt
+  height: 210 * POINTS_PER_MM, // ~595pt
+  widthMm: 297,
+  heightMm: 210,
+};
+
+export const PAGE_MARGINS = {
+  top: 15,    // mm
+  right: 20,  // mm
+  bottom: 20, // mm
+  left: 20,   // mm
+};
+```
+
+### 2. Element Sizing from Aspose
+
+When adding new elements, check `DocumentGenerationServiceImpl.kt` for original sizes:
+
+| Element | Aspose Code | Points | Millimeters |
+|---------|-------------|--------|-------------|
+| Cover Photo | `CoverFotoWidth=400, CoverFotoHeight=230` | 400×230pt | 141×81mm |
+| Location Map | `insertImage(imageContent, 360.0, 360.0)` | 360×360pt | 127×127mm |
+| Rating Dot | `insertShape(..., 8.0, 8.0)` | 8×8pt | 2.8×2.8mm |
+
+### 3. CSS @page Rules
+
+```css
+@page {
+  size: A4 landscape;
+  margin: 15mm 20mm 20mm 20mm;
+}
+
+/* Page breaks */
+.page-break { break-before: page; }
+.avoid-break { break-inside: avoid; }
+
+/* Hide toolbar when printing */
+@media print {
+  .no-print { display: none !important; }
+}
+```
+
+### 4. Component Structure
+
+Each page section is a self-contained component:
+
+```tsx
+// sections/ExamplePage.tsx
+interface ExamplePageProps {
+  data: SomeData;
+}
+
+export function ExamplePage({ data }: ExamplePageProps) {
+  const { t } = useTranslation();
+
+  return (
+    <div className="report-page example-page page-break">
+      {/* Content */}
+    </div>
+  );
+}
+```
+
+**Important CSS classes:**
+- `report-page` - Base page container
+- `page-break` - Forces new page before this element
+- `avoid-break` - Prevents splitting this element across pages
+- `no-print` - Hides element when printing
+
+### 5. Main Orchestrator Pattern
+
+The main report component assembles all pages in order:
+
+```tsx
+export function BuildingEvaluationReport({ building, projection }: Props) {
+  const elements = building.currentRating?.elements || [];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {/* Toolbar - hidden when printing */}
+      <div className="no-print">
+        <Button onClick={() => window.print()}>Print</Button>
+      </div>
+
+      {/* Report content */}
+      <div className="evaluation-report">
+        <CoverPage building={building} />
+        <DataPage building={building} projection={projection} />
+        <ElementsPage elements={elements} projection={projection} />
+        {/* ... more pages */}
+      </div>
+    </div>
+  );
+}
+```
+
+## Condition Colors
+
+Backend-matching color scheme for element conditions:
+
+```typescript
+export const CONDITION_COLORS = {
+  veryBad: "#E54F29",  // condition < 50
+  bad: "#FAA724",      // condition 50-69
+  ok: "#78C06B",       // condition 70-84
+  good: "#338721",     // condition >= 85
+  unknown: "#999999",  // null/undefined
+};
+
+export function getConditionColor(condition: number | undefined): string {
+  if (condition == null) return CONDITION_COLORS.unknown;
+  if (condition < 50) return CONDITION_COLORS.veryBad;
+  if (condition < 70) return CONDITION_COLORS.bad;
+  if (condition < 85) return CONDITION_COLORS.ok;
+  return CONDITION_COLORS.good;
+}
+```
+
+## Adding a New Report Page
+
+1. Create component in `{reportType}/sections/`:
+```tsx
+// {reportType}/sections/NewPage.tsx
+export function NewPage({ data }: NewPageProps) {
+  return (
+    <div className="report-page new-page page-break">
+      {/* Use avoid-break on elements that shouldn't split */}
+      <div className="avoid-break">
+        {/* Card content */}
+      </div>
+    </div>
+  );
+}
+```
+
+2. Add CSS in `{reportType}/report.css`:
+```css
+.new-page {
+  /* Page-specific styles */
+}
+```
+
+3. Export from `{reportType}/sections/index.ts`:
+```typescript
+export { NewPage } from "./NewPage";
+```
+
+4. Add to orchestrator in correct position.
+
+## Adding a New Report Type
+
+1. Create folder structure: `areas/{entity}/ui/report/{reportType}/`
+2. Copy `report.css` from an existing report as starting point (adjust page orientation if needed)
+3. Create `{Entity}{Report}Report.tsx` orchestrator
+4. Create section components in `sections/`
+5. Create `index.ts` that exports the report and re-exports sections
+6. Add re-export in parent `report/index.ts`
+7. Create utilities in `utils/{entity}Utils.ts` if needed
+8. Wire up in the form component (e.g., when `viewType === "print"`)
+
+## Translations
+
+Report-specific keys go under the `report` namespace:
+
+```json
+{
+  "report": {
+    "evaluationReport": "Building Evaluation",
+    "print": "Print",
+    "basicData": "Basic Data",
+    "...": "..."
+  }
+}
+```
+
+## Formatting Utilities
+
+Use Swiss locale formatting from `evaluationUtils.ts`:
+
+```typescript
+formatNumber(12345)      // "12'345"
+formatCHF(12345)         // "CHF 12'345"
+formatPercent(75)        // "75%"
+```
+
+## Chart Images for Print
+
+Charts don't render well in print. Convert to images:
+
+1. Render chart offscreen with fixed dimensions
+2. Convert SVG to canvas to PNG data URL
+3. Display `<img>` in print, hide interactive chart
+
+```tsx
+// Screen: show interactive chart
+// Print: show static image
+<div className="recharts-wrapper">{/* Interactive chart */}</div>
+<img className="chart-image-print" src={chartDataUrl} />
+```
+
+```css
+@media print {
+  .recharts-wrapper { display: none; }
+  .chart-image-print { display: block; }
+}
+@media screen {
+  .chart-image-print { display: none; }
+}
+```
+
+## Reference: Original Aspose Template
+
+The original document generation is in:
+`fm-domain/src/main/java/io/zeitwert/fm/building/api/impl/DocumentGenerationServiceImpl.kt`
+
+Key table/shape indices from that file:
+- Table 0: BasicDataTable
+- Table 1: EvaluationTable
+- Table 2: ElementTable
+- Table 3: OptimalRenovationTable
+- Table 4: CostsTable
+- Table 5: OnePageDetailsTable
+- Table 6: OnePageBasicDataTable
+- Table 7: OnePageEvaluationTable
+- Shape 5: Value Chart (line)
+- Shape 6: Cost Chart (stacked bar)
+- Shape 9: One-pager Cost Chart (condensed)
