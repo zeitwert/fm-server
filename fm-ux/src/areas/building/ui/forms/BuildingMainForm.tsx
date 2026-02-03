@@ -194,6 +194,7 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								name="buildingYear"
 								label={t("building:label.buildingYear")}
 								readOnly={disabled}
+								formatNumber={false}
 								size={8}
 							/>
 						</AfFieldRow>
@@ -210,6 +211,7 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								label={t("building:label.insuredValueYear")}
 								required
 								readOnly={disabled}
+								formatNumber={false}
 								size={8}
 							/>
 						</AfFieldRow>
@@ -224,6 +226,7 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								name="notInsuredValueYear"
 								label={t("building:label.notInsuredValueYear")}
 								readOnly={disabled || !notInsuredValue}
+								formatNumber={false}
 								size={8}
 							/>
 						</AfFieldRow>
@@ -238,6 +241,7 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								name="thirdPartyValueYear"
 								label={t("building:label.thirdPartyValueYear")}
 								readOnly={disabled || !thirdPartyValue}
+								formatNumber={false}
 								size={8}
 							/>
 						</AfFieldRow>

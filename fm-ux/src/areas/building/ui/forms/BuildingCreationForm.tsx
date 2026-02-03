@@ -115,6 +115,7 @@ export function BuildingCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 					name="insuredValueYear"
 					label={t("building:label.insuredValueYear")}
 					required
+					formatNumber={false}
 					size={8}
 				/>
 			</AfFieldGroup>

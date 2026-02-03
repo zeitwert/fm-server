@@ -19,6 +19,8 @@ interface AfNumberProps extends AfFieldProps {
 	step?: number;
 	/** Text alignment */
 	align?: "left" | "center" | "right";
+	/** Format with thousand separators (default: true) */
+	formatNumber?: boolean;
 }
 
 /**
@@ -26,10 +28,11 @@ interface AfNumberProps extends AfFieldProps {
  *
  * Replaces `NumberField` and `IntField` from fm-ui.
  * Use `precision={0}` for integers.
+ * Use `formatNumber={false}` to disable thousand separators (e.g., for years).
  *
  * @example
  * <AfNumber name="insuredValue" label="Versicherungswert" suffix="kCHF" />
- * <AfNumber name="buildingYear" label="Baujahr" precision={0} min={1000} max={2100} />
+ * <AfNumber name="buildingYear" label="Baujahr" precision={0} min={1000} max={2100} formatNumber={false} />
  * <AfNumber name="volume" label="Volumen" suffix="m³" />
  */
 export function AfNumber({
@@ -41,6 +44,7 @@ export function AfNumber({
 	suffix,
 	step = 1,
 	align = "left",
+	formatNumber = true,
 	readOnly,
 	disabled,
 	required,
@@ -54,10 +58,11 @@ export function AfNumber({
 		const formatted =
 			precision !== undefined
 				? value.toLocaleString("de-CH", {
+						useGrouping: formatNumber,
 						minimumFractionDigits: precision,
 						maximumFractionDigits: precision,
 					})
-				: value.toLocaleString("de-CH");
+				: value.toLocaleString("de-CH", { useGrouping: formatNumber });
 		return `${prefix ? prefix + " " : ""}${formatted}${suffix ? " " + suffix : ""}`;
 	};
 
@@ -86,7 +91,11 @@ export function AfNumber({
 							disabled={disabled}
 							className={`af-number-align-${align} af-full-width${required ? " af-mandatory" : ""}`}
 							decimalSeparator="."
-							formatter={(val) => (val ? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, "'") : "")}
+							formatter={(val) =>
+								val && formatNumber
+									? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, "'")
+									: (val?.toString() ?? "")
+							}
 							parser={(val) => (val ? Number(val.replace(/'/g, "")) : (null as unknown as number))}
 						/>
 					)
