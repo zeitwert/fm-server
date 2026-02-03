@@ -59,6 +59,7 @@ export function AfCombobox({
 	onChange: externalOnChange,
 	readOnly,
 	disabled,
+	required,
 	...fieldProps
 }: AfComboboxProps) {
 	const { control } = useFormContext();
@@ -76,7 +77,7 @@ export function AfCombobox({
 	const options = explicitOptions ?? searchResults;
 
 	return (
-		<AfField name={name} {...fieldProps}>
+		<AfField name={name} required={required} {...fieldProps}>
 			<Controller
 				name={name}
 				control={control}
@@ -122,7 +123,7 @@ export function AfCombobox({
 							disabled={disabled}
 							allowClear
 							placeholder="Suchen..."
-							className="af-full-width"
+							className={`af-full-width${required ? " af-mandatory" : ""}`}
 							notFoundContent={
 								isLoading ? (
 									<Spin size="small" />

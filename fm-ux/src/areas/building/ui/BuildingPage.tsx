@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Button, Card, Spin, Result, Tabs, Space, Modal, Segmented } from "antd";
+import { Button, Spin, Result, Tabs, Space, Modal, Segmented } from "antd";
 import { LineChartOutlined, TableOutlined, PrinterOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
@@ -248,85 +248,80 @@ export function BuildingPage({ buildingId }: BuildingPageProps) {
 					/>
 				}
 			>
-				<Card className="af-full-height">
-					<AfForm form={form}>
-						<Tabs
-							activeKey={activeTab}
-							onChange={(key) => setActiveTab(key as TabKey)}
-							destroyInactiveTabPane
-							tabBarExtraContent={
-								showEditControls ? (
-									<EditControls
-										isEditing={isEditing}
-										isDirty={form.formState.isDirty}
-										isStoring={isStoring}
-										canEdit={canEdit && allowEdit}
-										onEdit={handleEdit}
-										onCancel={handleCancel}
-										onStore={handleStore}
-									/>
-								) : activeTab === "evaluation" ? (
-									<Segmented
-										value={evaluationViewType}
-										onChange={(value) => setEvaluationViewType(value as EvaluationViewType)}
-										options={[
-											{
-												value: "chart",
-												icon: <LineChartOutlined />,
-												label: t("building:label.viewChart"),
-											},
-											{
-												value: "table",
-												icon: <TableOutlined />,
-												label: t("building:label.viewTable"),
-											},
-											{
-												value: "print",
-												icon: <PrinterOutlined />,
-												label: t("building:label.viewPrint"),
-											},
-										]}
-									/>
-								) : null
-							}
-							items={[
-								{
-									key: "main",
-									label: t("building:label.tabMain"),
-									children: <BuildingMainForm disabled={!isEditing} />,
-								},
-								{
-									key: "location",
-									label: t("building:label.tabLocation"),
-									children: <BuildingLocationForm disabled={!isEditing} />,
-								},
-								{
-									key: "rating",
-									label: (
-										<span>
-											{t("building:label.tabRating")}
-											{hasActiveRating && <span style={{ color: "#014486" }}> *</span>}
-										</span>
-									),
-									children: (
-										<BuildingRatingForm
-											building={building}
-											disabled={!isEditing || !canEditRating}
-										/>
-									),
-								},
-								{
-									key: "evaluation",
-									label: t("building:label.tabEvaluation"),
-									disabled: isEditing || hasErrors,
-									children: (
-										<BuildingEvaluationForm building={building} viewType={evaluationViewType} />
-									),
-								},
-							]}
-						/>
-					</AfForm>
-				</Card>
+				<AfForm form={form}>
+					<Tabs
+						activeKey={activeTab}
+						onChange={(key) => setActiveTab(key as TabKey)}
+						destroyInactiveTabPane
+						tabBarExtraContent={
+							showEditControls ? (
+								<EditControls
+									isEditing={isEditing}
+									isDirty={form.formState.isDirty}
+									isStoring={isStoring}
+									canEdit={canEdit && allowEdit}
+									onEdit={handleEdit}
+									onCancel={handleCancel}
+									onStore={handleStore}
+								/>
+							) : activeTab === "evaluation" ? (
+								<Segmented
+									value={evaluationViewType}
+									onChange={(value) => setEvaluationViewType(value as EvaluationViewType)}
+									options={[
+										{
+											value: "chart",
+											icon: <LineChartOutlined />,
+											label: t("building:label.viewChart"),
+										},
+										{
+											value: "table",
+											icon: <TableOutlined />,
+											label: t("building:label.viewTable"),
+										},
+										{
+											value: "print",
+											icon: <PrinterOutlined />,
+											label: t("building:label.viewPrint"),
+										},
+									]}
+								/>
+							) : null
+						}
+						items={[
+							{
+								key: "main",
+								label: t("building:label.tabMain"),
+								children: <BuildingMainForm disabled={!isEditing} />,
+							},
+							{
+								key: "location",
+								label: t("building:label.tabLocation"),
+								children: <BuildingLocationForm disabled={!isEditing} />,
+							},
+							{
+								key: "rating",
+								label: (
+									<span>
+										{t("building:label.tabRating")}
+										{hasActiveRating && <span style={{ color: "#014486" }}> *</span>}
+									</span>
+								),
+								children: (
+									<BuildingRatingForm building={building} disabled={!isEditing || !canEditRating} />
+								),
+							},
+							{
+								key: "evaluation",
+								label: t("building:label.tabEvaluation"),
+								disabled: isEditing || hasErrors,
+								children: (
+									<BuildingEvaluationForm building={building} viewType={evaluationViewType} />
+								),
+							},
+						]}
+					/>
+				</AfForm>
 			</ItemPageLayout>
 
 			<Modal

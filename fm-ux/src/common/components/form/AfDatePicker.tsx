@@ -39,13 +39,14 @@ export function AfDatePicker({
 	maxDate,
 	readOnly,
 	disabled,
+	required,
 	...fieldProps
 }: AfDatePickerProps) {
 	const { control } = useFormContext();
 	const { styles } = useStyles();
 
 	return (
-		<AfField name={name} {...fieldProps}>
+		<AfField name={name} required={required} {...fieldProps}>
 			<Controller
 				name={name}
 				control={control}
@@ -70,7 +71,7 @@ export function AfDatePicker({
 							onChange={(date: Dayjs | null) => onChange(date?.format("YYYY-MM-DD") ?? null)}
 							format={format}
 							disabled={disabled}
-							className="af-full-width"
+							className={`af-full-width${required ? " af-mandatory" : ""}`}
 							minDate={minDate ? dayjs(minDate) : undefined}
 							maxDate={maxDate ? dayjs(maxDate) : undefined}
 							placeholder="Datum auswählen"

@@ -30,7 +30,16 @@ export function AfFieldGroup({ legend, children, className }: AfFieldGroupProps)
 			className={className}
 		>
 			{legend && (
-				<legend style={{ fontWeight: fontWeight.normal, whiteSpace: "nowrap", marginBottom: 16 }}>
+				<legend
+					style={{
+						fontWeight: fontWeight.medium,
+						whiteSpace: "nowrap",
+						marginBottom: 16,
+						color: "rgb(51, 51, 51)",
+						borderBottom: "1px solid rgb(51, 51, 51)",
+						paddingBottom: 4,
+					}}
+				>
 					{legend}
 				</legend>
 			)}

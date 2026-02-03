@@ -30,13 +30,14 @@ export function AfInput({
 	align,
 	readOnly,
 	disabled,
+	required,
 	...fieldProps
 }: AfInputProps) {
 	const { control } = useFormContext();
 	const { styles } = useStyles();
 
 	return (
-		<AfField name={name} {...fieldProps}>
+		<AfField name={name} required={required} {...fieldProps}>
 			<Controller
 				name={name}
 				control={control}
@@ -56,6 +57,7 @@ export function AfInput({
 							placeholder={placeholder}
 							style={{ textAlign: align }}
 							autoComplete="off"
+							className={required ? "af-mandatory" : undefined}
 						/>
 					)
 				}

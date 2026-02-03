@@ -1,4 +1,4 @@
-import { Card, Spin, Result, Tabs } from "antd";
+import { Spin, Result, Tabs } from "antd";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
 import { usePersistentForm } from "../../../common/hooks";
@@ -122,30 +122,28 @@ export function TaskPage({ taskId }: TaskPageProps) {
 					/>
 				}
 			>
-				<Card className="af-full-height">
-					<AfForm form={form}>
-						<Tabs
-							tabBarExtraContent={
-								<EditControls
-									isEditing={isEditing}
-									isDirty={isDirty}
-									isStoring={isStoring}
-									canEdit={canEdit}
-									onEdit={handleEdit}
-									onCancel={handleCancel}
-									onStore={handleStore}
-								/>
-							}
-							items={[
-								{
-									key: "main",
-									label: t("task:label.tabMain"),
-									children: <TaskMainForm disabled={!isEditing} />,
-								},
-							]}
-						/>
-					</AfForm>
-				</Card>
+				<AfForm form={form}>
+					<Tabs
+						tabBarExtraContent={
+							<EditControls
+								isEditing={isEditing}
+								isDirty={isDirty}
+								isStoring={isStoring}
+								canEdit={canEdit}
+								onEdit={handleEdit}
+								onCancel={handleCancel}
+								onStore={handleStore}
+							/>
+						}
+						items={[
+							{
+								key: "main",
+								label: t("task:label.tabMain"),
+								children: <TaskMainForm disabled={!isEditing} />,
+							},
+						]}
+					/>
+				</AfForm>
 			</ItemPageLayout>
 		</div>
 	);

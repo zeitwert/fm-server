@@ -37,6 +37,70 @@ export const appTheme: ThemeConfig = {
 };
 
 /**
+ * Form area theme configuration.
+ *
+ * Applied via nested ConfigProvider in ItemPageLayout to style
+ * form containers and controls differently from the rest of the app.
+ * Adjust these tokens to control form background, borders, spacing, etc.
+ */
+export const formTheme: ThemeConfig = {
+	token: {
+		// No border radius for form fields
+		borderRadius: 0,
+		borderRadiusLG: 0,
+		borderRadiusSM: 0,
+	},
+	components: {
+		Card: {
+			// Form card background color
+			colorBgContainer: "rgb(242, 242, 242)",
+		},
+		Input: {
+			// White background for form inputs
+			colorBgContainer: "#ffffff",
+			activeBg: "#ffffff",
+			hoverBg: "#ffffff",
+			// Border color when editing
+			colorBorder: "rgb(118, 118, 118)",
+			activeBorderColor: "rgb(118, 118, 118)",
+			hoverBorderColor: "rgb(118, 118, 118)",
+		},
+		Select: {
+			// White background for select controls
+			colorBgContainer: "#ffffff",
+			// Border color when editing
+			colorBorder: "rgb(118, 118, 118)",
+			activeBorderColor: "rgb(118, 118, 118)",
+			hoverBorderColor: "rgb(118, 118, 118)",
+		},
+		InputNumber: {
+			// White background for number inputs
+			colorBgContainer: "#ffffff",
+			// Border color when editing
+			colorBorder: "rgb(118, 118, 118)",
+			activeBorderColor: "rgb(118, 118, 118)",
+			hoverBorderColor: "rgb(118, 118, 118)",
+		},
+		DatePicker: {
+			// White background for date pickers
+			colorBgContainer: "#ffffff",
+			// Border color when editing
+			colorBorder: "rgb(118, 118, 118)",
+			activeBorderColor: "rgb(118, 118, 118)",
+			hoverBorderColor: "rgb(118, 118, 118)",
+		},
+		Tabs: {
+			// Tab underline color
+			inkBarColor: "#d9d9d9",
+		},
+		Form: {
+			// Label text color
+			labelColor: "rgb(51, 51, 51)",
+		},
+	},
+};
+
+/**
  * Spacing scale constants (in pixels).
  * Use with useToken() for reactive theme support.
  */

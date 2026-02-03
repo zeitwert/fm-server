@@ -43,6 +43,7 @@ export function AfNumber({
 	align = "left",
 	readOnly,
 	disabled,
+	required,
 	...fieldProps
 }: AfNumberProps) {
 	const { control } = useFormContext();
@@ -61,7 +62,7 @@ export function AfNumber({
 	};
 
 	return (
-		<AfField name={name} {...fieldProps}>
+		<AfField name={name} required={required} {...fieldProps}>
 			<Controller
 				name={name}
 				control={control}
@@ -83,7 +84,7 @@ export function AfNumber({
 							prefix={prefix}
 							suffix={suffix}
 							disabled={disabled}
-							className={`af-number-align-${align} af-full-width`}
+							className={`af-number-align-${align} af-full-width${required ? " af-mandatory" : ""}`}
 							decimalSeparator="."
 							formatter={(val) => (val ? `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, "'") : "")}
 							parser={(val) => (val ? Number(val.replace(/'/g, "")) : (null as unknown as number))}

@@ -91,7 +91,7 @@ export function AfSelect({
 							disabled={disabled}
 							allowClear={allowClear && !required}
 							placeholder={isLoading ? "Laden..." : "Auswählen..."}
-							className="af-full-width"
+							className={`af-full-width${required ? " af-mandatory" : ""}`}
 							notFoundContent={isLoading ? <Spin size="small" /> : "Keine Optionen"}
 							options={options.map((o) => ({ value: o.id, label: o.name }))}
 							showSearch

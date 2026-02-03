@@ -2,11 +2,13 @@
  * ItemPageLayout component providing a split layout with an optional collapsible right panel.
  *
  * Uses the shell store to persist the collapsed state across page navigations.
+ * Wraps form content in a ConfigProvider with formTheme for consistent form styling.
  */
 
-import { Row, Col, Button } from "antd";
+import { Row, Col, Button, Card, ConfigProvider } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useShellStore } from "../../../shell/shellStore";
+import { formTheme } from "../../../app/theme";
 import type { ReactNode } from "react";
 
 export interface ItemPageLayoutProps {
@@ -21,14 +23,30 @@ export interface ItemPageLayoutProps {
 export function ItemPageLayout({ children, rightPanel, fullWidth }: ItemPageLayoutProps) {
 	const { rightPanelCollapsed, toggleRightPanel } = useShellStore();
 
+	// Form content wrapped in ConfigProvider for form-specific theming
+	const formContent = (
+		<ConfigProvider theme={formTheme}>
+			<Card
+				className="af-full-height"
+				styles={{
+					body: {
+						borderRadius: 0,
+					},
+				}}
+			>
+				{children}
+			</Card>
+		</ConfigProvider>
+	);
+
 	// Full-width mode forced by tab configuration - render without any panel toggle
 	if (fullWidth) {
-		return <div style={{ flex: 1, minHeight: 0 }}>{children}</div>;
+		return <div style={{ flex: 1, minHeight: 0 }}>{formContent}</div>;
 	}
 
 	// No right panel provided - render full width
 	if (!rightPanel) {
-		return <div style={{ flex: 1, minHeight: 0 }}>{children}</div>;
+		return <div style={{ flex: 1, minHeight: 0 }}>{formContent}</div>;
 	}
 
 	// Panel collapsed - full width with toggle button
@@ -42,7 +60,7 @@ export function ItemPageLayout({ children, rightPanel, fullWidth }: ItemPageLayo
 					aria-label="common:showPanel"
 					className="af-panel-toggle"
 				/>
-				{children}
+				{formContent}
 			</div>
 		);
 	}
@@ -51,7 +69,7 @@ export function ItemPageLayout({ children, rightPanel, fullWidth }: ItemPageLayo
 	return (
 		<Row gutter={16} style={{ flex: 1, minHeight: 0 }}>
 			<Col xs={24} lg={16} xl={18} style={{ display: "flex", flexDirection: "column" }}>
-				{children}
+				{formContent}
 			</Col>
 			<Col xs={24} lg={8} xl={6}>
 				<div style={{ position: "relative" }}>

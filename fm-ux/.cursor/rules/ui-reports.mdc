@@ -1,10 +1,7 @@
 ---
+description: When working on the printed report functionality
 alwaysApply: false
-globs:
-  - "**/ui/report/**"
-  - "**/utils/evaluationUtils.ts"
 ---
-
 # HTML Print Reports
 
 This document describes the architecture for generating print-ready HTML reports in fm-ux.

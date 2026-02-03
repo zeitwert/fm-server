@@ -32,13 +32,14 @@ export function AfRadioGroup({
 	direction = "horizontal",
 	readOnly,
 	disabled,
+	required,
 	...fieldProps
 }: AfRadioGroupProps) {
 	const { control } = useFormContext();
 	const { styles } = useStyles();
 
 	return (
-		<AfField name={name} {...fieldProps}>
+		<AfField name={name} required={required} {...fieldProps}>
 			<Controller
 				name={name}
 				control={control}
@@ -66,6 +67,7 @@ export function AfRadioGroup({
 							optionType="button"
 							buttonStyle="solid"
 							style={getFlexDirectionStyle(direction)}
+							className={required ? "af-mandatory" : undefined}
 						>
 							{options.map((option) => (
 								<Radio key={option.id} value={option.id}>

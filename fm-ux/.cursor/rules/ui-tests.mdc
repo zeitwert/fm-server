@@ -1,7 +1,7 @@
 ---
+description: Testing changes to the UI
 alwaysApply: false
 ---
-
 # UI Tests for fm-ux
 
 There are two ways to run UI tests:

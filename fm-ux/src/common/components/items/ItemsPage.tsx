@@ -269,6 +269,8 @@ export function ItemsPage<T extends { id: string }>(props: ItemsPageProps<T>) {
 				styles={{
 					body: {
 						padding: `${token.paddingXS}px ${token.padding}px`,
+						backgroundColor: "rgb(225, 225, 225)",
+						borderRadius: 0,
 					},
 				}}
 			>

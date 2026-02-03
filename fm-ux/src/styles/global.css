@@ -149,10 +149,10 @@ input:-webkit-autofill:active,
 	text-decoration: underline;
 }
 
-/* Reduce form label font size by 1pt and match secondary text opacity */
+/* Reduce form label font size by 1pt */
 .ant-form-item .ant-form-item-label>label {
-	font-size: calc(1em - 1px);
-	color: rgba(0, 0, 0, 0.45);
+	font-size: calc(1em);
+	color: rgb(51, 51, 51);
 }
 
 /* Reduce vertical distance between label and form component content */
@@ -601,4 +601,20 @@ input:-webkit-autofill:active,
 
 .af-projection-table .ant-table-tbody>tr:hover>td {
 	background: #f0f0f0 !important;
+}
+
+/* -----------------------------------------------------------------------------
+   Mandatory field styling
+   ----------------------------------------------------------------------------- */
+
+/* Mandatory field background - light blue */
+.af-mandatory .ant-input,
+.af-mandatory .ant-input-number-input,
+.af-mandatory .ant-select-selector,
+.af-mandatory .ant-picker,
+.af-mandatory.ant-input,
+.af-mandatory.ant-input-number .ant-input-number-input,
+.af-mandatory.ant-select .ant-select-selector,
+.af-mandatory.ant-picker {
+	background-color: rgb(232, 240, 254) !important;
 }

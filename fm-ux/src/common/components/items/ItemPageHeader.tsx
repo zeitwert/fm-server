@@ -43,6 +43,8 @@ export function ItemPageHeader({ icon, title, details, actions }: ItemPageHeader
 			styles={{
 				body: {
 					padding: `${token.padding}px ${token.padding}px`,
+					borderRadius: 0,
+					backgroundColor: "rgb(225, 225, 225)",
 				},
 			}}
 		>

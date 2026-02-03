@@ -99,7 +99,7 @@ export function AfDependentSelect({
 							disabled={disabled || !parentId}
 							allowClear={allowClear && !required}
 							placeholder={!parentId ? "Zuerst übergeordnetes Feld auswählen" : "Auswählen..."}
-							className="af-full-width"
+							className={`af-full-width${required ? " af-mandatory" : ""}`}
 							notFoundContent={isLoading ? <Spin size="small" /> : "Keine Optionen"}
 							options={options.map((o) => ({ value: o.id, label: o.name }))}
 							showSearch

@@ -25,12 +25,13 @@ export function AfTextArea({
 	readOnly,
 	disabled,
 	size,
+	required,
 	...fieldProps
 }: AfTextAreaProps) {
 	const { control } = useFormContext();
 
 	return (
-		<AfField name={name} size={size} {...fieldProps}>
+		<AfField name={name} size={size} required={required} {...fieldProps}>
 			<Controller
 				name={name}
 				control={control}
@@ -48,6 +49,7 @@ export function AfTextArea({
 							rows={rows}
 							disabled={disabled}
 							placeholder={placeholder}
+							className={required ? "af-mandatory" : undefined}
 						/>
 					)
 				}
