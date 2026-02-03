@@ -11,6 +11,7 @@ import {
 	calculateZNRatio,
 } from "../../../../utils/evaluationUtils";
 import { ReportHeader, ReportFooter } from "../components";
+import { fontWeight } from "@/app/theme";
 
 interface SummaryPageProps {
 	building: Building;
@@ -96,7 +97,10 @@ export function SummaryPage({
 		<div className="report-page report-page-content summary-page page-break">
 			<ReportHeader building={building} />
 
-			<div className="report-page-body" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+			<div
+				className="report-page-body"
+				style={{ display: "flex", flexDirection: "column", gap: 16 }}
+			>
 				{/* Header with two tables side by side */}
 				<div className="summary-header">
 					{/* Basic Data Table (Table 6) */}
@@ -178,7 +182,7 @@ export function SummaryPage({
 							</div>
 
 							{/* Total row first */}
-							<div className="summary-element-row" style={{ fontWeight: 600 }}>
+							<div className="summary-element-row" style={{ fontWeight: fontWeight.bold }}>
 								<span className="summary-element-name">{t("building:label.total")}</span>
 								<span></span>
 								<span>100%</span>

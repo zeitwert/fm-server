@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { ApplicationMap } from "../../app/config/AppConfig";
 import { useSessionStore } from "../../session/model/sessionStore";
+import { fontWeight } from "@/app/theme";
 
 const { useToken } = theme;
 
@@ -62,7 +63,7 @@ export function AppSwitcher({ collapsed = false }: AppSwitcherProps) {
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
-						fontWeight: 600,
+						fontWeight: fontWeight.bold,
 						fontSize: 14,
 						color: token.colorPrimary,
 						background: token.colorPrimaryBg,

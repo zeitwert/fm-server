@@ -50,10 +50,10 @@ export const spacing = {
 
 /**
  * Font weight constants.
+ * These match the loaded Gotham Narrow SSM font weights.
  */
 export const fontWeight = {
 	normal: 400,
 	medium: 500,
-	semibold: 600,
 	bold: 700,
 } as const;

@@ -27,11 +27,22 @@
 }
 
 /* =============================================================================
+   CSS Custom Properties
+   ============================================================================= */
+
+:root {
+	--font-family: "'Gotham Narrow SSM', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+	--font-weight-normal: 400;
+	--font-weight-medium: 500;
+	--font-weight-bold: 700;
+}
+
+/* =============================================================================
    Base Styles
    ============================================================================= */
 
 body {
-	font-family: 'Gotham Narrow SSM', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	font-family: var(--font-family);
 }
 
 /* Position antd message notifications in top-right corner */
@@ -176,7 +187,7 @@ input:-webkit-autofill:active,
 .af-readonly-field {
 	display: block;
 	width: 100%;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	border-bottom: 1px solid var(--ant-color-border, #d9d9d9);
 }
 
@@ -535,7 +546,7 @@ input:-webkit-autofill:active,
 
 .af-preview-name-text {
 	font-size: 18px;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 }
 
 .af-preview-description-label {
@@ -566,7 +577,7 @@ input:-webkit-autofill:active,
 
 .af-projection-table .ant-table-thead>tr>th {
 	padding: 4px 8px !important;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	font-size: 13px;
 }
 

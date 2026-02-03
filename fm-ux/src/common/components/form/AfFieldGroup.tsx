@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { fontWeight } from "@/app/theme";
 
 interface AfFieldGroupProps {
 	/** Bold group legend/title */
@@ -29,7 +30,7 @@ export function AfFieldGroup({ legend, children, className }: AfFieldGroupProps)
 			className={className}
 		>
 			{legend && (
-				<legend style={{ fontWeight: 600, whiteSpace: "nowrap", marginBottom: 16 }}>
+				<legend style={{ fontWeight: fontWeight.normal, whiteSpace: "nowrap", marginBottom: 16 }}>
 					{legend}
 				</legend>
 			)}

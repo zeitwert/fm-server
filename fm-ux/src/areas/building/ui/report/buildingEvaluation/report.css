@@ -74,7 +74,7 @@
 	/* 360pt */
 
 	/* Typography */
-	--font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	--font-family: var(--font-family);
 	--font-size-base: 10pt;
 	--font-size-small: 8pt;
 	--font-size-title: 16pt;
@@ -325,14 +325,14 @@
 
 .data-table-simple th {
 	text-align: left;
-	font-weight: 400;
+	font-weight: var(--font-weight-normal);
 	color: #333;
 	/* Allow labels to wrap if needed, but values should not */
 }
 
 .data-table-simple td {
 	text-align: right;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	white-space: nowrap;
 }
 
@@ -384,7 +384,7 @@
 .data-collection-table th {
 	padding: 6px 8px;
 	text-align: left;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	color: #333;
 	vertical-align: bottom;
 }
@@ -420,7 +420,7 @@
 
 /* Element name cell */
 .element-name-cell {
-	font-weight: 500;
+	font-weight: var(--font-weight-medium);
 	color: #1890ff;
 }
 
@@ -446,7 +446,7 @@
 /* Weight cell */
 .element-weight-cell {
 	text-align: right;
-	font-weight: 500;
+	font-weight: var(--font-weight-medium);
 }
 
 /* Condition cell with square indicator */
@@ -515,12 +515,12 @@
 .renovation-timeline tr.total-row {
 	border-top: 1px solid #666;
 	border-bottom: 1px solid #666;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 }
 
 /* Period header row (Kurzfr., Mittelfristig, Langfristig) */
 .renovation-timeline .period-header-row th {
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	padding: 4px 2px;
 	border-bottom: 1px solid #e0e0e0;
 }
@@ -538,7 +538,7 @@
 .renovation-timeline th.element-col {
 	text-align: left;
 	width: 180px;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 }
 
 /* Year columns - rotated 90 degrees */
@@ -563,14 +563,14 @@
 	writing-mode: vertical-rl;
 	transform: rotate(180deg);
 	font-size: 7pt;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	line-height: 1;
 }
 
 /* Result columns (Jahr, Kosten) */
 .renovation-timeline th.result-col {
 	width: 55px;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	border-left: 1px dashed #ccc;
 }
 
@@ -587,7 +587,7 @@
 /* Element name - plain text, left aligned */
 .renovation-timeline td.element-name {
 	text-align: left;
-	font-weight: 400;
+	font-weight: var(--font-weight-normal);
 }
 
 /* Renovation marker */
@@ -608,7 +608,7 @@
 .renovation-timeline td.result-year,
 .renovation-timeline td.result-cost {
 	text-align: right;
-	font-weight: 400;
+	font-weight: var(--font-weight-normal);
 	border-left: 1px dashed #ccc;
 }
 
@@ -666,7 +666,7 @@
 
 .chart-title {
 	font-size: var(--font-size-heading);
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	margin: 0 0 8px 0;
 	flex-shrink: 0;
 }
@@ -702,7 +702,7 @@
 
 .costs-table th {
 	background: #fafafa;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	text-align: center;
 }
 
@@ -757,7 +757,7 @@
 
 .summary-section-title {
 	font-size: 11pt;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	padding: 6px 10px;
 	background: #fafafa;
 	border-bottom: 1px solid #e0e0e0;
@@ -778,7 +778,7 @@
 }
 
 .summary-table th {
-	font-weight: 500;
+	font-weight: var(--font-weight-medium);
 	color: #666;
 	width: 50%;
 }
@@ -814,7 +814,7 @@
 .summary-elements-header>span {
 	padding: 4px 6px;
 	background: #fafafa;
-	font-weight: 600;
+	font-weight: var(--font-weight-bold);
 	border-bottom: 1px solid #e0e0e0;
 }
 
@@ -842,7 +842,7 @@
 }
 
 .summary-element-name {
-	font-weight: 500;
+	font-weight: var(--font-weight-medium);
 }
 
 .summary-weight-bar {
@@ -872,7 +872,7 @@
 
 .summary-year-marker.active {
 	color: var(--color-restoration);
-	font-weight: bold;
+	font-weight: var(--font-weight-bold);
 	font-size: 10pt;
 }
 

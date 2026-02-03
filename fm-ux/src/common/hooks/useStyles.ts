@@ -1,5 +1,6 @@
 import { theme } from "antd";
 import type { CSSProperties } from "react";
+import { fontWeight } from "@/app/theme";
 
 /**
  * Style hook that provides design tokens and common style patterns.
@@ -28,7 +29,7 @@ export function useStyles() {
 		readonlyField: {
 			display: "block",
 			width: "100%",
-			fontWeight: 600,
+			fontWeight: fontWeight.bold,
 			borderBottom: `1px solid ${token.colorBorder}`,
 		} as CSSProperties,
 
@@ -38,7 +39,7 @@ export function useStyles() {
 		readonlyFieldAligned: (align?: "left" | "center" | "right"): CSSProperties => ({
 			display: "block",
 			width: "100%",
-			fontWeight: 600,
+			fontWeight: fontWeight.bold,
 			borderBottom: `1px solid ${token.colorBorder}`,
 			textAlign: align,
 		}),
