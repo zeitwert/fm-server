@@ -18,7 +18,7 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 
 	return (
 		<div>
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("contact:label.basicInfo")}>
 						<AfFieldRow>
@@ -90,7 +90,7 @@ export function ContactMainForm({ disabled }: ContactMainFormProps) {
 				</Col>
 			</Row>
 
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("contact:label.personal")}>
 						<AfFieldRow>

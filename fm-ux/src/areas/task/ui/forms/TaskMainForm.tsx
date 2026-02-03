@@ -19,7 +19,7 @@ export function TaskMainForm({ disabled }: TaskMainFormProps) {
 
 	return (
 		<div>
-			<Row>
+			<Row gutter={16}>
 				<Col span={24}>
 					<AfFieldGroup legend={t("task:label.basicInfo")}>
 						<AfFieldRow>
@@ -83,7 +83,7 @@ export function TaskMainForm({ disabled }: TaskMainFormProps) {
 				</Col>
 			</Row>
 
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("task:label.organization")}>
 						<AfFieldRow>

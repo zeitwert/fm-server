@@ -17,7 +17,7 @@ export function UserMainForm({ disabled }: UserMainFormProps) {
 
 	return (
 		<div>
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("user:label.basicInfo")}>
 						<AfFieldRow>

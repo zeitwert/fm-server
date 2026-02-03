@@ -18,7 +18,7 @@ export function NoteMainForm({ disabled }: NoteMainFormProps) {
 
 	return (
 		<div>
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("note:label.basicInfo")}>
 						<AfFieldRow>
@@ -51,7 +51,7 @@ export function NoteMainForm({ disabled }: NoteMainFormProps) {
 				</Col>
 			</Row>
 
-			<Row>
+			<Row gutter={16}>
 				<Col span={24}>
 					<AfFieldGroup legend={t("note:label.content")}>
 						<AfTextArea

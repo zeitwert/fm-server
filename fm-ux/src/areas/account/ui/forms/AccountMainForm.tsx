@@ -52,7 +52,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 
 	return (
 		<div>
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("account:label.basicInfo")}>
 						<AfFieldRow>
@@ -96,7 +96,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 				</Col>
 			</Row>
 
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("account:label.organization")}>
 						<AfFieldRow>
@@ -146,7 +146,7 @@ export function AccountMainForm({ disabled }: AccountMainFormProps) {
 				</Col>
 			</Row>
 
-			<Row>
+			<Row gutter={16}>
 				<Col span={24}>
 					<AfFieldGroup legend={t("account:label.contacts")}>
 						{(!contacts || contacts.length === 0) && (

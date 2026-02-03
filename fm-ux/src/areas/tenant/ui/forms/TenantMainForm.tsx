@@ -18,7 +18,7 @@ export function TenantMainForm({ disabled }: TenantMainFormProps) {
 
 	return (
 		<div>
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("tenant:label.basicInfo")}>
 						<AfFieldRow>
@@ -55,7 +55,7 @@ export function TenantMainForm({ disabled }: TenantMainFormProps) {
 				</Col>
 			</Row>
 
-			<Row>
+			<Row gutter={16}>
 				<Col span={24}>
 					<AfFieldGroup legend={t("tenant:label.calculationParams")}>
 						<AfFieldRow>

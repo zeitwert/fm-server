@@ -148,7 +148,7 @@ export function PortfolioMainForm({
 
 	return (
 		<div>
-			<Row>
+			<Row gutter={16}>
 				<Col span={12}>
 					<AfFieldGroup legend={t("portfolio:label.basicInfo")}>
 						<AfFieldRow>
