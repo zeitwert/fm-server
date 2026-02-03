@@ -54,60 +54,9 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 							/>
 						</AfFieldRow>
 					</AfFieldGroup>
-
-					<AfFieldGroup legend={t("building:label.address")}>
-						<AfFieldRow>
-							<AfInput
-								name="street"
-								label={t("building:label.street")}
-								readOnly={disabled}
-								size={24}
-							/>
-						</AfFieldRow>
-						<AfFieldRow>
-							<AfInput name="zip" label={t("building:label.zip")} readOnly={disabled} size={6} />
-							<AfInput name="city" label={t("building:label.city")} readOnly={disabled} size={18} />
-						</AfFieldRow>
-						<AfFieldRow>
-							<AfSelect
-								name="country"
-								label={t("building:label.country")}
-								source="oe/codeCountry"
-								readOnly
-								size={24}
-							/>
-						</AfFieldRow>
-					</AfFieldGroup>
 				</Col>
 
 				<Col span={8}>
-					<AfFieldGroup legend={t("building:label.identification")}>
-						<AfFieldRow>
-							<AfInput
-								name="insuranceNr"
-								label={t("building:label.insuranceNr")}
-								readOnly={disabled}
-								size={24}
-							/>
-						</AfFieldRow>
-						<AfFieldRow>
-							<AfInput
-								name="nationalBuildingId"
-								label={t("building:label.nationalBuildingId")}
-								readOnly={disabled}
-								size={24}
-							/>
-						</AfFieldRow>
-						<AfFieldRow>
-							<AfInput
-								name="plotNr"
-								label={t("building:label.plotNr")}
-								readOnly={disabled}
-								size={24}
-							/>
-						</AfFieldRow>
-					</AfFieldGroup>
-
 					<AfFieldGroup legend={t("building:label.classification")}>
 						<AfFieldRow>
 							<AfSelect
@@ -136,6 +85,96 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								source="building/codeHistoricPreservation"
 								readOnly={disabled}
 								size={24}
+							/>
+						</AfFieldRow>
+					</AfFieldGroup>
+				</Col>
+
+				<Col span={8}>
+					<AfFieldGroup legend={t("building:label.address")}>
+						<AfFieldRow>
+							<AfInput
+								name="street"
+								label={t("building:label.street")}
+								readOnly={disabled}
+								size={24}
+							/>
+						</AfFieldRow>
+						<AfFieldRow>
+							<AfInput name="zip" label={t("building:label.zip")} readOnly={disabled} size={6} />
+							<AfInput name="city" label={t("building:label.city")} readOnly={disabled} size={18} />
+						</AfFieldRow>
+						<AfFieldRow>
+							<AfSelect
+								name="country"
+								label={t("building:label.country")}
+								source="oe/codeCountry"
+								readOnly
+								size={24}
+							/>
+						</AfFieldRow>
+					</AfFieldGroup>
+				</Col>
+			</Row>
+
+			<Row gutter={16}>
+				<Col span={8}>
+					<AfFieldGroup legend={t("building:label.identification")}>
+						<AfFieldRow>
+							<AfInput
+								name="insuranceNr"
+								label={t("building:label.insuranceNr")}
+								readOnly={disabled}
+								size={24}
+							/>
+						</AfFieldRow>
+						<AfFieldRow>
+							<AfInput
+								name="nationalBuildingId"
+								label={t("building:label.nationalBuildingId")}
+								readOnly={disabled}
+								size={24}
+							/>
+						</AfFieldRow>
+						<AfFieldRow>
+							<AfInput
+								name="plotNr"
+								label={t("building:label.plotNr")}
+								readOnly={disabled}
+								size={24}
+							/>
+						</AfFieldRow>
+					</AfFieldGroup>
+				</Col>
+
+				<Col span={8}>
+					<AfFieldGroup legend={t("building:label.dimensions")}>
+						<AfFieldRow>
+							<AfNumber
+								name="volume"
+								label={t("building:label.volume")}
+								readOnly={disabled}
+								size={12}
+							/>
+							<AfNumber
+								name="areaGross"
+								label={t("building:label.areaGross")}
+								readOnly={disabled}
+								size={12}
+							/>
+						</AfFieldRow>
+						<AfFieldRow>
+							<AfNumber
+								name="nrOfFloorsAboveGround"
+								label={t("building:label.nrOfFloorsAboveGround")}
+								readOnly={disabled}
+								size={12}
+							/>
+							<AfNumber
+								name="nrOfFloorsBelowGround"
+								label={t("building:label.nrOfFloorsBelowGround")}
+								readOnly={disabled}
+								size={12}
 							/>
 						</AfFieldRow>
 					</AfFieldGroup>
@@ -200,37 +239,6 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								label={t("building:label.thirdPartyValueYear")}
 								readOnly={disabled || !thirdPartyValue}
 								size={8}
-							/>
-						</AfFieldRow>
-					</AfFieldGroup>
-
-					<AfFieldGroup legend={t("building:label.dimensions")}>
-						<AfFieldRow>
-							<AfNumber
-								name="volume"
-								label={t("building:label.volume")}
-								readOnly={disabled}
-								size={12}
-							/>
-							<AfNumber
-								name="areaGross"
-								label={t("building:label.areaGross")}
-								readOnly={disabled}
-								size={12}
-							/>
-						</AfFieldRow>
-						<AfFieldRow>
-							<AfNumber
-								name="nrOfFloorsAboveGround"
-								label={t("building:label.nrOfFloorsAboveGround")}
-								readOnly={disabled}
-								size={12}
-							/>
-							<AfNumber
-								name="nrOfFloorsBelowGround"
-								label={t("building:label.nrOfFloorsBelowGround")}
-								readOnly={disabled}
-								size={12}
 							/>
 						</AfFieldRow>
 					</AfFieldGroup>
