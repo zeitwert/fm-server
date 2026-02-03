@@ -8,6 +8,10 @@ import type { ThemeConfig } from "antd";
  */
 export const appTheme: ThemeConfig = {
 	token: {
+		// Typography
+		fontFamily:
+			"'Gotham Narrow SSM', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+
 		// Colors are inherited from Ant Design defaults
 		// colorPrimary: '#1677ff'  - Ant Design default
 		// colorBorder: '#d9d9d9'   - Ant Design default
