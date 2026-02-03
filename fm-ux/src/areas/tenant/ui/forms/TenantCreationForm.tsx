@@ -1,12 +1,12 @@
 import { Button, Space } from "antd";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/common/utils/zodResolver";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
-import { AfForm, AfInput, AfTextArea, AfSelect } from "../../../../common/components/form";
+import { AfForm, AfInput, AfTextArea, AfSelect } from "@/common/components/form";
 import { useCreateTenant } from "../../queries";
 import { tenantCreationSchema, type TenantCreationFormInput } from "../../schemas";
-import type { CreateFormProps } from "../../../../common/components/items";
+import type { CreateFormProps } from "@/common/components/items";
 
 export function TenantCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 	const { t } = useTranslation();

@@ -2,9 +2,9 @@ import { Avatar, Collapse, Divider, Empty, Spin, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { DashboardCard } from "./components/DashboardCard";
 import { useHomeOpenActivities } from "../model";
-import { useSessionStore } from "../../../session/model/sessionStore";
+import { useSessionStore } from "@/session/model/sessionStore";
 import type { OpenActivity } from "../model";
-import type { TypedEnumerated } from "../../../session/model/types";
+import type { TypedEnumerated } from "@/session/model/types";
 
 const DATE_FORMAT = new Intl.DateTimeFormat("de-DE", {
 	day: "2-digit",

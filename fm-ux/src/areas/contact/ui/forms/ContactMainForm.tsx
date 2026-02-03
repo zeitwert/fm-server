@@ -7,7 +7,7 @@ import {
 	AfFieldRow,
 	AfFieldGroup,
 	AfDatePicker,
-} from "../../../../common/components/form";
+} from "@/common/components/form";
 
 interface ContactMainFormProps {
 	disabled: boolean;

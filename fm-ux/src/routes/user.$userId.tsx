@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { UserPage } from "../areas/user/ui/UserPage";
+import { UserPage } from "@/areas/user/ui/UserPage";
 
 export const Route = createFileRoute("/user/$userId")({
 	component: UserPageRoute,

@@ -115,10 +115,15 @@ export function BuildingEvaluationReport({
 					<ElementsPage building={building} elements={elements} sectionNumber={4} />
 
 					{/* Page: Renovation Timeline */}
-					<RenovationTimelinePage building={building} elements={elements} projection={projection} sectionNumber={5} />
+					<RenovationTimelinePage
+						building={building}
+						elements={elements}
+						projection={projection}
+						sectionNumber={5}
+					/>
 
-				{/* Page: Charts */}
-				<ChartsPage building={building} projection={projection} sectionNumber={6} />
+					{/* Page: Charts */}
+					<ChartsPage building={building} projection={projection} sectionNumber={6} />
 
 					{/* Pages: Costs Table */}
 					<CostsTablePage building={building} projection={projection} sectionNumber={7} />

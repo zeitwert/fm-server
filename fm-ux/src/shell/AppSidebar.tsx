@@ -4,8 +4,8 @@ import { Button, Flex, Menu, theme } from "antd";
 import type { MenuProps } from "antd";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getApplicationInfo } from "../app/config/AppConfig";
-import { useSessionStore } from "../session/model/sessionStore";
+import { getApplicationInfo } from "@/app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
 import { useShellStore } from "./shellStore";
 import { AppSwitcher } from "./components/AppSwitcher";
 

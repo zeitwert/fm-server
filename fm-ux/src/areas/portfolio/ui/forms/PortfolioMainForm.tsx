@@ -11,7 +11,7 @@ import {
 	AfFieldGroup,
 	AfItemSelect,
 	type ItemSelectOption,
-} from "../../../../common/components/form";
+} from "@/common/components/form";
 import type { PortfolioFormInput } from "../../schemas";
 import type { PortfolioObject } from "../../types";
 

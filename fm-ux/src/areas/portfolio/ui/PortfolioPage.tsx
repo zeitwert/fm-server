@@ -17,10 +17,10 @@ import { usePortfolioQuery, useUpdatePortfolio } from "../queries";
 import { portfolioFormSchema, type PortfolioFormInput } from "../schemas";
 import { PortfolioMainForm, type AvailableObject } from "./forms/PortfolioMainForm";
 import type { Portfolio, PortfolioObject } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 import { useQuery } from "@tanstack/react-query";
-import { accountListApi } from "../../account/api";
+import { accountListApi } from "@/areas/account/api";
 import { portfolioListApi, buildingListApi } from "../api";
 
 interface PortfolioPageProps {
@@ -88,8 +88,10 @@ export function PortfolioPage({ portfolioId }: PortfolioPageProps) {
 	}, [accounts, portfolios, buildings, portfolioId]);
 
 	// Watch includes/excludes for calculation trigger
-	const includes = form.watch("includes") ?? [];
-	const excludes = form.watch("excludes") ?? [];
+	const watchedIncludes = form.watch("includes");
+	const watchedExcludes = form.watch("excludes");
+	const includes = useMemo(() => watchedIncludes ?? [], [watchedIncludes]);
+	const excludes = useMemo(() => watchedExcludes ?? [], [watchedExcludes]);
 
 	// Track previous values to detect changes
 	const prevIncludesRef = useRef<PortfolioObject[]>(includes);

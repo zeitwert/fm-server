@@ -1,13 +1,13 @@
 import { Button, Space } from "antd";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/common/utils/zodResolver";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
-import { AfForm, AfInput, AfSelect } from "../../../../common/components/form";
+import { AfForm, AfInput, AfSelect } from "@/common/components/form";
 import { useCreateContact } from "../../queries";
 import { contactCreationSchema, type ContactCreationFormInput } from "../../schemas";
-import type { CreateFormProps } from "../../../../common/components/items";
-import { useSessionStore } from "../../../../session/model/sessionStore";
+import type { CreateFormProps } from "@/common/components/items";
+import { useSessionStore } from "@/session/model/sessionStore";
 
 interface ContactCreationFormProps extends CreateFormProps {
 	account?: { id: string; name: string };

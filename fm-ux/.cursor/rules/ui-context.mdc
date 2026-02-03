@@ -14,32 +14,6 @@ alwaysApply: true
 - google-map-react for maps (needs mocking in tests)
 - recharts for charts (warning about 0 dimensions in tests - ignorable)
 
-
-## Dev Server Login (IMPORTANT - Read First for Browser Testing)
-
-When testing UI changes in the browser, follow this login sequence:
-
-### Step 1: Login
-- **URL**: http://localhost:5173/
-- **Email**: hannes@zeitwert.io
-- **Password**: demo
-- **Elements**:
-  - Email input: `aria-label="login:email"`
-  - Password input: `aria-label="login:password"`
-  - Submit button: `aria-label="login:signIn"`
-
-### Step 2: Tenant Selection (if multiple tenants)
-After successful login, a tenant selection wizard appears.
-- **Tenant cards**: `role="button"` with `aria-label="login:selectTenant:{TenantName}"`
-- Click the button with `aria-label="login:selectTenant:Diessenhofen"`
-- Logout option: `aria-label="login:signInDifferent"`
-
-### Step 3: Account Selection (if multiple accounts in tenant)
-If the tenant has multiple accounts, an account selection wizard appears.
-- **Account cards**: `role="button"` with `aria-label="login:selectAccount:{AccountName}"`
-- Example: Click the button with `aria-label="login:selectAccount:Diessenhofen 8253"`
-- Back to tenant: `aria-label="login:backToTenant"`
-
 ## Development Commands (pnpm)
 
 All commands run from the `fm-ux` directory.
@@ -77,30 +51,34 @@ pnpm dev                   # Start Vite dev server
 pnpm preview               # Preview production build locally
 ```
 
-## File Conventions
-- Components: PascalCase `.tsx`
-- Stores: camelCase with `Store` suffix
-- Translation files: lowercase `.json` per namespace
-
-## Internationalization (i18n)
-- Config: `src/i18n/index.ts`
-- Translations: `src/i18n/locales/{en,de}/{common,login,app,home}.json`
-- Default language: German (`de`) before login
-- Language syncs from `sessionInfo.locale` via `changeLanguage()` in sessionStore
-- Use `useTranslation(namespace)` hook in components
-
-## Testing Pattern
-- aria-labels use `ns:key` format for deterministic queries: `aria-label="login:signIn"`
-- Tests use mocked i18n returning keys: `screen.findByRole('button', { name: 'login:signIn' })`
-- Mock in `test/setup.ts` returns `${ns}:${key}` for `t()` calls
-
-## Route Protection
-- `__root.tsx` redirects to `/login` if `SessionState !== open`
-- Tests for authenticated routes must pre-populate session store (see ui-tests.mdc)
-
 ## Definition of Done
 1. TypeScript compiles: `pnpm tsc --noEmit`
 2. TypeScript no linting errors/warnings anymore: `pnpm lint`
 3. Tests pass: `pnpm test:run`
 4. Interactive elements have `aria-label="ns:key"` for testing
 5. New text uses translation keys, not hardcoded strings
+
+## Dev Server Login (IMPORTANT - Read First for Browser Testing)
+
+When testing UI changes in the browser, follow this login sequence:
+
+### Step 1: Login
+- **URL**: http://localhost:5173/
+- **Email**: hannes@zeitwert.io
+- **Password**: demo
+- **Elements**:
+  - Email input: `aria-label="login:email"`
+  - Password input: `aria-label="login:password"`
+  - Submit button: `aria-label="login:signIn"`
+
+### Step 2: Tenant Selection (if multiple tenants)
+After successful login, a tenant selection wizard appears.
+- **Tenant cards**: `role="button"` with `aria-label="login:selectTenant:{TenantName}"`
+- Click the button with `aria-label="login:selectTenant:Diessenhofen"`
+- Logout option: `aria-label="login:signInDifferent"`
+
+### Step 3: Account Selection (if multiple accounts in tenant)
+If the tenant has multiple accounts, an account selection wizard appears.
+- **Account cards**: `role="button"` with `aria-label="login:selectAccount:{AccountName}"`
+- Example: Click the button with `aria-label="login:selectAccount:Diessenhofen 8253"`
+- Back to tenant: `aria-label="login:backToTenant"`

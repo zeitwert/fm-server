@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { accountApi, accountListApi } from "./api";
 import type { Account } from "./types";
-import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/common/hooks";
 
 export const accountKeys = {
 	all: ["account"] as const,

@@ -1,14 +1,14 @@
 import { Button, Space } from "antd";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/common/utils/zodResolver";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
-import { AfForm, AfInput, AfTextArea, AfSelect } from "../../../../common/components/form";
+import { AfForm, AfInput, AfTextArea, AfSelect } from "@/common/components/form";
 import { useCreateUser } from "../../queries";
 import { userCreationSchema, type UserCreationFormInput } from "../../schemas";
-import type { CreateFormProps } from "../../../../common/components/items";
-import { useSessionStore } from "../../../../session/model/sessionStore";
-import { KERNEL_TENANT } from "../../../../session/model/types";
+import type { CreateFormProps } from "@/common/components/items";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { KERNEL_TENANT } from "@/session/model/types";
 
 export function UserCreationForm({ onSuccess, onCancel }: CreateFormProps) {
 	const { t } = useTranslation();

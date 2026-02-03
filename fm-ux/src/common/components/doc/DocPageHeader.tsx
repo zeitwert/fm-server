@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ItemPageHeader, type ItemPageHeaderProps } from "../items/ItemPageHeader";
 import { WorkflowPath } from "./WorkflowPath";
 import { StageSelector } from "./StageSelector";
-import type { CaseStage } from "../../../areas/task/types";
+import type { CaseStage } from "@/areas/task/types";
 
 export interface DocPageHeaderProps extends ItemPageHeaderProps {
 	currentStage?: CaseStage;

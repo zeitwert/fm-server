@@ -12,8 +12,8 @@ import { useNoteQuery, useUpdateNote } from "../queries";
 import { noteFormSchema, type NoteFormInput } from "../schemas";
 import { NoteMainForm } from "./forms/NoteMainForm";
 import type { Note } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 interface NotePageProps {
 	noteId: string;

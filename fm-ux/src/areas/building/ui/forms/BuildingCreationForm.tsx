@@ -1,21 +1,15 @@
 import { Button, Space } from "antd";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@/common/utils/zodResolver";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-	AfForm,
-	AfInput,
-	AfSelect,
-	AfNumber,
-	AfFieldGroup,
-} from "../../../../common/components/form";
+import { AfForm, AfInput, AfSelect, AfNumber, AfFieldGroup } from "@/common/components/form";
 import { useCreateBuilding } from "../../queries";
 import { buildingCreationSchema } from "../../schemas";
-import type { CreateFormProps } from "../../../../common/components/items";
-import { useSessionStore } from "../../../../session/model/sessionStore";
-import { accountListApi } from "../../../account/api";
+import type { CreateFormProps } from "@/common/components/items";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { accountListApi } from "@/areas/account/api";
 
 type BuildingCreationFormValues = ReturnType<typeof buildingCreationSchema.parse>;
 

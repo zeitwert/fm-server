@@ -7,8 +7,8 @@
 
 import { Row, Col, Button, Card, ConfigProvider } from "antd";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { useShellStore } from "../../../shell/shellStore";
-import { formTheme } from "../../../app/theme";
+import { useShellStore } from "@/shell/shellStore";
+import { formTheme } from "@/app/theme";
 import type { ReactNode } from "react";
 
 export interface ItemPageLayoutProps {

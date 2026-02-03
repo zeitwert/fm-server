@@ -16,10 +16,10 @@ import { canModifyEntity } from "../../../common/utils";
 import { useAccountQuery, useUpdateAccount } from "../queries";
 import { accountFormSchema, type AccountFormInput } from "../schemas";
 import { AccountMainForm } from "./forms/AccountMainForm";
-import { ContactCreationForm } from "../../contact/ui/forms/ContactCreationForm";
+import { ContactCreationForm } from "@/areas/contact/ui/forms/ContactCreationForm";
 import type { Account } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 interface AccountPageProps {
 	accountId: string;

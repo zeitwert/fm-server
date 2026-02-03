@@ -107,10 +107,11 @@ export function DataPage({
 			label: "Gebäudekategorie",
 			value: building.currentRating.partCatalog.name,
 		},
-		building.buildingYear && building.buildingYear > 0 && {
-			label: "Baujahr",
-			value: String(building.buildingYear),
-		},
+		building.buildingYear &&
+			building.buildingYear > 0 && {
+				label: "Baujahr",
+				value: String(building.buildingYear),
+			},
 		building.insuredValue && {
 			// Dynamic label with year, matching server: "GV-Neuwert (" + building.insuredValueYear + ")"
 			label: `GV-Neuwert (${building.insuredValueYear})`,
@@ -173,26 +174,20 @@ export function DataPage({
 				<div className="data-tables">
 					{/* Basic Data Table (Table 0 in Aspose) */}
 					<div>
-						<h2 className="data-section-header">
-							{nextSection()}. Grunddaten
-						</h2>
+						<h2 className="data-section-header">{nextSection()}. Grunddaten</h2>
 						<FactsTable facts={facts} />
 					</div>
 
 					{/* Evaluation Table (Table 1 in Aspose) */}
 					<div>
-						<h2 className="data-section-header">
-							{nextSection()}. Auswertung
-						</h2>
+						<h2 className="data-section-header">{nextSection()}. Auswertung</h2>
 						<FactsTable facts={params} />
 					</div>
 				</div>
 
 				{/* Location Section (Table 2 in Aspose) */}
 				<div className="data-location-section">
-					<h2 className="data-section-header">
-						{nextSection()}. Lage
-					</h2>
+					<h2 className="data-section-header">{nextSection()}. Lage</h2>
 					<div
 						className="location-map-container"
 						style={{
@@ -201,11 +196,7 @@ export function DataPage({
 						}}
 					>
 						{locationMapUrl ? (
-							<img
-								src={locationMapUrl}
-								alt="Lageplan"
-								className="location-map"
-							/>
+							<img src={locationMapUrl} alt="Lageplan" className="location-map" />
 						) : (
 							<div
 								style={{

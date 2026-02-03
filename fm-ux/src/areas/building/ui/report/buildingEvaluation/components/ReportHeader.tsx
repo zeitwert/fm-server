@@ -26,15 +26,9 @@ export function ReportHeader({ building, isCoverPage = false }: ReportHeaderProp
 
 	return (
 		<div className="report-header">
-			<div className="report-header-left">
-				{!isCoverPage && headerText}
-			</div>
+			<div className="report-header-left">{!isCoverPage && headerText}</div>
 			<div className="report-header-right">
-				<img
-					src={COMUNAS_LOGO_URL}
-					alt="Comunas"
-					className="report-logo"
-				/>
+				<img src={COMUNAS_LOGO_URL} alt="Comunas" className="report-logo" />
 			</div>
 		</div>
 	);

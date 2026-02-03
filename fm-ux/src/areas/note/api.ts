@@ -1,4 +1,4 @@
-import { createEntityApi } from "../../common/api/entityApi";
+import { createEntityApi } from "@/common/api/entityApi";
 import type { Note, NoteListItem } from "./types";
 
 export const noteApi = createEntityApi<Note>({

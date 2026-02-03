@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { NotePage } from "../areas/note/ui/NotePage";
+import { NotePage } from "@/areas/note/ui/NotePage";
 
 export const Route = createFileRoute("/note/$noteId")({
 	component: NotePageRoute,

@@ -15,8 +15,8 @@ import { useTaskQuery, useUpdateTask } from "../queries";
 import { taskFormSchema, type TaskFormInput } from "../schemas";
 import { TaskMainForm } from "./forms/TaskMainForm";
 import type { Task, CaseStage } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 interface TaskPageProps {
 	taskId: string;

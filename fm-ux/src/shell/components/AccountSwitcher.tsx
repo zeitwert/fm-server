@@ -1,7 +1,7 @@
 import { BankOutlined, DownOutlined } from "@ant-design/icons";
 import { Dropdown, Space, theme, Typography } from "antd";
 import type { MenuProps } from "antd";
-import { useSessionStore } from "../../session/model/sessionStore";
+import { useSessionStore } from "@/session/model/sessionStore";
 
 const { Text } = Typography;
 const { useToken } = theme;

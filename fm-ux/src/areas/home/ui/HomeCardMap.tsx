@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { DashboardCard } from "./components/DashboardCard";
 import { BuildingMap } from "./components/BuildingMap";
 import { useHomeMapBuildings } from "../model";
-import { useSessionStore } from "../../../session/model/sessionStore";
+import { useSessionStore } from "@/session/model/sessionStore";
 
 export function HomeCardMap() {
 	const { t } = useTranslation();

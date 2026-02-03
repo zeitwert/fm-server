@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ContactPage } from "../areas/contact/ui/ContactPage";
+import { ContactPage } from "@/areas/contact/ui/ContactPage";
 
 export const Route = createFileRoute("/contact/$contactId")({
 	component: ContactPageRoute,

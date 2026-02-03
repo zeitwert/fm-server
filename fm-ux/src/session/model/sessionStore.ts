@@ -5,8 +5,8 @@ import {
 	SESSION_INFO_KEY,
 	SESSION_STATE_KEY,
 	TENANT_INFO_KEY,
-} from "../../common/api/client";
-import { changeLanguage } from "../../i18n";
+} from "@/common/api/client";
+import { changeLanguage } from "@/i18n";
 import {
 	ADVISOR_TENANT,
 	Enumerated,

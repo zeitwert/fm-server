@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api, getRestUrl } from "../../../common/api/client";
-import type { Enumerated } from "../../../session/model/types";
+import type { Enumerated } from "@/session/model/types";
 
 interface ActionItemType {
 	id: string;

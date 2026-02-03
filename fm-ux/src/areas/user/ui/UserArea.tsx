@@ -7,8 +7,8 @@ import { userKeys } from "../queries";
 import { UserCreationForm } from "./forms/UserCreationForm";
 import { UserPreview } from "./UserPreview";
 import type { UserListItem } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 export function UserArea() {
 	const { t } = useTranslation();

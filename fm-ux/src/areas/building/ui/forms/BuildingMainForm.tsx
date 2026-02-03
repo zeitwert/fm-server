@@ -8,7 +8,7 @@ import {
 	AfNumber,
 	AfFieldRow,
 	AfFieldGroup,
-} from "../../../../common/components/form";
+} from "@/common/components/form";
 
 interface BuildingMainFormProps {
 	disabled: boolean;
@@ -205,6 +205,7 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								required
 								readOnly={disabled}
 								size={16}
+								suffix="kCHF"
 							/>
 							<AfNumber
 								name="insuredValueYear"
@@ -221,6 +222,7 @@ export function BuildingMainForm({ disabled }: BuildingMainFormProps) {
 								label={t("building:label.notInsuredValue")}
 								readOnly={disabled}
 								size={16}
+								suffix="kCHF"
 							/>
 							<AfNumber
 								name="notInsuredValueYear"

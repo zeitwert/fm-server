@@ -100,10 +100,7 @@ export function CostsTablePage({ building, projection, sectionNumber }: CostsTab
 					</thead>
 					<tbody>
 						{tableData.map((row) => (
-							<tr
-								key={row.id}
-								className={row.isSubRow ? "costs-table-subrow" : ""}
-							>
+							<tr key={row.id} className={row.isSubRow ? "costs-table-subrow" : ""}>
 								<td>{row.year ?? ""}</td>
 								<td>{row.originalValue ?? ""}</td>
 								<td>{row.timeValue ?? ""}</td>

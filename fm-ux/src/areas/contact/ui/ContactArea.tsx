@@ -7,8 +7,8 @@ import { contactKeys } from "../queries";
 import { ContactCreationForm } from "./forms/ContactCreationForm";
 import { ContactPreview } from "./ContactPreview";
 import type { ContactListItem } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 export function ContactArea() {
 	const { t } = useTranslation();

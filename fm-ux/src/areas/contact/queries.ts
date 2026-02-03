@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { contactApi, contactListApi } from "./api";
 import type { Contact } from "./types";
-import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/common/hooks";
 
 export const contactKeys = {
 	all: ["contact"] as const,

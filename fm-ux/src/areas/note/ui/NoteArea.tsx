@@ -5,7 +5,7 @@ import { noteListApi } from "../api";
 import { noteKeys } from "../queries";
 import { NotePreview } from "./NotePreview";
 import type { NoteListItem } from "../types";
-import { getArea } from "../../../app/config/AppConfig";
+import { getArea } from "@/app/config/AppConfig";
 
 export function NoteArea() {
 	const { t } = useTranslation();

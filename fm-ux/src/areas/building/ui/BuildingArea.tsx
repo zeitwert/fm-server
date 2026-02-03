@@ -7,8 +7,8 @@ import { buildingKeys } from "../queries";
 import { BuildingCreationForm } from "./forms/BuildingCreationForm";
 import { BuildingPreview } from "./BuildingPreview";
 import type { BuildingListItem } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 export function BuildingArea() {
 	const { t } = useTranslation();

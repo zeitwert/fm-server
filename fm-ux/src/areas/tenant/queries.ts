@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { tenantApi, tenantListApi } from "./api";
 import type { Tenant } from "./types";
-import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/common/hooks";
 
 export const tenantKeys = {
 	all: ["tenant"] as const,

@@ -1,5 +1,5 @@
-import { createEntityApi } from "../../common/api/entityApi";
-import { api, getApiUrl, getRestUrl } from "../../common/api/client";
+import { createEntityApi } from "@/common/api/entityApi";
+import { api, getApiUrl, getRestUrl } from "@/common/api/client";
 import type { Building, BuildingListItem, ProjectionResult } from "./types";
 
 // Geocoding types

@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useTenantQuery } from "../queries";
 import { getLogoUrl } from "../../../common/api/client";
-import { getArea } from "../../../app/config/AppConfig";
+import { getArea } from "@/app/config/AppConfig";
 
 const { Text, Paragraph } = Typography;
 

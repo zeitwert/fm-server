@@ -7,8 +7,8 @@ import { tenantKeys } from "../queries";
 import { TenantCreationForm } from "./forms/TenantCreationForm";
 import { TenantPreview } from "./TenantPreview";
 import type { TenantListItem } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 export function TenantArea() {
 	const { t } = useTranslation();

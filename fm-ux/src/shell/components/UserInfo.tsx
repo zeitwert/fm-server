@@ -1,7 +1,7 @@
 import { DownOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Divider, Popover, Space, theme, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { useSessionStore } from "../../session/model/sessionStore";
+import { useSessionStore } from "@/session/model/sessionStore";
 
 const { Text, Link } = Typography;
 const { useToken } = theme;

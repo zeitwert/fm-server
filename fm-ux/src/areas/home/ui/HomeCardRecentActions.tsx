@@ -2,7 +2,7 @@ import { Empty, Spin, Timeline, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { DashboardCard } from "./components/DashboardCard";
 import { useHomeRecentActions } from "../model";
-import { useSessionStore } from "../../../session/model/sessionStore";
+import { useSessionStore } from "@/session/model/sessionStore";
 import type { RecentAction } from "../model";
 
 const RELATIVE_FORMAT = new Intl.RelativeTimeFormat("de-DE", {

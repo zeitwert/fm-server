@@ -1,6 +1,6 @@
 import { Modal, Select, Typography } from "antd";
 import { useState } from "react";
-import type { CaseStage } from "../../../areas/task/types";
+import type { CaseStage } from "@/areas/task/types";
 
 const { Text } = Typography;
 

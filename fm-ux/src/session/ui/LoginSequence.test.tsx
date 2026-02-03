@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { renderApp, screen, waitFor } from "../../test/utils";
-import { server } from "../../test/mocks/server";
+import { renderApp, screen, waitFor } from "@/test/utils";
+import { server } from "@/test/mocks/server";
 import { http, HttpResponse } from "msw";
 import {
 	multiTenantUser,
 	multiAccountTenantInfo,
 	singleTenantUser,
-} from "../../test/mocks/fixtures";
+} from "@/test/mocks/fixtures";
 import { useSessionStore } from "../model/sessionStore";
 import { SessionState } from "../model/types";
 

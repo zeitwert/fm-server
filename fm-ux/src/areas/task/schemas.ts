@@ -1,7 +1,7 @@
 import { z } from "zod";
-import type { Enumerated } from "../../common/types";
+import type { Enumerated } from "@/common/types";
 import type { CaseStage } from "./types";
-import { enumeratedSchema, displayOnly } from "../../common/utils/zodMeta";
+import { enumeratedSchema, displayOnly } from "@/common/utils/zodMeta";
 
 export interface TaskFormInput {
 	subject: string;

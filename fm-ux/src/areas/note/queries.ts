@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { noteApi, noteListApi } from "./api";
 import type { Note } from "./types";
-import { useUpdateEntity, useDeleteEntity } from "../../common/hooks";
+import { useUpdateEntity, useDeleteEntity } from "@/common/hooks";
 
 export const noteKeys = {
 	all: ["note"] as const,

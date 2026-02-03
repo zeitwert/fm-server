@@ -1,10 +1,10 @@
 import { Navigate, createFileRoute, useSearch } from "@tanstack/react-router";
 import { ConfigProvider, Spin } from "antd";
-import { appTheme } from "../app/theme";
-import { useSessionStore } from "../session/model/sessionStore";
-import { SessionState } from "../session/model/types";
-import { LoginPage } from "../session/ui/LoginPage";
-import { SelectionWizard } from "../session/ui/SelectionWizard";
+import { appTheme } from "@/app/theme";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { SessionState } from "@/session/model/types";
+import { LoginPage } from "@/session/ui/LoginPage";
+import { SelectionWizard } from "@/session/ui/SelectionWizard";
 
 // Search params interface for redirect tracking
 interface LoginSearchParams {

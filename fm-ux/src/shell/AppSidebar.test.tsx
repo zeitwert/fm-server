@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { renderApp, screen, waitFor } from "../test/utils";
+import { renderApp, screen, waitFor } from "@/test/utils";
 import {
 	activeSessionInfo,
 	superUserSessionInfo,
 	singleAccountTenantInfo,
-} from "../test/mocks/fixtures";
-import { useSessionStore } from "../session/model/sessionStore";
-import { SessionState } from "../session/model/types";
+} from "@/test/mocks/fixtures";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { SessionState } from "@/session/model/types";
 import { useShellStore } from "./shellStore";
 
 // Increase timeout for integration tests

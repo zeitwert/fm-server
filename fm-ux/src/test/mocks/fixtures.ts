@@ -1,4 +1,4 @@
-import type { LoginUserInfo, LoginTenantInfo, SessionInfo } from "../../session/model/types";
+import type { LoginUserInfo, LoginTenantInfo, SessionInfo } from "@/session/model/types";
 
 // Test user with single tenant and single account (auto-complete flow)
 export const singleTenantUser: LoginUserInfo = {

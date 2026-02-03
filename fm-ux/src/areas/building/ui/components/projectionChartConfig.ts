@@ -1,6 +1,6 @@
 // Shared configuration for projection charts to ensure vertical alignment
 
-import { formatCompactCurrency } from "../../../../common/utils";
+import { formatCompactCurrency } from "@/common/utils";
 
 export const CHART_MARGIN = { top: 10, right: 30, left: 0, bottom: 0 };
 export const Y_AXIS_WIDTH = 80;

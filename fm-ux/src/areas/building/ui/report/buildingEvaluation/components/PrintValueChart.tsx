@@ -46,7 +46,8 @@ export function PrintValueChart({ data, containerWidth = 0 }: PrintValueChartPro
 	const chartData = transformData(data);
 
 	// Calculate X-axis padding to align with bar chart
-	const chartAreaWidth = containerWidth - PRINT_MARGIN.left - PRINT_MARGIN.right - PRINT_Y_AXIS_WIDTH;
+	const chartAreaWidth =
+		containerWidth - PRINT_MARGIN.left - PRINT_MARGIN.right - PRINT_Y_AXIS_WIDTH;
 	const numberOfYears = chartData.length;
 	const xAxisPadding =
 		containerWidth > 0 && numberOfYears > 0 ? Math.round(chartAreaWidth / numberOfYears / 2) : 15;

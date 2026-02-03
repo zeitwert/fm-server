@@ -3,7 +3,7 @@ import { Col, Row, Card, Typography, Alert } from "antd";
 import { EnvironmentOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useFormContext } from "react-hook-form";
-import { AfInput, AfSelect, AfFieldRow, AfFieldGroup } from "../../../../common/components/form";
+import { AfInput, AfSelect, AfFieldRow, AfFieldGroup } from "@/common/components/form";
 import { BuildingMap } from "../../../home/ui/components/BuildingMap";
 import type { BuildingInfo } from "../../../home/model";
 import { geocodeAddress } from "../../api";

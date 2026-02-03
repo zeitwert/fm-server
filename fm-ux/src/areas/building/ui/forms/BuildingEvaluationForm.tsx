@@ -6,8 +6,8 @@ import { ProjectionValueChart } from "../components/ProjectionValueChart";
 import { ProjectionCostChart } from "../components/ProjectionCostChart";
 import { ProjectionTable } from "../components/ProjectionTable";
 import { BuildingEvaluationReport } from "../report";
-import { useContainerSize } from "../../../../common/hooks";
-import { getRestUrl } from "../../../../common/api/client";
+import { useContainerSize } from "@/common/hooks";
+import { getRestUrl } from "@/common/api/client";
 
 const { Text } = Typography;
 

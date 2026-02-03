@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import type { Building, BuildingElement, ProjectionResult } from "../../../../types";
-import { RENOVATION_MARKER, formatNumber } from "../../../../utils/evaluationUtils";
+import { formatNumber } from "../../../../utils/evaluationUtils";
 import { ReportHeader, ReportFooter } from "../components";
 
 interface RenovationTimelinePageProps {
@@ -104,9 +104,13 @@ export function RenovationTimelinePage({
 											{delta === index ? <span className="marker-dot" /> : ""}
 										</td>
 									))}
-									<td className="result-year">{inRange && restorationYear ? restorationYear : ""}</td>
+									<td className="result-year">
+										{inRange && restorationYear ? restorationYear : ""}
+									</td>
 									<td className="result-cost">
-										{inRange && element.restorationCosts ? formatNumber(element.restorationCosts * 1000) : ""}
+										{inRange && element.restorationCosts
+											? formatNumber(element.restorationCosts * 1000)
+											: ""}
 									</td>
 								</tr>
 							);

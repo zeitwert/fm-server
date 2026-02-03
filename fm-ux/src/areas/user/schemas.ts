@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { Enumerated } from "../../common/types";
-import { enumeratedSchema } from "../../common/utils/zodMeta";
+import type { Enumerated } from "@/common/types";
+import { enumeratedSchema } from "@/common/utils/zodMeta";
 
 export interface UserCreationFormInput {
 	tenant: Enumerated | null;

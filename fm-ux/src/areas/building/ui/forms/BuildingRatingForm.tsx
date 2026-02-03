@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Checkbox, Col, InputNumber, Row, Table, Typography } from "antd";
 import type { ColumnType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
-import { AfSelect, AfDatePicker, AfFieldGroup } from "../../../../common/components/form";
+import { AfSelect, AfDatePicker, AfFieldGroup } from "@/common/components/form";
 import type { Building, BuildingElement } from "../../types";
 
 const { Text } = Typography;

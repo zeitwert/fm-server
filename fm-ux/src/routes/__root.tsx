@@ -1,10 +1,10 @@
 import { Outlet, createRootRoute, useLocation } from "@tanstack/react-router";
 import { ConfigProvider, Spin } from "antd";
 import { useEffect } from "react";
-import { appTheme } from "../app/theme";
-import { useSessionStore } from "../session/model/sessionStore";
-import { SessionState } from "../session/model/types";
-import { AppShell } from "../shell/AppShell";
+import { appTheme } from "@/app/theme";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { SessionState } from "@/session/model/types";
+import { AppShell } from "@/shell/AppShell";
 
 export const Route = createRootRoute({
 	component: RootComponent,

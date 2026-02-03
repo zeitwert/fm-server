@@ -1,0 +1,30 @@
+---
+alwaysApply: true
+---
+
+# FM-UX Coding Conventions
+
+## File Conventions
+- Components: PascalCase `.tsx`
+- Stores: camelCase with `Store` suffix
+- Translation files: lowercase `.json` per namespace
+
+## Imports
+- Use `@/...` alias for local imports instead of relative paths (`../../etc`)
+- Example: `import { Button } from '@/common/components/Button'`
+
+## Internationalization (i18n)
+- Config: `src/i18n/index.ts`
+- Translations: `src/i18n/locales/{en,de}/{common,login,app,home}.json`
+- Default language: German (`de`) before login
+- Language syncs from `sessionInfo.locale` via `changeLanguage()` in sessionStore
+- Use `useTranslation(namespace)` hook in components
+
+## Testing Pattern
+- aria-labels use `ns:key` format for deterministic queries: `aria-label="login:signIn"`
+- Tests use mocked i18n returning keys: `screen.findByRole('button', { name: 'login:signIn' })`
+- Mock in `test/setup.ts` returns `${ns}:${key}` for `t()` calls
+
+## Route Protection
+- `__root.tsx` redirects to `/login` if `SessionState !== open`
+- Tests for authenticated routes must pre-populate session store (see ui-tests.mdc)

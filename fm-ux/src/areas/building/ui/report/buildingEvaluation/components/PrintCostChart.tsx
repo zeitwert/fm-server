@@ -1,12 +1,4 @@
-import {
-	ResponsiveContainer,
-	BarChart,
-	Bar,
-	XAxis,
-	YAxis,
-	Legend,
-	CartesianGrid,
-} from "recharts";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Legend, CartesianGrid } from "recharts";
 import { useTranslation } from "react-i18next";
 import type { ProjectionPeriod } from "../../../../types";
 import { COLORS, formatCurrency } from "../../../components/projectionChartConfig";
@@ -60,11 +52,7 @@ export function PrintCostChart({ data }: PrintCostChartProps) {
 		<ResponsiveContainer width="100%" height="100%">
 			<BarChart data={chartData} syncId={PRINT_SYNC_ID} margin={PRINT_MARGIN}>
 				<CartesianGrid strokeDasharray="3 3" vertical={false} />
-				<XAxis
-					dataKey="year"
-					tick={{ fontSize: 9 }}
-					tickLine={{ stroke: "#ccc" }}
-				/>
+				<XAxis dataKey="year" tick={{ fontSize: 9 }} tickLine={{ stroke: "#ccc" }} />
 				<YAxis
 					width={PRINT_Y_AXIS_WIDTH}
 					tickFormatter={formatCurrency}

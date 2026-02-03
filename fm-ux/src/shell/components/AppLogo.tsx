@@ -1,8 +1,8 @@
 import { BankOutlined } from "@ant-design/icons";
 import { Flex, theme, Typography } from "antd";
 import { useEffect, useMemo, useState } from "react";
-import { getLogoUrl } from "../../common/api/client";
-import { useSessionStore } from "../../session/model/sessionStore";
+import { getLogoUrl } from "@/common/api/client";
+import { useSessionStore } from "@/session/model/sessionStore";
 
 const { Text } = Typography;
 const { useToken } = theme;

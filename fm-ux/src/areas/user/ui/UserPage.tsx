@@ -16,8 +16,8 @@ import { useUserQuery, useUpdateUser } from "../queries";
 import { userFormSchema, type UserFormInput } from "../schemas";
 import { UserMainForm } from "./forms/UserMainForm";
 import type { User } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 interface UserPageProps {
 	userId: string;

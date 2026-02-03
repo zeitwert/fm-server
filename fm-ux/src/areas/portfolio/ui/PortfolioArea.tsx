@@ -7,8 +7,8 @@ import { portfolioKeys } from "../queries";
 import { PortfolioCreationForm } from "./forms/PortfolioCreationForm";
 import { PortfolioPreview } from "./PortfolioPreview";
 import type { PortfolioListItem } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 export function PortfolioArea() {
 	const { t } = useTranslation();

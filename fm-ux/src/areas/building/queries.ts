@@ -3,7 +3,7 @@ import { message } from "antd";
 import { useTranslation } from "react-i18next";
 import { buildingApi, buildingListApi, fetchProjection } from "./api";
 import type { Building } from "./types";
-import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/common/hooks";
 
 export const buildingKeys = {
 	all: ["building"] as const,

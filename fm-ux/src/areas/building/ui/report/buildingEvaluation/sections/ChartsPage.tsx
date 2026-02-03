@@ -35,10 +35,7 @@ export function ChartsPage({ building, projection, sectionNumber }: ChartsPagePr
 
 				{/* Value Chart - Neuwert vs Zeitwert (30% height) */}
 				<div className="chart-area chart-area-value">
-					<PrintValueChart
-						data={projection.periodList}
-						containerWidth={containerSize.width}
-					/>
+					<PrintValueChart data={projection.periodList} containerWidth={containerSize.width} />
 				</div>
 
 				{/* Cost Chart - Instandhaltung + Instandsetzung (70% height) */}

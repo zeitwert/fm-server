@@ -2,7 +2,7 @@ import { Col, Empty, Row, Spin, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import { DashboardCard } from "./components/DashboardCard";
 import { useHomeOverview } from "../model";
-import { useSessionStore } from "../../../session/model/sessionStore";
+import { useSessionStore } from "@/session/model/sessionStore";
 import { getRestUrl } from "../../../common/api/client";
 
 const NUMBER_FORMAT = new Intl.NumberFormat("de-DE", { maximumFractionDigits: 0 });

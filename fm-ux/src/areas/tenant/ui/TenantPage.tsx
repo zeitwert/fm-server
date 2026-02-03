@@ -16,8 +16,8 @@ import { useTenantQuery, useUpdateTenant } from "../queries";
 import { tenantFormSchema, type TenantFormInput } from "../schemas";
 import { TenantMainForm } from "./forms/TenantMainForm";
 import type { Tenant } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 interface TenantPageProps {
 	tenantId: string;

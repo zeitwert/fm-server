@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, Typography } from "antd";
-import { getArea } from "../app/config/AppConfig";
+import { getArea } from "@/app/config/AppConfig";
 
 const { Title, Text } = Typography;
 

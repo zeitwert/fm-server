@@ -6,7 +6,7 @@ import {
 	AfSelect,
 	AfFieldRow,
 	AfFieldGroup,
-} from "../../../../common/components/form";
+} from "@/common/components/form";
 
 interface UserMainFormProps {
 	disabled: boolean;

@@ -10,8 +10,8 @@ import {
 	AfNumber,
 	AfFieldRow,
 	AfFieldGroup,
-} from "../../../../common/components/form";
-import type { Enumerated } from "../../../../common/types";
+} from "@/common/components/form";
+import type { Enumerated } from "@/common/types";
 import type { AccountContact } from "../../types";
 import type { AccountFormInput } from "../../schemas";
 

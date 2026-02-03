@@ -1,4 +1,4 @@
-import { createEntityApi } from "../../common/api/entityApi";
+import { createEntityApi } from "@/common/api/entityApi";
 import type { Account, AccountListItem } from "./types";
 
 export const accountApi = createEntityApi<Account>({

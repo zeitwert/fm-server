@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { api, getRestUrl } from "../../../common/api/client";
-import type { Enumerated, TypedEnumerated } from "../../../session/model/types";
+import type { Enumerated, TypedEnumerated } from "@/session/model/types";
 
 interface OpenActivityApiItem {
 	item: TypedEnumerated;

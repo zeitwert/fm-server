@@ -1,4 +1,4 @@
-import { createEntityApi } from "../../common/api/entityApi";
+import { createEntityApi } from "@/common/api/entityApi";
 import type { Task, TaskListItem } from "./types";
 
 export const taskApi = createEntityApi<Task>({

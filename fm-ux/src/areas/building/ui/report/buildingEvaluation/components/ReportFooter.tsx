@@ -19,9 +19,7 @@ export function ReportFooter({ pageNumber, isCoverPage = false }: ReportFooterPr
 	return (
 		<div className="report-footer">
 			<div className="report-footer-left">{currentDate}</div>
-			<div className="report-footer-center">
-				{!isCoverPage && pageNumber != null && pageNumber}
-			</div>
+			<div className="report-footer-center">{!isCoverPage && pageNumber != null && pageNumber}</div>
 			<div className="report-footer-right">powered by zeitwert</div>
 		</div>
 	);

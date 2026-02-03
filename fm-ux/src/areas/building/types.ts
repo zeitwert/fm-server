@@ -1,5 +1,5 @@
-import type { Enumerated } from "../../common/types";
-import type { EntityMeta } from "../../common/api/jsonapi";
+import type { Enumerated } from "@/common/types";
+import type { EntityMeta } from "@/common/api/jsonapi";
 
 export interface BuildingElement {
 	id: string;

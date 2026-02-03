@@ -7,7 +7,7 @@ import {
 	AfNumber,
 	AfFieldRow,
 	AfFieldGroup,
-} from "../../../../common/components/form";
+} from "@/common/components/form";
 
 interface TenantMainFormProps {
 	disabled: boolean;

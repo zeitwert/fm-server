@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { taskApi, taskListApi } from "./api";
 import type { Task } from "./types";
-import { useUpdateEntity } from "../../common/hooks";
+import { useUpdateEntity } from "@/common/hooks";
 
 export const taskKeys = {
 	all: ["task"] as const,

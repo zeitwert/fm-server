@@ -26,7 +26,7 @@ import { BuildingMainForm } from "./forms/BuildingMainForm";
 import { BuildingLocationForm } from "./forms/BuildingLocationForm";
 import { BuildingRatingForm } from "./forms/BuildingRatingForm";
 import { BuildingEvaluationForm, type EvaluationViewType } from "./forms/BuildingEvaluationForm";
-import { useSessionStore } from "../../../session/model/sessionStore";
+import { useSessionStore } from "@/session/model/sessionStore";
 
 // Tab configuration: controls layout and edit behavior per tab
 const TAB_CONFIG = {
@@ -37,7 +37,7 @@ const TAB_CONFIG = {
 } as const;
 
 type TabKey = keyof typeof TAB_CONFIG;
-import { getArea } from "../../../app/config/AppConfig";
+import { getArea } from "@/app/config/AppConfig";
 
 interface BuildingPageProps {
 	buildingId: string;

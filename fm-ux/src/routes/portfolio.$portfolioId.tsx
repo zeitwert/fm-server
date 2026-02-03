@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PortfolioPage } from "../areas/portfolio/ui/PortfolioPage";
+import { PortfolioPage } from "@/areas/portfolio/ui/PortfolioPage";
 
 export const Route = createFileRoute("/portfolio/$portfolioId")({
 	component: PortfolioPageRoute,

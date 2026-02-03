@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { TenantPage } from "../areas/tenant/ui/TenantPage";
+import { TenantPage } from "@/areas/tenant/ui/TenantPage";
 
 export const Route = createFileRoute("/tenant/$tenantId")({
 	component: TenantPageRoute,

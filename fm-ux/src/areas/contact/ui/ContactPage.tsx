@@ -16,8 +16,8 @@ import { useContactQuery, useUpdateContact } from "../queries";
 import { contactFormSchema, type ContactFormInput } from "../schemas";
 import { ContactMainForm } from "./forms/ContactMainForm";
 import type { Contact } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 interface ContactPageProps {
 	contactId: string;

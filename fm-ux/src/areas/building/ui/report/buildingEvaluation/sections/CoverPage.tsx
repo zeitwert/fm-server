@@ -24,9 +24,7 @@ export function CoverPage({ building, coverPhotoUrl }: CoverPageProps) {
 
 			<div className="report-page-body cover-page-body">
 				{/* Account name - top left */}
-				{building.account?.name && (
-					<p className="cover-account-name">{building.account.name}</p>
-				)}
+				{building.account?.name && <p className="cover-account-name">{building.account.name}</p>}
 
 				{/* Building name - below account name */}
 				<h1 className="cover-building-name">{building.name}</h1>
@@ -42,16 +40,12 @@ export function CoverPage({ building, coverPhotoUrl }: CoverPageProps) {
 					{coverPhotoUrl ? (
 						<img src={coverPhotoUrl} alt={building.name} className="cover-photo" />
 					) : (
-						<div className="cover-photo-placeholder">
-							{t("building:report.noPhoto")}
-						</div>
+						<div className="cover-photo-placeholder">{t("building:report.noPhoto")}</div>
 					)}
 				</div>
 
 				{/* Report subtitle - bottom left */}
-				<p className="cover-strategic-label">
-					{t("building:report.strategicMaintenance")}
-				</p>
+				<p className="cover-strategic-label">{t("building:report.strategicMaintenance")}</p>
 
 				{/* Report type - bottom left, below subtitle */}
 				<p className="cover-report-type">{t("building:report.objectEvaluation")}</p>

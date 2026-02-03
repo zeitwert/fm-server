@@ -4,7 +4,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useUserQuery } from "../queries";
-import { getArea } from "../../../app/config/AppConfig";
+import { getArea } from "@/app/config/AppConfig";
 
 const { Text, Paragraph } = Typography;
 

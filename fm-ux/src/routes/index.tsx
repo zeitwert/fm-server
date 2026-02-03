@@ -1,6 +1,6 @@
 import { Navigate, createFileRoute } from "@tanstack/react-router";
-import { getApplicationInfo } from "../app/config/AppConfig";
-import { useSessionStore } from "../session/model/sessionStore";
+import { getApplicationInfo } from "@/app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
 
 export const Route = createFileRoute("/")({
 	component: IndexComponent,

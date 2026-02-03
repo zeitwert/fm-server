@@ -1,7 +1,7 @@
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Alert, Avatar, Button, Card, Col, Row, Spin, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { getRestUrl } from "../../common/api/client";
+import { getRestUrl } from "@/common/api/client";
 import { useSessionStore } from "../model/sessionStore";
 import { Enumerated, TypedEnumerated } from "../model/types";
 

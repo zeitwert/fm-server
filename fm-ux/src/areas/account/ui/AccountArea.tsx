@@ -7,8 +7,8 @@ import { accountKeys } from "../queries";
 import { AccountCreationForm } from "./forms/AccountCreationForm";
 import { AccountPreview } from "./AccountPreview";
 import type { AccountListItem } from "../types";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { getArea } from "../../../app/config/AppConfig";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { getArea } from "@/app/config/AppConfig";
 
 export function AccountArea() {
 	const { t } = useTranslation();

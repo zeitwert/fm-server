@@ -1,6 +1,6 @@
-import type { Enumerated } from "../../common/types";
-import type { EntityMeta } from "../../common/api/jsonapi";
-import type { Contact } from "../contact/types";
+import type { Enumerated } from "@/common/types";
+import type { EntityMeta } from "@/common/api/jsonapi";
+import type { Contact } from "@/areas/contact/types";
 
 export interface AccountContact {
 	id: string;

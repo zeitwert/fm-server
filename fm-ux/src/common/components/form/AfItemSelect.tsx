@@ -4,7 +4,7 @@ import {
 	getItemTypeMeta,
 	getItemTypeSortOrder,
 	defaultItemTypeMeta,
-} from "../../../app/config/ItemTypeRegistry";
+} from "@/app/config/ItemTypeRegistry";
 import type { Enumerated } from "../../types";
 
 const { Text } = Typography;

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { portfolioApi, portfolioListApi } from "./api";
 import type { Portfolio } from "./types";
-import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "../../common/hooks";
+import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/common/hooks";
 
 export const portfolioKeys = {
 	all: ["portfolio"] as const,

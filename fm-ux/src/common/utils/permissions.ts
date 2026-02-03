@@ -4,7 +4,7 @@ import {
 	ROLE_ADMIN,
 	ROLE_APP_ADMIN,
 	ROLE_SUPER_USER,
-} from "../../session/model/types";
+} from "@/session/model/types";
 
 /**
  * Check if a user can modify an entity based on entity type and role.

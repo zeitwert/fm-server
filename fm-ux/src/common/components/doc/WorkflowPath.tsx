@@ -1,7 +1,7 @@
 import { Card, Button } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import type { CaseStage } from "../../../areas/task/types";
+import type { CaseStage } from "@/areas/task/types";
 
 export interface WorkflowPathProps {
 	currentStage?: CaseStage;

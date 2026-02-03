@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { renderApp, screen, waitFor } from "../../../test/utils";
-import { activeSessionInfo, singleAccountTenantInfo } from "../../../test/mocks/fixtures";
-import { useSessionStore } from "../../../session/model/sessionStore";
-import { SessionState } from "../../../session/model/types";
+import { renderApp, screen, waitFor } from "@/test/utils";
+import { activeSessionInfo, singleAccountTenantInfo } from "@/test/mocks/fixtures";
+import { useSessionStore } from "@/session/model/sessionStore";
+import { SessionState } from "@/session/model/types";
 
 // Increase timeout for integration tests
 vi.setConfig({ testTimeout: 15000 });

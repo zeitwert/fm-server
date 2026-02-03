@@ -5,7 +5,7 @@ import { taskListApi } from "../api";
 import { taskKeys } from "../queries";
 import { TaskPreview } from "./TaskPreview";
 import type { TaskListItem } from "../types";
-import { getArea } from "../../../app/config/AppConfig";
+import { getArea } from "@/app/config/AppConfig";
 
 export function TaskArea() {
 	const { t } = useTranslation();
