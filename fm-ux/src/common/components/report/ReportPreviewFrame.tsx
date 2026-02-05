@@ -32,6 +32,8 @@ export interface ReportPreviewFrameProps {
 	title: string;
 	/** CSS files to inject into iframe */
 	cssUrls: string[];
+	/** Dynamic CSS to inject (e.g., @page rules with building data) */
+	printStyles?: string;
 	/** CSS selector for pages (default: ".report-page") */
 	pageSelector?: string;
 	/** Page width in mm (default: 297 for A4 landscape) */
@@ -54,6 +56,7 @@ export interface ReportPreviewFrameProps {
 export function ReportPreviewFrame({
 	title,
 	cssUrls,
+	printStyles,
 	pageSelector = ".report-page",
 	pageWidth = A4_LANDSCAPE_WIDTH_MM,
 	pageHeight = A4_LANDSCAPE_HEIGHT_MM,
@@ -67,8 +70,10 @@ export function ReportPreviewFrame({
 	const contentWrapperRef = useRef<HTMLDivElement>(null);
 
 	// State
-	const [currentPage, setCurrentPage] = useState(1);
-	const [totalPages, setTotalPages] = useState(0);
+	// Note: We use "section" terminology in UI because preview shows logical
+	// report sections, while actual printed pages may differ due to content flow
+	const [currentSection, setCurrentSection] = useState(1);
+	const [totalSections, setTotalSections] = useState(0);
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [fitMode, setFitMode] = useState<"width" | "height" | null>("width");
 	const [isFrameReady, setIsFrameReady] = useState(false);
@@ -154,46 +159,46 @@ export function ReportPreviewFrame({
 		applyZoom(newZoom);
 	}, [calculateFitToHeight, applyZoom]);
 
-	// Navigate to specific page
-	const navigateToPage = useCallback(
-		(pageNum: number) => {
+	// Navigate to specific section
+	const navigateToSection = useCallback(
+		(sectionNum: number) => {
 			const iframe = iframeRef.current;
 			if (!iframe?.contentDocument) return;
 
-			const pages = iframe.contentDocument.querySelectorAll(pageSelector);
-			const targetPage = pages[pageNum - 1];
-			if (targetPage) {
-				targetPage.scrollIntoView({ behavior: "smooth", block: "start" });
+			const sections = iframe.contentDocument.querySelectorAll(pageSelector);
+			const targetSection = sections[sectionNum - 1];
+			if (targetSection) {
+				targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
 			}
 		},
 		[pageSelector]
 	);
 
-	// Page navigation handlers
-	const handlePrevPage = useCallback(() => {
-		if (currentPage > 1) {
-			const newPage = currentPage - 1;
-			setCurrentPage(newPage);
-			navigateToPage(newPage);
+	// Section navigation handlers
+	const handlePrevSection = useCallback(() => {
+		if (currentSection > 1) {
+			const newSection = currentSection - 1;
+			setCurrentSection(newSection);
+			navigateToSection(newSection);
 		}
-	}, [currentPage, navigateToPage]);
+	}, [currentSection, navigateToSection]);
 
-	const handleNextPage = useCallback(() => {
-		if (currentPage < totalPages) {
-			const newPage = currentPage + 1;
-			setCurrentPage(newPage);
-			navigateToPage(newPage);
+	const handleNextSection = useCallback(() => {
+		if (currentSection < totalSections) {
+			const newSection = currentSection + 1;
+			setCurrentSection(newSection);
+			navigateToSection(newSection);
 		}
-	}, [currentPage, totalPages, navigateToPage]);
+	}, [currentSection, totalSections, navigateToSection]);
 
-	const handlePageInputChange = useCallback(
+	const handleSectionInputChange = useCallback(
 		(value: number | null) => {
-			if (value !== null && value >= 1 && value <= totalPages) {
-				setCurrentPage(value);
-				navigateToPage(value);
+			if (value !== null && value >= 1 && value <= totalSections) {
+				setCurrentSection(value);
+				navigateToSection(value);
 			}
 		},
-		[totalPages, navigateToPage]
+		[totalSections, navigateToSection]
 	);
 
 	// Print handler
@@ -201,37 +206,37 @@ export function ReportPreviewFrame({
 		iframeRef.current?.contentWindow?.print();
 	}, []);
 
-	// Setup IntersectionObserver for page detection
+	// Setup IntersectionObserver for section detection
 	useEffect(() => {
 		if (!isFrameReady) return;
 
 		const iframe = iframeRef.current;
 		if (!iframe?.contentDocument) return;
 
-		const pages = iframe.contentDocument.querySelectorAll(pageSelector);
-		setTotalPages(pages.length);
+		const sections = iframe.contentDocument.querySelectorAll(pageSelector);
+		setTotalSections(sections.length);
 
-		if (pages.length === 0) return;
+		if (sections.length === 0) return;
 
-		// Create observer to track which page is most visible
+		// Create observer to track which section is most visible
 		const observer = new IntersectionObserver(
 			(entries) => {
 				// Find the entry with highest intersection ratio
 				let maxRatio = 0;
-				let visiblePageIndex = 0;
+				let visibleSectionIndex = 0;
 
 				entries.forEach((entry) => {
 					if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
 						maxRatio = entry.intersectionRatio;
-						const index = Array.from(pages).indexOf(entry.target as Element);
+						const index = Array.from(sections).indexOf(entry.target as Element);
 						if (index !== -1) {
-							visiblePageIndex = index;
+							visibleSectionIndex = index;
 						}
 					}
 				});
 
 				if (maxRatio > 0) {
-					setCurrentPage(visiblePageIndex + 1);
+					setCurrentSection(visibleSectionIndex + 1);
 				}
 			},
 			{
@@ -240,7 +245,7 @@ export function ReportPreviewFrame({
 			}
 		);
 
-		pages.forEach((page) => observer.observe(page));
+		sections.forEach((section) => observer.observe(section));
 
 		return () => observer.disconnect();
 	}, [isFrameReady, pageSelector]);
@@ -287,30 +292,30 @@ export function ReportPreviewFrame({
 
 				{/* Center: Nav + Zoom + Fit buttons */}
 				<div className="report-preview-controls-center">
-					{/* Left: Page Navigation + Divider */}
+					{/* Left: Section Navigation + Divider */}
 					<div className="report-preview-controls-left">
 						<Space.Compact size="small" className="report-preview-nav">
 							<Button
 								icon={<LeftOutlined />}
-								onClick={handlePrevPage}
-								disabled={currentPage <= 1}
-								aria-label="common:previousPage"
+								onClick={handlePrevSection}
+								disabled={currentSection <= 1}
+								aria-label="common:previousSection"
 							/>
 							<InputNumber
 								min={1}
-								max={totalPages || 1}
-								value={currentPage}
-								onChange={handlePageInputChange}
+								max={totalSections || 1}
+								value={currentSection}
+								onChange={handleSectionInputChange}
 								controls={false}
 								style={{ width: 45, textAlign: "center" }}
-								aria-label="common:currentPage"
+								aria-label="common:currentSection"
 							/>
-							<span className="report-preview-page-separator">/ {totalPages}</span>
+							<span className="report-preview-page-separator">/ {totalSections}</span>
 							<Button
 								icon={<RightOutlined />}
-								onClick={handleNextPage}
-								disabled={currentPage >= totalPages}
-								aria-label="common:nextPage"
+								onClick={handleNextSection}
+								disabled={currentSection >= totalSections}
+								aria-label="common:nextSection"
 							/>
 						</Space.Compact>
 						<div className="report-preview-divider" />
@@ -384,6 +389,7 @@ export function ReportPreviewFrame({
 							{cssUrls.map((url) => (
 								<link key={url} rel="stylesheet" href={url} />
 							))}
+							{printStyles && <style>{printStyles}</style>}
 						</>
 					}
 					contentDidMount={handleFrameMount}

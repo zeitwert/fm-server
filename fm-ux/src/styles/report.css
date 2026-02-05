@@ -85,8 +85,9 @@ body {
 		margin: 0;
 	}
 
-	/* Reset zoom wrapper transform for print */
+	/* Reset zoom wrapper transform and width for print */
 	.report-zoom-wrapper {
 		transform: none !important;
+		width: 100% !important;
 	}
 }

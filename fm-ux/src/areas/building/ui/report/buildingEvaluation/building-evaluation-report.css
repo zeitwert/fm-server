@@ -8,7 +8,7 @@
  * Key measurements from Aspose:
  * - Cover photo: 400×230pt (~141×81mm)
  * - Location map: 360×360pt (~127×127mm)
- * - Page margins: 15mm top, 20mm right/bottom/left
+ * - Page margins: 22mm top (15mm + 7mm for header), 20mm right/bottom/left
  */
 
 /* =============================================================================
@@ -22,12 +22,13 @@
 
 /* =============================================================================
    PAGE RULES
+   Note: Dynamic @page rules with margin boxes are generated in usePrintStyles.ts
+   and injected via the iframe. The rules here serve as fallback for screen preview.
    ============================================================================= */
 
 @page {
 	size: A4 landscape;
-	/* Set to 0 to prevent browser from adding its own header/footer */
-	/* Content spacing is handled by .report-page padding */
+	/* Fallback margin - overridden by dynamic @page rules in print */
 	margin: 0;
 }
 
@@ -52,14 +53,14 @@
 	/* Page dimensions (A4 Landscape) */
 	--page-width: 297mm;
 	--page-height: 210mm;
-	--margin-top: 15mm;
+	--margin-top: 12mm;
 	--margin-right: 20mm;
-	--margin-bottom: 15mm;
+	--margin-bottom: 12mm;
 	--margin-left: 20mm;
 	--content-width: calc(297mm - 40mm);
 	/* 257mm */
-	--content-height: calc(210mm - 35mm);
-	/* 175mm */
+	--content-height: calc(210mm - 42mm);
+	/* 168mm */
 
 	/* Sizing from Aspose (converted to mm) */
 	--cover-photo-width: 141mm;
@@ -692,7 +693,7 @@
 
 .costs-table th,
 .costs-table td {
-	padding: 4px 8px;
+	padding: 14px 8px;
 	text-align: right;
 	border: 1px solid #e0e0e0;
 	white-space: nowrap;
@@ -735,7 +736,7 @@
    - Lower-left: Element table (name, weight, %, Z/N scatter)
    - Lower-right: Renovation timeline (dots per year)
    
-   A4 Landscape content area: 270mm × ~160mm (after margins)
+   A4 Landscape content area: 257mm × 168mm (after margins)
    ============================================================================= */
 
 .summary-page {
@@ -753,9 +754,9 @@
 	--upper-height: 76mm;
 	--header-row-height: 5.5mm;
 	--header-row-gap: 5mm;
-	--left-panel-width: 130mm;
+	--left-panel-width: 127mm;
 	--right-panel-width: 130mm;
-	--content-width: 270mm;
+	--content-width: 257mm;
 
 	display: flex;
 	flex-direction: column;
@@ -812,6 +813,7 @@
 }
 
 .section-header {
+	margin-bottom: -4px;
 	border-bottom: 1px solid #333;
 	padding-bottom: 1mm;
 }
@@ -1358,6 +1360,14 @@
 
 /* =============================================================================
    PRINT-SPECIFIC STYLES
+   
+   Print output uses @page margin boxes (Chrome 131+, Safari 18.2+) for 
+   dynamic headers/footers. The @page rules are generated in usePrintStyles.ts.
+   
+   Key behaviors:
+   - HTML headers/footers are hidden (CSS @page margin boxes handle them)
+   - Content flows naturally across pages with @page { margin: 22mm 20mm 20mm 20mm }
+   - Table rows avoid breaking mid-row
    ============================================================================= */
 
 @media print {
@@ -1365,16 +1375,25 @@
 		display: none !important;
 	}
 
-	/* For print, @page margin is 0 to prevent browser headers/footers */
-	/* We handle spacing with CSS padding instead */
+	/* Hide HTML header/footer - @page margin boxes handle this in print */
+	.report-header,
+	.report-footer {
+		display: none !important;
+	}
+
+	/* Report pages in print: fill the page content area created by @page margins */
 	.report-page {
-		/* Full A4 landscape dimensions */
-		width: 297mm;
-		height: 210mm !important;
-		min-height: 210mm !important;
-		/* Content margins via padding (same as screen preview) */
-		padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
-		box-sizing: border-box;
+		/* Let content fill the page content area (after @page margins applied) */
+		width: 100%;
+		height: 168mm;
+		/* A4 landscape height (210mm) - top (22mm) - bottom (20mm) = 168mm */
+		min-height: 168mm;
+		/* No padding - @page margin already provides spacing from page edge */
+		padding: 0;
+		/* Page breaks between logical sections */
+		page-break-after: always;
+		break-after: page;
+		/* No shadow in print */
 		box-shadow: none;
 		/* Force browser to print background colors and images */
 		-webkit-print-color-adjust: exact !important;
@@ -1382,9 +1401,42 @@
 		color-adjust: exact !important;
 	}
 
-	/* Ensure page content fills the page height */
-	.report-page.report-page-content {
-		height: 210mm !important;
+	/* Last page should not force a break after */
+	.report-page:last-child {
+		page-break-after: auto;
+		break-after: auto;
+	}
+
+	/* Cover page uses named @page rule for different header */
+	.cover-page {
+		page: cover;
+	}
+
+	/* ---------------------------------------------------------------------
+	   MULTI-PAGE SECTIONS: These pages may span multiple printed pages.
+	   Let content flow naturally with @page margins handling spacing.
+	   --------------------------------------------------------------------- */
+	.costs-table-page,
+	.elements-page {
+		/* Remove fixed height - let content flow naturally */
+		height: auto !important;
+		min-height: auto !important;
+	}
+
+	/* Ensure table rows don't break across pages */
+	.costs-table tr {
+		break-inside: avoid;
+		page-break-inside: avoid;
+	}
+
+	.data-collection-table tr {
+		break-inside: avoid;
+		page-break-inside: avoid;
+	}
+
+	.renovation-timeline tr {
+		break-inside: avoid;
+		page-break-inside: avoid;
 	}
 
 	/* Ensure body section fills remaining space for absolute positioning */
@@ -1395,10 +1447,17 @@
 	}
 
 	/* Cover page body needs explicit height for absolute positioning to work */
-	/* 210mm total - 30mm padding (top+bottom) - ~12mm header - ~12mm footer = ~156mm */
+	/* Height = content area (168mm) since header/footer are hidden in print */
 	.cover-page-body {
-		height: 156mm !important;
-		min-height: 156mm !important;
+		height: 168mm !important;
+		min-height: 168mm !important;
+	}
+
+	/* Chart pages need explicit width for print to match content area */
+	.charts-page .report-page-body,
+	.summary-body {
+		width: 257mm;
+		max-width: 257mm;
 	}
 
 	/* Recharts renders as SVG which prints correctly - no need to hide */

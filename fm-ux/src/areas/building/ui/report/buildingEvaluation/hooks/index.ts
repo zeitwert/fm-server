@@ -1,0 +1,1 @@
+export { usePrintStyles } from "./usePrintStyles";

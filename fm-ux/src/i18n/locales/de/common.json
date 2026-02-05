@@ -1,4 +1,12 @@
 {
+	"previousSection": "Vorheriger Abschnitt",
+	"nextSection": "Nächster Abschnitt",
+	"currentSection": "Aktueller Abschnitt",
+	"fitToWidth": "An Breite anpassen",
+	"fitToHeight": "An Höhe anpassen",
+	"zoomIn": "Vergrössern",
+	"zoomOut": "Verkleinern",
+	"zoomLevel": "Zoomstufe",
 	"label": {
 		"search": "Suchen",
 		"settings": "Einstellungen",

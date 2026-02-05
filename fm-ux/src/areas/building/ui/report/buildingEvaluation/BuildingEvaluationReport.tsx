@@ -11,6 +11,7 @@ import {
 	CostsTablePage,
 	SummaryPage,
 } from "./sections";
+import { usePrintStyles } from "./hooks";
 
 // CSS URLs for iframe injection (isolated from main app styles)
 import reportBaseCssUrl from "@/styles/report.css?url";
@@ -49,6 +50,7 @@ export function BuildingEvaluationReport({
 	inflationRate = 2,
 }: BuildingEvaluationReportProps) {
 	const { t } = useTranslation();
+	const printStyles = usePrintStyles(building);
 
 	const elements = building.currentRating?.elements || [];
 
@@ -64,6 +66,7 @@ export function BuildingEvaluationReport({
 		<ReportPreviewFrame
 			title={t("building:report.evaluationReport")}
 			cssUrls={[reportBaseCssUrl, buildingEvalCssUrl]}
+			printStyles={printStyles}
 		>
 			<div id="evaluation-report" className="evaluation-report">
 				{/* Page 1: Cover */}

@@ -1,4 +1,12 @@
 {
+	"previousSection": "Previous section",
+	"nextSection": "Next section",
+	"currentSection": "Current section",
+	"fitToWidth": "Fit to width",
+	"fitToHeight": "Fit to height",
+	"zoomIn": "Zoom in",
+	"zoomOut": "Zoom out",
+	"zoomLevel": "Zoom level",
 	"label": {
 		"search": "Search",
 		"settings": "Settings",
