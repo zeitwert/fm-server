@@ -70,14 +70,12 @@ export function PrintCostChart({ data }: PrintCostChartProps) {
 				<Bar
 					dataKey="maintenanceCosts"
 					name={t("building:chart.maintenanceCosts")}
-					stackId="costs"
 					fill={COLORS.maintenanceCosts}
 				/>
-				{/* Restoration costs bar - stacked */}
+				{/* Restoration costs bar */}
 				<Bar
 					dataKey="restorationCosts"
 					name={t("building:chart.restorationCosts")}
-					stackId="costs"
 					fill={COLORS.restorationCosts}
 				/>
 			</BarChart>

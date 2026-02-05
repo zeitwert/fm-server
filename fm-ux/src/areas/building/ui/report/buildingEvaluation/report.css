@@ -730,157 +730,633 @@
 }
 
 /* =============================================================================
-   SUMMARY PAGE (One-Pager)
+   SUMMARY PAGE (One-Pager) - Fixed A4 Layout
+   Four quadrants with pixel-perfect alignment using mm units:
+   - Upper-left: Parameter tables (Grunddaten + Auswertung)
+   - Upper-right: Cost bar chart (Recharts)
+   - Lower-left: Element table (name, weight, %, Z/N scatter)
+   - Lower-right: Renovation timeline (dots per year)
+   
+   A4 Landscape content area: 270mm × ~160mm (after margins)
    ============================================================================= */
 
 .summary-page {
+	/* Fixed measurements from A4 layout */
+	--col-name: 45mm;
+	--col-weight: 14.5mm;
+	--col-percent: 10mm;
+	--col-zn-scatter: 54mm;
+	/* 4mm padding + 50mm scale */
+	--col-zn-value: 6mm;
+	/* Z/N value column width */
+	--col-gap: 6mm;
+	--col-year: 4.7mm;
+	--year-count: 26;
+	--upper-height: 76mm;
+	--header-row-height: 5.5mm;
+	--header-row-gap: 5mm;
+	--left-panel-width: 130mm;
+	--right-panel-width: 130mm;
+	--content-width: 270mm;
+
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
 }
 
-.summary-header {
-	display: flex;
-	gap: 24px;
-}
-
-.summary-basic-data,
-.summary-evaluation {
+.summary-body {
+	position: relative;
 	flex: 1;
+	width: var(--content-width);
 }
 
-.summary-section {
-	border: 1px solid #e0e0e0;
-	border-radius: 4px;
-	overflow: hidden;
+/* Full-height year grid overlay - spans from chart to table for alignment verification
+   Positioned at: left-panel-width (130mm) + Y-axis (5.5mm) = 135.5mm from left
+   Starts below chart title, ends above year labels and footer */
+.summary-year-grid-overlay {
+	position: absolute;
+	top: calc(var(--header-row-height) + 5mm);
+	/* Start below section headers */
+	bottom: 28mm;
+	/* Leave space for year labels + footer labels */
+	left: calc(var(--left-panel-width) + 5.5mm);
+	width: calc(var(--year-count) * var(--col-year));
+	display: grid;
+	grid-template-columns: repeat(var(--year-count), var(--col-year));
+	pointer-events: none;
+	z-index: 10;
 }
 
-.summary-section-title {
-	font-size: 11pt;
+.summary-year-grid-line {
+	border-left: 1px dashed #ccc;
+}
+
+.summary-year-grid-line:last-child {
+	border-right: 1px dashed #ccc;
+}
+
+/* -----------------------------------------------------------------------------
+   UPPER SECTION: Parameter tables + Cost chart (absolute positioning)
+   Height: 67.5mm, split at 135mm vertical divider
+   ----------------------------------------------------------------------------- */
+
+/* Section headers row ("Auf einen Blick" and chart title) */
+.summary-header-row {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: var(--header-row-height);
+	display: flex;
+	font-size: 9pt;
 	font-weight: var(--font-weight-bold);
-	padding: 6px 10px;
-	background: #fafafa;
-	border-bottom: 1px solid #e0e0e0;
-	margin: 0;
+	color: #333;
+	padding-top: 2mm;
 }
 
-.summary-table {
+.section-header {
+	border-bottom: 1px solid #333;
+	padding-bottom: 1mm;
+}
+
+.section-header-left {
+	width: calc(var(--left-panel-width) - 6mm);
+	margin-right: 6mm;
+}
+
+.section-header-right {
+	/* Left-align, width matches chart area */
+	width: calc(var(--year-count) * var(--col-year));
+	margin-left: 6mm;
+}
+
+.summary-upper {
+	position: absolute;
+	top: calc(var(--header-row-height) + var(--header-row-gap));
+	left: 0;
+	right: 0;
+	height: calc(var(--upper-height) - var(--header-row-height));
+	display: flex;
+}
+
+/* Parameter tables (left side) - 0 to 135mm */
+.summary-params {
+	width: var(--left-panel-width);
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding-right: 6mm;
+}
+
+.params-header {
+	font-size: 8pt;
+	font-weight: var(--font-weight-bold);
+	/* padding: 2px 6px;
+	background: #f5f5f5;
+	border: 1px solid #333; */
+}
+
+.params-table {
 	width: 100%;
 	border-collapse: collapse;
-	font-size: var(--font-size-small);
-}
-
-.summary-table th,
-.summary-table td {
-	padding: 4px 10px;
-	text-align: left;
-	border-bottom: 1px solid #f0f0f0;
-}
-
-.summary-table th {
-	font-weight: var(--font-weight-medium);
-	color: #666;
-	width: 50%;
-}
-
-.summary-table td {
-	text-align: right;
-}
-
-.summary-table tr:last-child th,
-.summary-table tr:last-child td {
-	border-bottom: none;
-}
-
-/* Summary elements overview */
-.summary-elements {
-	flex: 1;
-}
-
-.summary-elements-grid {
-	display: grid;
-	grid-template-columns: 140px 80px 50px 50px 1fr 50px;
-	gap: 2px;
 	font-size: 8pt;
-	border: 1px solid #e0e0e0;
-	border-radius: 4px;
-	overflow: hidden;
 }
 
-.summary-elements-header {
+.params-table tr {
+	border-bottom: 1px solid #ccc;
+}
+
+.params-table th,
+.params-table td {
+	padding: 2px 6px;
+	vertical-align: top;
+}
+
+.params-table th {
+	text-align: left;
+	font-weight: var(--font-weight-normal);
+	color: #333;
+	width: 60%;
+}
+
+.params-table td {
+	text-align: right;
+	font-weight: var(--font-weight-bold);
+	white-space: nowrap;
+}
+
+/* Cost chart container (right side) - aligned with year columns
+   Year columns start at 135.5mm (after left table columns + gap)
+   Chart container starts at 130mm, Y-axis (5.5mm) provides offset
+   Year columns span: 26 × 4.7mm = 122.2mm */
+.summary-chart-container {
+	/* Width: Y-axis area (5.5mm) + year columns width */
+	width: calc(5.5mm + var(--year-count) * var(--col-year));
+	display: flex;
+	flex-direction: column;
+}
+
+/* -----------------------------------------------------------------------------
+   COST BAR CHART (upper right quadrant) - Recharts
+   ----------------------------------------------------------------------------- */
+
+.summary-cost-chart {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.cost-chart-wrapper {
+	flex: 1;
+	width: 100%;
+	min-height: 0;
+	display: flex;
+	position: relative;
+}
+
+/* Y-axis area - extends left into params area via negative margin */
+.cost-chart-yaxis {
+	width: 12mm;
+	margin-left: -6.5mm;
+	/* Extend left: 12mm - 5.5mm = 6.5mm overflow */
+	flex-shrink: 0;
+}
+
+/* Bar chart area - matches year columns width */
+.cost-chart-bars {
+	flex: 1;
+	position: relative;
+	width: calc(var(--chart-year-count, 26) * var(--col-year));
+}
+
+/* CSS grid overlay for year column borders */
+.cost-chart-grid-overlay {
+	position: absolute;
+	top: 5px;
+	left: 0;
+	right: 0;
+	bottom: 25px;
+	/* Leave space for X-axis labels */
+	display: grid;
+	grid-template-columns: repeat(var(--chart-year-count, 26), 1fr);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.cost-chart-grid-cell {
+	border-left: 1px dashed #e0e0e0;
+}
+
+.cost-chart-grid-cell:last-child {
+	border-right: 1px dashed #e0e0e0;
+}
+
+/* Chart content - sits behind the grid overlay */
+.cost-chart-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+/* Chart legend */
+.cost-chart-legend {
+	display: flex;
+	justify-content: center;
+	gap: 16px;
+	font-size: 7pt;
+	margin-top: 4px;
+}
+
+.legend-item {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.legend-color {
+	width: 12px;
+	height: 8px;
+}
+
+.legend-maintenance {
+	background-color: #4b873c;
+}
+
+.legend-restoration {
+	background-color: #a0cd5f;
+}
+
+/* -----------------------------------------------------------------------------
+   LOWER SECTION: Element table + Timeline (fixed mm columns)
+   Starts at 67.5mm from top
+   ----------------------------------------------------------------------------- */
+
+.summary-lower {
+	position: absolute;
+	top: calc(var(--upper-height) + var(--header-row-height));
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Grid footer labels (Baustruktur, Baulicher Zustand, Instandsetzungszeitpunkte) */
+.summary-grid-footer {
+	display: flex;
+	font-size: 12px;
+	font-weight: var(--font-weight-bold);
+	padding: 4px 0;
+	margin-top: 2px;
+	color: #333;
+}
+
+.footer-structure-label {
+	width: calc(var(--col-name) + var(--col-weight) + var(--col-percent));
+	/* justify-content: space-between; */
+	border-top: 1px solid #333;
+}
+
+.footer-condition-label {
+	width: calc(var(--col-zn-scatter) - 4mm);
+	/* justify-content: space-between; */
+	margin-left: 4mm;
+	border-top: 1px solid #333;
+}
+
+.footer-timeline-label {
+	width: calc(var(--year-count) * var(--col-year));
+	margin-left: calc(var(--col-zn-value) + var(--col-gap));
+	border-top: 1px solid #333;
+}
+
+.footer-zn-label {
+	width: var(--col-zn-scatter);
+	text-align: center;
+	color: #333;
+}
+
+/* Unified grid - fixed mm-based columns */
+/* Columns: name | weight | % | Z/N scatter | Z/N value | gap | years... */
+.summary-grid {
+	display: grid;
+	grid-template-columns:
+		var(--col-name) var(--col-weight) var(--col-percent) var(--col-zn-scatter) var(--col-zn-value) var(--col-gap) repeat(var(--year-count), var(--col-year));
+	gap: 0;
+	font-size: 12px;
+	line-height: 1;
+	/* flex: 1; */
+}
+
+/* Grid row */
+.summary-row {
 	display: contents;
 }
 
-.summary-elements-header>span {
-	padding: 4px 6px;
-	background: #fafafa;
-	font-weight: var(--font-weight-bold);
+/* Grid cell base */
+.summary-cell {
+	padding: 3px 3px;
+	display: flex;
+	align-items: center;
 	border-bottom: 1px solid #e0e0e0;
+	background: white;
+	min-height: 4.5mm;
 }
 
-.summary-elements-header>span:not(:first-child) {
+/* Label header row styling - "Anteil" and "Z/N Wert" */
+.summary-row-label-header {
+	display: grid;
+	grid-column: 1 / -1;
+	grid-template-columns: var(--col-name) calc(var(--col-weight) + var(--col-percent)) calc(var(--col-zn-scatter) + var(--col-zn-value));
+}
+
+.summary-row-label-header .summary-cell {
+	background: white;
+	font-weight: var(--font-weight-bold);
+	border-bottom: 1px solid #e0e0e0;
+	justify-content: center;
 	text-align: center;
 }
 
-.summary-element-row {
-	display: contents;
+.summary-row-label-header .cell-name {
+	border-bottom: 1px solid #e0e0e0;
+	border-right: none;
 }
 
-.summary-element-row>span {
-	padding: 3px 6px;
-	border-bottom: 1px solid #f0f0f0;
+.cell-anteil-header {
+	justify-content: center;
+	text-align: center;
+}
+
+.cell-zn-wert-header {
+	justify-content: center;
+	text-align: center;
+}
+
+/* Total row styling - only spans left portion (no timeline) */
+.summary-row-total {
+	display: grid;
+	grid-column: 1 / -1;
+	grid-template-columns: var(--col-name) var(--col-weight) var(--col-percent) var(--col-zn-scatter) var(--col-zn-value);
+}
+
+.summary-row-total .summary-cell {
+	font-weight: var(--font-weight-bold);
+	background: #fafafa;
+	border-bottom: 1px solid #333;
+}
+
+/* First element row - top border */
+.summary-row-first .summary-cell {
+	border-top: 1px solid #e0e0e0;
+}
+
+/* Footer row styling - axis labels + year labels */
+.summary-row-footer .summary-cell {
+	background: white;
+	border-bottom: none;
+	min-height: 5mm;
+}
+
+.summary-row-footer .cell-year-footer {
+	height: 12mm;
+	padding-top: 1mm;
+	overflow: visible;
+}
+
+/* Last row - no bottom border */
+.summary-row:last-child .summary-cell {
+	border-bottom: none;
+}
+
+/* Cell-specific styling */
+.cell-name {
+	justify-content: flex-start;
+	font-weight: var(--font-weight-medium);
+}
+
+.cell-weight-bar {
+	justify-content: flex-end;
+	padding: 2px 4px;
+}
+
+.weight-bar {
+	height: 8px;
+	background: #1890ff;
+	border-radius: 1px;
+}
+
+.cell-percent {
+	justify-content: flex-end;
+	text-align: right;
+	padding-right: 2mm;
+}
+
+/* -----------------------------------------------------------------------------
+   Z/N SCATTER CHART CELL
+   Horizontal axis from 100 (left) to 50 (right)
+   7mm padding + 5 segments × 10mm = 57mm total (ticks only on 10s)
+   ----------------------------------------------------------------------------- */
+
+.cell-zn-scatter {
+	position: relative;
+	padding: 0;
+	border-right: 1px solid #ccc;
+}
+
+/* Scatter axis container */
+.zn-scatter-axis {
+	position: relative;
+	width: 100%;
+	height: 100%;
 	display: flex;
 	align-items: center;
 }
 
-.summary-element-row>span:not(:first-child) {
-	justify-content: center;
+/* Left padding area (4mm) */
+.zn-scatter-padding {
+	width: 4mm;
+	flex-shrink: 0;
 }
 
-.summary-element-row:last-child>span {
-	border-bottom: none;
-}
-
-.summary-element-name {
-	font-weight: var(--font-weight-medium);
-}
-
-.summary-weight-bar {
-	height: 8px;
-	background: #1890ff;
-	border-radius: 2px;
-}
-
-.summary-condition-dot {
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	margin: 0 auto;
-}
-
-.summary-year-markers {
+/* Scale area (50mm for Z/N 100-50) */
+.zn-scatter-scale {
+	position: relative;
+	width: 50mm;
+	height: 100%;
 	display: flex;
-	gap: 1px;
-	font-size: 6pt;
+	align-items: center;
+	overflow: visible;
 }
 
-.summary-year-marker {
-	width: 8px;
+/* Background color zones: 100-85 dark green, 85-70 light green, 70-50 orange */
+.zn-scatter-background {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+}
+
+.zn-bg-zone {
+	height: 100%;
+}
+
+/* 100-85: 15mm (30% of 50mm) - lighter shade of dark green */
+.zn-bg-good {
+	width: 15mm;
+	background-color: rgba(51, 135, 33, 0.2);
+}
+
+/* 85-70: 15mm (30% of 50mm) - lighter shade of light green */
+.zn-bg-ok {
+	width: 15mm;
+	background-color: rgba(120, 192, 107, 0.2);
+}
+
+/* 70-50: 20mm (40% of 50mm) - lighter shade of orange */
+.zn-bg-bad {
+	width: 20mm;
+	background-color: rgba(250, 167, 36, 0.2);
+}
+
+/* Axis labels in footer (100, 90, 80, 70, 60, 50) */
+/* Labels are centered on tick lines using merged cell widths: 5mm-10mm-10mm-10mm-10mm-5mm */
+.zn-scatter-labels {
+	position: absolute;
+	top: 1mm;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: flex-start;
+}
+
+.zn-axis-label {
+	font-size: 12px;
+	color: #666;
 	text-align: center;
-	color: #999;
 }
 
-.summary-year-marker.active {
-	color: var(--color-restoration);
-	font-weight: var(--font-weight-bold);
-	font-size: 10pt;
+/* Edge labels (100 and 50) - centered ON the edge lines, overlapping outside */
+.zn-axis-label:first-child,
+.zn-axis-label:last-child {
+	width: 5mm;
 }
 
-/* Summary chart */
-.summary-chart {
-	height: 120px;
-	margin-top: 8px;
+/* First label (100) - centered on 0mm line, extends left into padding */
+.zn-axis-label:first-child {
+	text-align: center;
+	transform: translateX(-50%);
 }
+
+/* Last label (50) - centered on 50mm line, extends right beyond scale */
+.zn-axis-label:last-child {
+	text-align: center;
+	transform: translateX(50%);
+}
+
+/* Middle labels (90, 80, 70, 60) - full width spanning across tick lines */
+.zn-axis-label:not(:first-child):not(:last-child) {
+	width: 10mm;
+}
+
+/* Footer cell for axis labels */
+.cell-zn-axis-footer {
+	border-bottom: none;
+	border-right: none;
+}
+
+/* Axis tick marks - 5 segments × 10mm (only on 10s: 100, 90, 80, 70, 60, 50) */
+.zn-scatter-ticks {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+}
+
+.zn-tick {
+	width: 10mm;
+	border-left: 1px solid #333;
+	height: 100%;
+}
+
+.zn-tick:last-child {
+	border-right: 1px solid #333;
+}
+
+/* Condition dot positioned by Z/N value */
+.zn-scatter-dot {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	transform: translateX(-50%);
+	top: 50%;
+	margin-top: -5px;
+}
+
+/* Gap column between left panel and timeline */
+.cell-gap {
+	background: white;
+	border-bottom: 1px dotted #e0e0e0;
+}
+
+/* Year columns - fixed 5mm width */
+.cell-year {
+	justify-content: center;
+	padding: 1px 0;
+	width: var(--col-year);
+	border-left: 1px dashed #e0e0e0;
+}
+
+.cell-year:last-of-type {
+	border-right: 1px dashed #e0e0e0;
+}
+
+/* Rotated year labels in footer - no vertical borders */
+.cell-year-footer {
+	height: 12mm;
+	overflow: visible;
+	align-items: flex-start;
+	border-left: none;
+	border-right: none;
+}
+
+.cell-year-footer:last-of-type {
+	border-right: none;
+}
+
+.year-label {
+	display: inline-block;
+	writing-mode: vertical-rl;
+	transform: rotate(180deg);
+	font-size: 11.5px;
+	/* Same as .zn-axis-label */
+	font-weight: var(--font-weight-normal);
+	line-height: 1;
+	white-space: nowrap;
+}
+
+/* Renovation dot marker */
+.restoration-dot {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	background-color: #1a5fb4;
+	border-radius: 50%;
+}
+
+/* Z/N value column (after scatter chart) */
+.cell-zn {
+	justify-content: center;
+	text-align: center;
+}
+
 
 /* =============================================================================
    PRINT-SPECIFIC STYLES

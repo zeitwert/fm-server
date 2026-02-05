@@ -281,6 +281,11 @@ input:-webkit-autofill:active,
 	flex-direction: column;
 }
 
+/* Grey separator line under tabs (keeps active indicator blue) */
+.ant-tabs-nav::before {
+	border-color: #d9d9d9 !important;
+}
+
 /* -----------------------------------------------------------------------------
    Spacing utilities (using Ant Design token values)
    ----------------------------------------------------------------------------- */

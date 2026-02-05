@@ -89,10 +89,6 @@ export const formTheme: ThemeConfig = {
 			activeBorderColor: "rgb(118, 118, 118)",
 			hoverBorderColor: "rgb(118, 118, 118)",
 		},
-		Tabs: {
-			// Tab underline color
-			inkBarColor: "#d9d9d9",
-		},
 		Form: {
 			// Label text color
 			labelColor: "rgb(51, 51, 51)",

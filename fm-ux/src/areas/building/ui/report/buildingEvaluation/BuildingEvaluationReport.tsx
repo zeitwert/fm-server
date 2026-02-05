@@ -56,9 +56,6 @@ export function BuildingEvaluationReport({
 		window.print();
 	}, []);
 
-	// Chart image for SummaryPage - for now left undefined, would be generated from Recharts SVG in full implementation
-	const costChartImage: string | undefined = undefined;
-
 	if (!building.currentRating) {
 		return (
 			<div style={{ padding: 24, textAlign: "center" }}>
@@ -129,12 +126,7 @@ export function BuildingEvaluationReport({
 					<CostsTablePage building={building} projection={projection} sectionNumber={7} />
 
 					{/* Last Page: Summary / One-Pager */}
-					<SummaryPage
-						building={building}
-						projection={projection}
-						inflationRate={inflationRate}
-						costChartImage={costChartImage}
-					/>
+					<SummaryPage building={building} projection={projection} inflationRate={inflationRate} />
 				</div>
 			</div>
 		</div>
