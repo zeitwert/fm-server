@@ -1,0 +1,90 @@
+/**
+ * ReportPreviewFrame - Toolbar and container styles
+ */
+
+.report-preview-frame {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+/* Toolbar */
+.report-preview-toolbar {
+	padding: 8px 16px;
+	border-bottom: 1px solid #e0e0e0;
+	background: #fafafa;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-shrink: 0;
+}
+
+.report-preview-title {
+	flex: 0 0 auto;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.report-preview-controls-center {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	flex: 1;
+	min-width: 0;
+}
+
+.report-preview-controls-left {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.report-preview-controls-right {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 8px;
+	padding-left: 8px;
+}
+
+/* Page navigation */
+.report-preview-nav {
+	display: flex;
+	align-items: center;
+}
+
+.report-preview-page-separator {
+	padding: 0 8px;
+	color: #666;
+	font-size: 13px;
+	line-height: 24px;
+}
+
+/* Zoom controls */
+.report-preview-zoom {
+	display: flex;
+	align-items: center;
+}
+
+/* Divider between control groups */
+.report-preview-divider {
+	width: 1px;
+	height: 24px;
+	background: #d9d9d9;
+	margin: 0 4px;
+}
+
+/* Container for iframe */
+.report-preview-container {
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+}
+
+/* InputNumber centered text */
+.report-preview-nav .ant-input-number-input,
+.report-preview-zoom .ant-input-number-input {
+	text-align: center;
+}

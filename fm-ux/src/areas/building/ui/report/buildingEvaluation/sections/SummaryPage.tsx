@@ -1,5 +1,13 @@
 import { useTranslation } from "react-i18next";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, ReferenceLine } from "recharts";
+import {
+	BarChart,
+	Bar,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	ResponsiveContainer,
+	ReferenceLine,
+} from "recharts";
 import type { Building, BuildingElement, ProjectionResult } from "../../../../types";
 import { COLORS } from "../../../components/projectionChartConfig";
 import {

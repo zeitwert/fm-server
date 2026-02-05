@@ -1,12 +1,6 @@
 import { Col, Row } from "antd";
 import { useTranslation } from "react-i18next";
-import {
-	AfInput,
-	AfTextArea,
-	AfSelect,
-	AfFieldRow,
-	AfFieldGroup,
-} from "@/common/components/form";
+import { AfInput, AfTextArea, AfSelect, AfFieldRow, AfFieldGroup } from "@/common/components/form";
 
 interface UserMainFormProps {
 	disabled: boolean;

@@ -26,11 +26,9 @@
 
 @page {
 	size: A4 landscape;
-	margin: 15mm 20mm 15mm 20mm;
-}
-
-@page :first {
-	margin-top: 10mm;
+	/* Set to 0 to prevent browser from adding its own header/footer */
+	/* Content spacing is handled by .report-page padding */
+	margin: 0;
 }
 
 /* =============================================================================
@@ -1367,23 +1365,43 @@
 		display: none !important;
 	}
 
-	/* For print, the page margins are handled by @page rule */
+	/* For print, @page margin is 0 to prevent browser headers/footers */
+	/* We handle spacing with CSS padding instead */
 	.report-page {
-		padding: 0;
-		/* @page margins handle the spacing */
-		width: auto;
-		min-height: auto;
+		/* Full A4 landscape dimensions */
+		width: 297mm;
+		height: 210mm !important;
+		min-height: 210mm !important;
+		/* Content margins via padding (same as screen preview) */
+		padding: var(--margin-top) var(--margin-right) var(--margin-bottom) var(--margin-left);
+		box-sizing: border-box;
 		box-shadow: none;
+		/* Force browser to print background colors and images */
+		-webkit-print-color-adjust: exact !important;
+		print-color-adjust: exact !important;
+		color-adjust: exact !important;
 	}
 
-	/* Hide interactive charts, show static images */
-	.recharts-wrapper {
-		display: none !important;
+	/* Ensure page content fills the page height */
+	.report-page.report-page-content {
+		height: 210mm !important;
 	}
 
-	.chart-image-print {
-		display: block !important;
+	/* Ensure body section fills remaining space for absolute positioning */
+	.report-page-body {
+		flex: 1;
+		position: relative;
+		min-height: 0;
 	}
+
+	/* Cover page body needs explicit height for absolute positioning to work */
+	/* 210mm total - 30mm padding (top+bottom) - ~12mm header - ~12mm footer = ~156mm */
+	.cover-page-body {
+		height: 156mm !important;
+		min-height: 156mm !important;
+	}
+
+	/* Recharts renders as SVG which prints correctly - no need to hide */
 }
 
 @media screen {
@@ -1399,4 +1417,5 @@
 		margin: 0 auto 20px auto;
 		/* Center with gap between pages */
 	}
+
 }
